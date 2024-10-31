@@ -1,0 +1,21 @@
+[gd_scene load_steps=4 format=3 uid="uid://fi57jj8ne0ql"]
+
+[ext_resource type="Script" path="res://Main.gd" id="1_m6r5v"]
+[ext_resource type="Texture2D" uid="uid://b0ktwmmv3pg3i" path="res://PNG/Default (64px)/d20.png" id="2_mwfkt"]
+
+[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_whopg"]
+points = PackedVector3Array(0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+
+[node name="Node3D" type="Node3D"]
+script = ExtResource("1_m6r5v")
+
+[node name="RigidBody3D" type="RigidBody3D" parent="."]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="RigidBody3D"]
+transform = Transform3D(4.735, 0, 0, 0, 1.19, 0, 0, 0, 4.735, 0, 0, 0)
+shape = SubResource("ConvexPolygonShape3D_whopg")
+
+[node name="Sprite3D" type="Sprite3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0, 0)
+modulate = Color(1, 0.223529, 1, 1)
+texture = ExtResource("2_mwfkt")

@@ -1,0 +1,7 @@
+[gd_scene load_steps=2 format=3 uid="uid://rkkusp5akixx"]
+
+[ext_resource type="PackedScene" uid="uid://1adfiigfd0x1" path="res://unit_hex.glb" id="1"]
+
+[node name="HexTile" type="Node3D"]
+
+[node name="unit_hex" parent="." instance=ExtResource("1")]
