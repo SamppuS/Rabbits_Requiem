@@ -1,0 +1,11 @@
+[gd_scene load_steps=2 format=3 uid="uid://b8xq8f1f3736a"]
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_1ovm4"]
+top_radius = 0.1
+bottom_radius = 0.1
+height = 0.1
+
+[node name="griddy" type="Node3D"]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+mesh = SubResource("CylinderMesh_1ovm4")
