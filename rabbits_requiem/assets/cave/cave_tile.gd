@@ -21,6 +21,9 @@ func next_paths() -> Array[int]:
 	
 	return dirs
 
+func add_dir(dir: int):
+	paths[dir] = 1
+
 func print_tile():
 	
 	print(pos)

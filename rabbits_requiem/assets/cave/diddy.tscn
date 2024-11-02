@@ -1,0 +1,14 @@
+[gd_scene load_steps=3 format=3 uid="uid://chpmf6rvomro0"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_spiy8"]
+albedo_color = Color(0.194393, 0.177693, 0.523126, 1)
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_sl3bh"]
+material = SubResource("StandardMaterial3D_spiy8")
+radius = 0.1
+height = 0.35
+
+[node name="griddy" type="Node3D"]
+
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="."]
+mesh = SubResource("CapsuleMesh_sl3bh")

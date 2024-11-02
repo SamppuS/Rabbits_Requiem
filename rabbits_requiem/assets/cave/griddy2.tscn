@@ -1,4 +1,4 @@
-[gd_scene load_steps=3 format=3 uid="uid://b3km7s58tssdy"]
+[gd_scene load_steps=5 format=3 uid="uid://b3km7s58tssdy"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_owdn7"]
 albedo_color = Color(0, 0.536206, 0.654916, 1)
@@ -8,8 +8,19 @@ top_radius = 0.21
 bottom_radius = 0.21
 height = 0.4
 
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_lct31"]
+albedo_color = Color(0.65834, 0.65834, 0.65834, 1)
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_4qj8v"]
+material = SubResource("StandardMaterial3D_lct31")
+height = 0.2
+radial_segments = 6
+
 [node name="griddy" type="Node3D"]
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
 material_override = SubResource("StandardMaterial3D_owdn7")
 mesh = SubResource("CylinderMesh_1ovm4")
+
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="."]
+mesh = SubResource("CylinderMesh_4qj8v")
