@@ -2,7 +2,13 @@ extends Node3D
 
 @export_category("Exports")
 @export_subgroup("Maze Settings")
-@export var grid_size : int = 30
+@export var cave_depth : int = 14 # generates cave systems that are n steps away from sp.
+@export var average_tile_count : int = 80 # the closer the av_tilecount is to cave depth tile average, the faster cave is generated 
+@export var max_variance: int = 10 # lower variance leads to longer cave generation
+@export var traffic_limit: int = 20 # controls how densely caves are generated
+
+var grid_size = (cave_depth+2) * 2
+
 
 @export_subgroup("Meshes")
 @export var tile_mesh : PackedScene
@@ -16,6 +22,7 @@ extends Node3D
 
 var grid = []
 var current : Vector2i
+var sp : Vector2i
 
 
 func _ready():
@@ -36,9 +43,15 @@ func _ready():
 			#print(x," - ", y)
 	
 	
-	current = Vector2i(randi()%grid_size, randi()%grid_size)
-	generate_maze()
-	
+	current = Vector2i(cave_depth, cave_depth)
+	while true:
+		generate_maze()
+		var cavern = count_cave_tiles()
+		if cavern > average_tile_count + max_variance/2 or cavern < average_tile_count - max_variance/2:
+			clear_cave()
+		else:
+			break
+	draw_cave()
 	player.position = pos_from_tile(current)
 	
 
@@ -79,48 +92,53 @@ func flip_dir(i: int):
 func generate_maze():
 	
 	#random start pos
-	var sp = current
+	sp = current
 	
-	#draw sp mesh
-	var sp_tt := sp_mesh.instantiate()
-	sp_tt.position = pos_from_tile(sp)
-	add_child(sp_tt)
+	var next_tiles = []
 	
 	#generate 2 new tiles from sp
-	var next = tile_obj(sp).next_paths()
-	var next_tiles = []
-	for d in next:
-		var new = next_tile(sp, d)
-		tile_obj(new).add_dir(flip_dir(d)) #add entraces to new tiles
-		next_tiles.append(new)
+	#var next = tile_obj(sp).next_paths()
 	
-	#start generating new tiles until we have 20.
+	tile_obj(sp).add_dir(2)
+	next_tiles.append(next_tile(sp,2))
+	tile_obj(next_tile(sp,2)).add_dir(flip_dir(2))
+	#for d in next:
+		#var new = next_tile(sp, d)
+		#tile_obj(new).add_dir(flip_dir(d)) #add entraces to new tiles
+		#next_tiles.append(new)
+	
+	
+	
+	#start generating new tiles until we have wanted depth
 	var i = 0
-	while len(next_tiles) != 0 and i < 20:
+	while len(next_tiles) != 0 and i < cave_depth: # creates caves with depth cave_depth + 1
 		i += 1
 		
 		var new_tiles = []
 		for tile in next_tiles:
 			var tile_obj = tile_obj(tile) #grid[tile.y][tile.x]
-			if tile_obj.paths.filter(func(item): return item).size() > 1: continue #skip if tile already has ANY direction written
+			if tile_obj.paths.count(true) > 1: continue #skip if tile is not a deadend.
 	
-			#skip if tile already has 2 or more neighbours
-			var neighbours : int = 0
+			#skip if tile has neighbours with already existing paths. This prevents traffic :)
+			var traffic_points : int = 0
 			for dir in range(6):
 				var surrounding_pos = next_tile(tile, dir)
 				var surrounding_tile = tile_obj(surrounding_pos) #grid[surrounding_pos.y][surrounding_pos.x]
-				if true in surrounding_tile.paths: neighbours+=1
-			if neighbours > 2: continue
+				#if true in surrounding_tile.paths: traffic_points+=1
+				traffic_points+=surrounding_tile.paths.count(true) ** 2 #squared number emphasises large traffic squares
+			if traffic_points > traffic_limit: continue
 			
 			#generate cave
-			next = tile_obj.next_paths()
+			var next = tile_obj.next_paths(randi())
 			for d in next:
 				var new = next_tile(tile, d)
 				tile_obj(new).add_dir(flip_dir(d)) #add entraces to new tiles
 				new_tiles.append(new)
 		
 		next_tiles = new_tiles
-	
+
+
+func draw_cave():
 	#draw cave icons
 	for y in range(grid_size):
 		for x in range(grid_size):
@@ -136,6 +154,10 @@ func generate_maze():
 					var ttt := dir_mesh.instantiate()
 					ttt.position = pos_from_tile(tile.pos) + dir_to_norm(dir) * 0.35
 					add_child(ttt)
+	#draw sp mesh
+	var sp_tt := sp_mesh.instantiate()
+	sp_tt.position = pos_from_tile(sp)
+	add_child(sp_tt)
 
 func pos_from_tile(pos : Vector2i) -> Vector3:
 	return Vector3(-pos.x + pos.y%2*0.5, 0, float(pos.y) - pos.y * (1-sqrt(3)/2))
@@ -177,3 +199,16 @@ func dir_to_norm(dir: int):
 	]
 
 	return normals[dir]
+
+func clear_cave():
+	for y in range(grid_size):
+		for x in range(grid_size):
+			grid[y][x].clear_dirs()
+
+func count_cave_tiles():
+	var sum = 0
+	for y in range(grid_size):
+		for x in range(grid_size):
+			if true in grid[y][x].paths:
+				sum+=1
+	return sum
