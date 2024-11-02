@@ -45,23 +45,33 @@ func _ready():
 func _input(event):
 	
 	var last_current = current
+	var next_dir : int
+	var move = false #prevent double movements
+	
 	if Input.is_action_just_pressed("a"):
-		current = next_tile(current, 0)
-	if Input.is_action_just_pressed("w"):
-		current = next_tile(current, 1)
-	if Input.is_action_just_pressed("e"):
-		current = next_tile(current, 2)
-	if Input.is_action_just_pressed("d"):
-		current = next_tile(current, 3)
-	if Input.is_action_just_pressed("x"):
-		current = next_tile(current, 4)
-	if Input.is_action_just_pressed("z"):
-		current = next_tile(current, 5)
+		next_dir = 0
+		move = true
+	elif Input.is_action_just_pressed("w"):
+		next_dir = 1
+		move = true
+	elif Input.is_action_just_pressed("e"):
+		next_dir = 2
+		move = true
+	elif Input.is_action_just_pressed("d"):
+		next_dir = 3
+		move = true
+	elif Input.is_action_just_pressed("x"):
+		next_dir = 4
+		move = true
+	elif Input.is_action_just_pressed("z"):
+		next_dir = 5
+		move = true
+	
+	if tile_obj(current).paths[next_dir] && move: current = next_tile(current, next_dir);
 	
 	if current != last_current: 
 		print(current, tile_obj(current).paths); 
 		player.position = pos_from_tile(current)
-	
 
 func flip_dir(i: int):
 	return (i+3)%6
