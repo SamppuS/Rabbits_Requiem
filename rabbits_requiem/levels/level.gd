@@ -3,11 +3,22 @@ extends Node3D
 @export_category("Exports")
 @export_subgroup("Maze Settings")
 @export var cave_depth : int = 14 # generates cave systems that are n steps away from sp.
-@export var average_tile_count : int = 80 # the closer the av_tilecount is to cave depth tile average, the faster cave is generated 
-@export var max_variance: int = 10 # lower variance leads to longer cave generation
-@export var traffic_limit: int = 20 # controls how densely caves are generated
+@export var average_tile_count : int = 70 # the closer the av_tilecount is to cave depth tile average, the faster cave is generated 
+@export var max_variance: int = 10 # higher variance leads to faster cave generation but more random results
 
-var grid_size = (cave_depth+2) * 2
+@export var traffic_limit: int = 20 # controls how densely caves are generated (around 20 seems good!!!)
+
+# Varying the ratio between cave_depth and average_tile_count leads to differently shaped caves!
+# Examples:
+#   - high ratio leads to more cross roads and dead ends
+#   - low ratio leads to more straight caves and less dead ends
+#
+# Good combinations: 
+# 14 : 80 : 10 = seems like a good balance
+# 8 : 100 : 10 = leads to less deep but more maze like structure
+# n>50 : ? : n>10000 = leads to huge caves FAST!!
+
+var grid_size = (cave_depth+1) * 2 # grid size is based on longest possible cave system. DO NOT CHANGE!!
 
 
 @export_subgroup("Meshes")
@@ -50,9 +61,11 @@ func _ready():
 		if cavern > average_tile_count + max_variance/2 or cavern < average_tile_count - max_variance/2:
 			clear_cave()
 		else:
+			print("Number of cave tiles is ", cavern)
 			break
 	draw_cave()
 	player.position = pos_from_tile(current)
+	
 	
 
 func _input(event):
