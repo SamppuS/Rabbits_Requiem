@@ -1,0 +1,40 @@
+[gd_scene load_steps=9 format=3 uid="uid://d4fl1op437uoe"]
+
+[ext_resource type="Script" path="res://minimap.gd" id="1_243hv"]
+[ext_resource type="PackedScene" uid="uid://b8xq8f1f3736a" path="res://assets/cave/griddy.tscn" id="2_dhh7s"]
+[ext_resource type="PackedScene" uid="uid://b3km7s58tssdy" path="res://assets/cave/griddy2.tscn" id="3_g5fa7"]
+[ext_resource type="PackedScene" path="res://assets/cave/griddy_sp.tscn" id="4_m3len"]
+[ext_resource type="PackedScene" path="res://assets/cave/diddy.tscn" id="5_ll7ek"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_redg8"]
+albedo_color = Color(0.860799, 1.01075e-05, 0.572914, 1)
+
+[sub_resource type="SphereMesh" id="SphereMesh_5l3hi"]
+radius = 0.4
+height = 0.8
+
+[sub_resource type="Environment" id="Environment_yoqi5"]
+
+[node name="Minimap" type="Node3D"]
+script = ExtResource("1_243hv")
+tile_mesh = ExtResource("2_dhh7s")
+cave_mesh = ExtResource("3_g5fa7")
+sp_mesh = ExtResource("4_m3len")
+dir_mesh = ExtResource("5_ll7ek")
+
+[node name="SubViewport" type="SubViewport" parent="."]
+
+[node name="Spelare" type="MeshInstance3D" parent="SubViewport"]
+material_override = SubResource("StandardMaterial3D_redg8")
+mesh = SubResource("SphereMesh_5l3hi")
+skeleton = NodePath("../..")
+
+[node name="Camera3D" type="Camera3D" parent="SubViewport/Spelare"]
+transform = Transform3D(-1, -2.68947e-08, 8.31831e-08, 7.45218e-08, 0.235244, 0.971936, -4.57082e-08, 0.971936, -0.235244, 0.0928936, 16.9954, -2.0475)
+fov = 45.0
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="SubViewport"]
+transform = Transform3D(1, 0, 0, 0, 0.587008, 0.809581, 0, -0.809581, 0.587008, 0, 0, 0)
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="SubViewport"]
+environment = SubResource("Environment_yoqi5")
