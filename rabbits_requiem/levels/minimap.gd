@@ -1,4 +1,5 @@
 extends Node3D
+signal send_grid(grid, sp)
 
 
 @export_category("Exports")
@@ -64,6 +65,7 @@ func _ready():
 		else:
 			print("Number of cave tiles is ", cavern)
 			break
+	send_grid.emit(grid, sp)
 	draw_cave()
 	player.position = pos_from_tile(current)
 

@@ -1,6 +1,7 @@
-[gd_scene load_steps=5 format=3 uid="uid://d4fl1op437uoe"]
+[gd_scene load_steps=6 format=3 uid="uid://d4fl1op437uoe"]
 
 [ext_resource type="Script" path="res://tunnels.gd" id="1_bfp66"]
+[ext_resource type="PackedScene" uid="uid://c1vv05834q1vo" path="res://levels/minimap.tscn" id="2_ah540"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_redg8"]
 albedo_color = Color(0.860799, 1.01075e-05, 0.572914, 1)
@@ -27,3 +28,5 @@ transform = Transform3D(1, 0, 0, 0, 0.587008, 0.809581, 0, -0.809581, 0.587008, 
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_yoqi5")
+
+[node name="Minimap" parent="." instance=ExtResource("2_ah540")]
