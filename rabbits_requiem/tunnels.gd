@@ -1,9 +1,7 @@
 extends Node3D
 
 var grid: Array
-
-@export_category("Exports")
-@export_subgroup("Meshes")
+var starting_point: Vector2i
 
 var meshes: Array[PackedScene]
 var mesh_openings = [ #These are the right patterns but in the wrong phase. So they return the right tile but wrong rotation.
@@ -49,6 +47,7 @@ func _on_grid_received(new_grid, sp):
 
 func _on_minimap_send_grid(sent_grid: Variant, sp: Variant) -> void:
 	grid = sent_grid
+	starting_point = sp
 	for y in range(len(grid)):
 		for x in range(len(grid)):
 			print(grid[y][x].paths, find_match(grid[y][x].paths))
