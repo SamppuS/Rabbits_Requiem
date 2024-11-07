@@ -65,8 +65,7 @@ func _ready():
 			break
 	draw_cave()
 	player.position = pos_from_tile(current)
-	
-	
+
 
 func _input(event):
 	
