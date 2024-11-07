@@ -1,10 +1,6 @@
-[gd_scene load_steps=9 format=3 uid="uid://d4fl1op437uoe"]
+[gd_scene load_steps=5 format=3 uid="uid://d4fl1op437uoe"]
 
 [ext_resource type="Script" path="res://tunnels.gd" id="1_bfp66"]
-[ext_resource type="PackedScene" uid="uid://b8xq8f1f3736a" path="res://assets/cave/griddy.tscn" id="2_dx7bm"]
-[ext_resource type="PackedScene" uid="uid://b3km7s58tssdy" path="res://assets/cave/griddy2.tscn" id="3_f6df6"]
-[ext_resource type="PackedScene" path="res://assets/cave/griddy_sp.tscn" id="4_016kk"]
-[ext_resource type="PackedScene" path="res://assets/cave/diddy.tscn" id="5_tm7qw"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_redg8"]
 albedo_color = Color(0.860799, 1.01075e-05, 0.572914, 1)
@@ -15,13 +11,8 @@ height = 0.8
 
 [sub_resource type="Environment" id="Environment_yoqi5"]
 
-[node name="tunnels" type="Node3D" node_paths=PackedStringArray("player")]
+[node name="tunnels" type="Node3D"]
 script = ExtResource("1_bfp66")
-tile_mesh = ExtResource("2_dx7bm")
-cave_mesh = ExtResource("3_f6df6")
-sp_mesh = ExtResource("4_016kk")
-dir_mesh = ExtResource("5_tm7qw")
-player = NodePath("Spelare")
 
 [node name="Spelare" type="MeshInstance3D" parent="."]
 material_override = SubResource("StandardMaterial3D_redg8")
