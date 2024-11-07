@@ -30,3 +30,5 @@ transform = Transform3D(1, 0, 0, 0, 0.587008, 0.809581, 0, -0.809581, 0.587008, 
 environment = SubResource("Environment_yoqi5")
 
 [node name="Minimap" parent="." instance=ExtResource("2_ah540")]
+
+[connection signal="send_grid" from="Minimap" to="." method="_on_minimap_send_grid"]

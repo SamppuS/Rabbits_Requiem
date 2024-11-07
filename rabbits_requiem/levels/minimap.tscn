@@ -3,8 +3,8 @@
 [ext_resource type="Script" path="res://levels/minimap.gd" id="1_dqeaj"]
 [ext_resource type="PackedScene" uid="uid://b8xq8f1f3736a" path="res://assets/cave/griddy.tscn" id="2_fvpvn"]
 [ext_resource type="PackedScene" uid="uid://b3km7s58tssdy" path="res://assets/cave/griddy2.tscn" id="3_o836x"]
-[ext_resource type="PackedScene" path="res://assets/cave/griddy_sp.tscn" id="4_e07eh"]
-[ext_resource type="PackedScene" path="res://assets/cave/diddy.tscn" id="5_5e0hb"]
+[ext_resource type="PackedScene" uid="uid://bknaa1yohiwhj" path="res://assets/cave/griddy_sp.tscn" id="4_e07eh"]
+[ext_resource type="PackedScene" uid="uid://chpmf6rvomro0" path="res://assets/cave/diddy.tscn" id="5_5e0hb"]
 
 [sub_resource type="Environment" id="Environment_yoqi5"]
 
