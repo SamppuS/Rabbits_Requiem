@@ -12,8 +12,9 @@ height = 0.8
 
 [sub_resource type="Environment" id="Environment_yoqi5"]
 
-[node name="tunnels" type="Node3D"]
+[node name="tunnels" type="Node3D" node_paths=PackedStringArray("player")]
 script = ExtResource("1_bfp66")
+player = NodePath("Spelare")
 
 [node name="Spelare" type="MeshInstance3D" parent="."]
 material_override = SubResource("StandardMaterial3D_redg8")
