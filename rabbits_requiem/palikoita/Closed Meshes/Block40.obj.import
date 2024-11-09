@@ -1,0 +1,22 @@
+[remap]
+
+importer="wavefront_obj"
+importer_version=1
+type="Mesh"
+uid="uid://0ybqfx8lei4b"
+path="res://.godot/imported/Block40.obj-1f322c44a941a9f76f30c0eafe54058f.mesh"
+
+[deps]
+
+files=["res://.godot/imported/Block40.obj-1f322c44a941a9f76f30c0eafe54058f.mesh"]
+
+source_file="res://palikoita/Closed Meshes/Block40.obj"
+dest_files=["res://.godot/imported/Block40.obj-1f322c44a941a9f76f30c0eafe54058f.mesh", "res://.godot/imported/Block40.obj-1f322c44a941a9f76f30c0eafe54058f.mesh"]
+
+[params]
+
+generate_tangents=true
+scale_mesh=Vector3(1, 1, 1)
+offset_mesh=Vector3(0, 0, 0)
+optimize_mesh=true
+force_disable_mesh_compression=false

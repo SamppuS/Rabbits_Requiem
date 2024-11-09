@@ -1,23 +1,24 @@
 extends Node3D
 
 @export var player : Node3D
+@export var tile_material : StandardMaterial3D
 
 var grid: Array
 var starting_point: Vector2i
 
-var meshes: Array[PackedScene]
+var meshes: Array[Mesh]
 var mesh_openings = [ #These are the right patterns but in the wrong phase. So they return the right tile but wrong rotation.
-	[true, false, false, false, false, false],  # 10 +
-	[true, false, false, false, false, true],   # 20 +
-	[true, false, false, false, true, false],   # 21 +
-	[true, false, false, true, false, false],   # 22 +
-	[true, false, false, false, true, true],    # 30 +
-	[true, false, false, true, false, true],    # 31 +
-	[true, true, false, true, false, false],    # 32 +
-	[true, false, true, false, true, false],    # 33 +
-	[true, false, false, true, true, true],     # 40 +
-	[true, false, true, true, true, false],     # 41 +
-	[true, false, true, true, false, true]      # 42 +
+	[true, false, false, false, false, false],  # 10
+	[true, false, false, false, false, true],   # 20
+	[true, false, false, false, true, false],   # 21
+	[true, false, false, true, false, false],   # 22
+	[true, false, false, false, true, true],    # 30
+	[true, false, false, true, false, true],    # 31
+	[true, true, false, true, false, false],    # 32
+	[true, false, true, false, true, false],    # 33
+	[true, false, false, true, true, true],     # 40
+	[true, false, true, true, true, false],     # 41
+	[true, false, true, true, false, true]      # 42
 ]
 
 var mesh_size = 1.73233866691589
@@ -28,13 +29,13 @@ func _ready(): # we probably don't have grid info here!
 	minimap.send_grid.connect(_on_grid_received)
 	
 	# Save meshes under array "meshes"
-	var dir = DirAccess.open("res://palikoita/Open models/")
+	var dir = DirAccess.open("res://palikoita/Closed Meshes/")
 	if dir:
 		dir.list_dir_begin()
 		while true:
 			var file_name = dir.get_next()
-			if file_name.substr(len(file_name)-3,len(file_name)) == "glb":
-				meshes.append(load("res://palikoita/Open models/" + file_name))
+			if file_name.substr(len(file_name)-3,len(file_name)) == "obj":
+				meshes.append(load("res://palikoita/Closed Meshes/" + file_name))
 			if file_name == "":
 				break
 		dir.list_dir_end()
@@ -61,11 +62,12 @@ func draw_cave():
 			var match = find_match(tile.paths)
 			#print(tile.paths, match)
 			if match[0] != -1:
-				var tile_mesh := meshes[match[0]].instantiate()
-				tile_mesh.position = pos_from_tile(tile.pos)
-				tile_mesh.rotation_degrees.y = 60*match[1]
-				add_child(tile_mesh)
-				#print("size is: ", tile_mesh.get_child(0).mesh.get_aabb().size.x)
+				var palikka := MeshInstance3D.new()
+				palikka.mesh = meshes[match[0]]
+				palikka.position = pos_from_tile(tile.pos)
+				palikka.rotation_degrees.y = 60*match[1]
+				palikka.material_override = tile_material
+				add_child(palikka)
 
 
 func find_match(paths: Array[bool]): # from cave_tile.paths to mesh_openings index

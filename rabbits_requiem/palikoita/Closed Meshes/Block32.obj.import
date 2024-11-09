@@ -1,0 +1,22 @@
+[remap]
+
+importer="wavefront_obj"
+importer_version=1
+type="Mesh"
+uid="uid://btoxmu6r2ed1y"
+path="res://.godot/imported/Block32.obj-9a3b7396bbf29749034ce6e4e70fb3ea.mesh"
+
+[deps]
+
+files=["res://.godot/imported/Block32.obj-9a3b7396bbf29749034ce6e4e70fb3ea.mesh"]
+
+source_file="res://palikoita/Closed Meshes/Block32.obj"
+dest_files=["res://.godot/imported/Block32.obj-9a3b7396bbf29749034ce6e4e70fb3ea.mesh", "res://.godot/imported/Block32.obj-9a3b7396bbf29749034ce6e4e70fb3ea.mesh"]
+
+[params]
+
+generate_tangents=true
+scale_mesh=Vector3(1, 1, 1)
+offset_mesh=Vector3(0, 0, 0)
+optimize_mesh=true
+force_disable_mesh_compression=false
