@@ -22,9 +22,13 @@ tile_material = ExtResource("4_njief")
 material_override = SubResource("StandardMaterial3D_redg8")
 mesh = SubResource("SphereMesh_5l3hi")
 
-[node name="Camera3D" type="Camera3D" parent="Spelare"]
+[node name="CamTop" type="Camera3D" parent="Spelare"]
 transform = Transform3D(-1, -2.68947e-08, 8.31831e-08, 7.45218e-08, 0.235244, 0.971936, -4.57082e-08, 0.971936, -0.235244, 0.0928936, 16.9954, -2.0475)
+current = true
 fov = 45.0
+
+[node name="CamFP" type="Camera3D" parent="Spelare"]
+transform = Transform3D(-0.866025, 0, 0.5, 0, 1, 0, -0.5, 0, -0.866025, 0, 0.2, 0)
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 0.587008, 0.809581, 0, -0.809581, 0.587008, 0, 0, 0)

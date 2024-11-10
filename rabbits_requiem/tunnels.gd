@@ -3,8 +3,14 @@ extends Node3D
 @export var player : Node3D
 @export var tile_material : StandardMaterial3D
 
+@onready var camTop = $Spelare/CamTop
+@onready var camFP = $Spelare/CamFP
+
 var grid: Array
 var starting_point: Vector2i
+var facing = 2
+var cam_mode = 0
+var current : Vector2i
 
 var meshes: Array[Mesh]
 var mesh_openings = [ #These are the right patterns but in the wrong phase. So they return the right tile but wrong rotation.
@@ -26,7 +32,7 @@ var mesh_size = 1.73233866691589
 
 func _ready(): # we probably don't have grid info here!
 	var minimap = get_node("Minimap")
-	minimap.send_grid.connect(_on_grid_received)
+	#minimap.send_grid.connect(_on_grid_received)
 	
 	# Save meshes under array "meshes"
 	var dir = DirAccess.open("res://palikoita/Closed Meshes/")
@@ -41,19 +47,30 @@ func _ready(): # we probably don't have grid info here!
 		dir.list_dir_end()
 	draw_cave()
 
-
-
-func _on_grid_received(new_grid, sp):
-	grid = new_grid
-	# Now you can use the received grid data
-	print("Received new grid data: ", grid)
-	
-
-
 func _on_minimap_send_grid(sent_grid: Variant, sp: Variant) -> void:
 	grid = sent_grid
 	starting_point = sp
-	player.position = pos_from_tile(starting_point)
+	current = starting_point
+	player.position = pos_from_tile(current)
+
+func _input(event: InputEvent) -> void:
+	if cam_mode == 1:
+		if Input.is_action_just_pressed("d"): # turn left
+			facing = (facing + 1) % 6
+			set_facing(facing)
+			print(facing)
+		elif Input.is_action_just_pressed("a"): # turn right
+			facing = (facing + 5) % 6
+			set_facing(facing)
+			print(facing)
+		elif Input.is_action_just_pressed("w") and tile_obj(current).paths[facing]:
+			current = next_tile(current, facing)
+			player.position = pos_from_tile(current)
+			print("CHARGING!! ", current, facing)
+			
+	if Input.is_action_just_pressed("x"):
+			change_cam()
+		
 
 func draw_cave():
 	for y in range(len(grid)):
@@ -85,3 +102,52 @@ func find_match(paths: Array[bool]): # from cave_tile.paths to mesh_openings ind
 
 func pos_from_tile(pos : Vector2i) -> Vector3:
 	return Vector3(-pos.x + pos.y%2*0.5, 0, float(pos.y) - pos.y * (1-sqrt(3)/2)) * mesh_size
+
+func change_cam(mode: int = -1):
+	if mode == 1:
+		camFP.current = true
+		cam_mode = 1
+	elif mode == 0:
+		camTop.current = true
+		cam_mode = 0
+	else: 
+		change_cam((cam_mode + 1) % 2) # whoa recursion!
+		
+		
+
+func set_facing(dir: int):
+	camFP.rotation_degrees.y = 150 - 60 * (dir-2)
+	
+func dir_to_norm(dir: int): # copy from minimap
+	var normals = [
+		Vector3(cos(0), 0, sin(0)),                  # (1, 0)
+		Vector3(cos(PI / 3), 0, sin(PI / 3)),        # (1/2, √3 / 2)
+		Vector3(cos(2 * PI / 3), 0, sin(2 * PI / 3)), # (-1/2, √3 / 2)
+		Vector3(cos(PI), 0, sin(PI)),                # (-1, 0)
+		Vector3(cos(4 * PI / 3), 0, sin(4 * PI / 3)), # (-1/2, -√3 / 2)
+		Vector3(cos(5 * PI / 3), 0, sin(5 * PI / 3))  # (1/2, -√3 / 2)
+	]
+
+func tile_obj(pos: Vector2i): # copy form minimap
+	return grid[pos.y][pos.x]
+	
+func next_tile(pos : Vector2i, dir : int) -> Vector2i: # copy from minimap
+	var right = pos.y % 2
+	var newpos = pos
+	match dir:
+		0:
+			newpos = pos + Vector2i(-1, 0)
+		3:
+			newpos = pos + Vector2i(1, 0)
+		
+		1:
+			newpos = pos + Vector2i(-right, 1)
+		2:
+			newpos = pos + Vector2i(1-right, 1)
+		4:
+			newpos = pos + Vector2i(1-right, -1)
+		5:
+			newpos = pos + Vector2i(-right, -1)
+	
+	newpos = Vector2i(newpos.x, newpos.y)
+	return newpos
