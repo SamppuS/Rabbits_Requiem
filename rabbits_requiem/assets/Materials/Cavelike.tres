@@ -9,6 +9,7 @@ noise_type = 0
 frequency = 0.1565
 
 [sub_resource type="NoiseTexture2D" id="NoiseTexture2D_5qswm"]
+seamless = true
 color_ramp = SubResource("Gradient_juidj")
 noise = SubResource("FastNoiseLite_n4kcl")
 
@@ -16,7 +17,9 @@ noise = SubResource("FastNoiseLite_n4kcl")
 frequency = 0.079
 
 [sub_resource type="NoiseTexture2D" id="NoiseTexture2D_fxren"]
+seamless = true
 as_normal_map = true
+bump_strength = 5.0
 noise = SubResource("FastNoiseLite_l6ofs")
 
 [resource]

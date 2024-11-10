@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=3 uid="uid://d4fl1op437uoe"]
+[gd_scene load_steps=8 format=3 uid="uid://d4fl1op437uoe"]
 
 [ext_resource type="Script" path="res://tunnels.gd" id="1_bfp66"]
 [ext_resource type="PackedScene" uid="uid://c1vv05834q1vo" path="res://levels/minimap.tscn" id="2_ah540"]
@@ -11,7 +11,11 @@ albedo_color = Color(0.860799, 1.01075e-05, 0.572914, 1)
 radius = 0.4
 height = 0.8
 
+[sub_resource type="Sky" id="Sky_1cfuc"]
+
 [sub_resource type="Environment" id="Environment_yoqi5"]
+sky = SubResource("Sky_1cfuc")
+volumetric_fog_density = 1.0
 
 [node name="tunnels" type="Node3D" node_paths=PackedStringArray("player")]
 script = ExtResource("1_bfp66")
@@ -28,10 +32,11 @@ current = true
 fov = 45.0
 
 [node name="CamFP" type="Camera3D" parent="Spelare"]
-transform = Transform3D(-0.866025, 0, 0.5, 0, 1, 0, -0.5, 0, -0.866025, 0, 0.2, 0)
+transform = Transform3D(-0.866025, 0, 0.5, 0, 1, 0, -0.5, 0, -0.866025, 0, 0, 0)
 
-[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 0.587008, 0.809581, 0, -0.809581, 0.587008, 0, 0, 0)
+[node name="OmniLight3D" type="OmniLight3D" parent="Spelare"]
+light_energy = 0.5
+omni_range = 1.277
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_yoqi5")

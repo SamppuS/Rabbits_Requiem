@@ -11,6 +11,7 @@ var starting_point: Vector2i
 var facing = 2
 var cam_mode = 0
 var current : Vector2i
+var player_height = .2
 
 var meshes: Array[Mesh]
 var mesh_openings = [ #These are the right patterns but in the wrong phase. So they return the right tile but wrong rotation.
@@ -27,7 +28,7 @@ var mesh_openings = [ #These are the right patterns but in the wrong phase. So t
 	[true, false, true, true, false, true]      # 42
 ]
 
-var mesh_size = 1.73233866691589
+var mesh_size = 1.73233866691589 - .01 # true size - gap between tiles
 
 
 func _ready(): # we probably don't have grid info here!
@@ -51,7 +52,7 @@ func _on_minimap_send_grid(sent_grid: Variant, sp: Variant) -> void:
 	grid = sent_grid
 	starting_point = sp
 	current = starting_point
-	player.position = pos_from_tile(current)
+	player.position = pos_from_tile(current) + Vector3(0,player_height,0)
 
 func _input(event: InputEvent) -> void:
 	if cam_mode == 1:
@@ -65,7 +66,7 @@ func _input(event: InputEvent) -> void:
 			print(facing)
 		elif Input.is_action_just_pressed("w") and tile_obj(current).paths[facing]:
 			current = next_tile(current, facing)
-			player.position = pos_from_tile(current)
+			player.position = pos_from_tile(current) + Vector3(0,player_height,0)
 			print("CHARGING!! ", current, facing)
 			
 	if Input.is_action_just_pressed("x"):
