@@ -4,8 +4,8 @@ signal send_grid(grid, sp)
 
 @export_category("Exports")
 @export_subgroup("Maze Settings")
-@export var cave_depth : int = 4 # generates cave systems that are n steps away from sp.
-@export var average_tile_count : int = 35 # the closer the av_tilecount is to cave depth tile average, the faster cave is generated 
+@export var cave_depth : int = 14 # generates cave systems that are n steps away from sp.
+@export var average_tile_count : int = 80 # the closer the av_tilecount is to cave depth tile average, the faster cave is generated 
 @export var max_variance: int = 10 # higher variance leads to faster cave generation but more random results
 
 @export var traffic_limit: int = 20 # controls how densely caves are generated (around 20 seems good!!!)

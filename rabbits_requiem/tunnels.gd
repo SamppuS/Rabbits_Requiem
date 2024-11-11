@@ -12,6 +12,9 @@ var facing = 2
 var cam_mode = 0
 var current : Vector2i
 var player_height = .2
+var cam_default : Vector3
+var cam_tilt : Vector3
+
 
 var meshes: Array[Mesh]
 var mesh_openings = [ #These are the right patterns but in the wrong phase. So they return the right tile but wrong rotation.
@@ -28,7 +31,7 @@ var mesh_openings = [ #These are the right patterns but in the wrong phase. So t
 	[true, false, true, true, false, true]      # 42
 ]
 
-var mesh_size = 1.73233866691589 - .01 # true size - gap between tiles
+var mesh_size = 1.73233866691589 - .05 # true size - gap between tiles
 
 
 func _ready(): # we probably don't have grid info here!
@@ -71,6 +74,13 @@ func _input(event: InputEvent) -> void:
 			
 	if Input.is_action_just_pressed("x"):
 			change_cam()
+			
+	if event is InputEventMouseMotion:
+		var screen_size = get_viewport().get_visible_rect().size
+		var mouse_pos = get_viewport().get_mouse_position()
+		cam_tilt = Vector3(mouse_pos.y / screen_size.y - .5, mouse_pos.x / screen_size.x - .5, 0) * Vector3(-40,-80,0)
+	
+	camFP.rotation_degrees = cam_default + cam_tilt  
 		
 
 func draw_cave():
@@ -117,7 +127,8 @@ func change_cam(mode: int = -1):
 		
 
 func set_facing(dir: int):
-	camFP.rotation_degrees.y = 150 - 60 * (dir-2)
+	cam_default = Vector3(0, 150 - 60 * (dir-2),0)
+	#camFP.rotation_degrees = cam_default
 	
 func dir_to_norm(dir: int): # copy from minimap
 	var normals = [
