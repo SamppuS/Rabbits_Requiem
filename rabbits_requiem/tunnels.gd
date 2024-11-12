@@ -12,7 +12,7 @@ var facing = 2
 var cam_mode = 0
 var current : Vector2i
 var player_height = .2
-var cam_default : Vector3
+var cam_default := Vector3(0, 150 ,0)
 var cam_tilt : Vector3
 
 
