@@ -45,13 +45,20 @@ func _ready(): # we probably don't have grid info here!
 	var dir = DirAccess.open("res://palikoita/Closed Meshes/")
 	if dir:
 		dir.list_dir_begin()
+		var mesh_files = []
 		while true:
 			var file_name = dir.get_next()
 			if file_name.substr(len(file_name)-3,len(file_name)) == "obj":
-				meshes.append(load("res://palikoita/Closed Meshes/" + file_name))
+				mesh_files.append(file_name)
 			if file_name == "":
 				break
 		dir.list_dir_end()
+		# Sort the mesh files alphabetically
+		mesh_files.sort()
+		# Load the meshes in sorted order and store them in the meshes array
+		meshes = []  # Clear the meshes array before loading
+		for file_name in mesh_files:
+			meshes.append(load("res://palikoita/Closed Meshes/" + file_name))
 	draw_cave()
 
 func _on_minimap_send_grid(sent_grid: Variant, sp: Variant) -> void:
