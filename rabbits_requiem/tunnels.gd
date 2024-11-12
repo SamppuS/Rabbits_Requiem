@@ -8,13 +8,16 @@ extends Node3D
 
 var grid: Array
 var starting_point: Vector2i
-var facing = 2
-var cam_mode = 0
+var facing := 2
+var cam_mode := 0
 var current : Vector2i
-var player_height = .2
+var player_height := .2
 var cam_default := Vector3(0, 150 ,0)
 var cam_tilt : Vector3
+var last_movement_dir := 5
 
+var mesh_size = 1.73233866691589 - .05 # true size - gap between tiles
+var tile_offset = mesh_size * 0.22
 
 var meshes: Array[Mesh]
 var mesh_openings = [ #These are the right patterns but in the wrong phase. So they return the right tile but wrong rotation.
@@ -31,7 +34,7 @@ var mesh_openings = [ #These are the right patterns but in the wrong phase. So t
 	[true, false, true, true, false, true]      # 42
 ]
 
-var mesh_size = 1.73233866691589 - .05 # true size - gap between tiles
+
 
 
 func _ready(): # we probably don't have grid info here!
@@ -69,8 +72,11 @@ func _input(event: InputEvent) -> void:
 			print(facing)
 		elif Input.is_action_just_pressed("w") and tile_obj(current).paths[facing]:
 			current = next_tile(current, facing)
-			player.position = pos_from_tile(current) + Vector3(0,player_height,0)
-			print("CHARGING!! ", current, facing)
+			player.position = pos_from_tile(current) + Vector3(0,player_height,0) + dir_to_norm(flip_dir(facing)) * tile_offset
+
+			
+			last_movement_dir = facing
+			#print("CHARGING!! ", current, facing)
 			
 	if Input.is_action_just_pressed("x"):
 			change_cam()
@@ -78,7 +84,7 @@ func _input(event: InputEvent) -> void:
 	if event is InputEventMouseMotion:
 		var screen_size = get_viewport().get_visible_rect().size
 		var mouse_pos = get_viewport().get_mouse_position()
-		cam_tilt = Vector3(mouse_pos.y / screen_size.y - .5, mouse_pos.x / screen_size.x - .5, 0) * Vector3(-40,-80,0)
+		cam_tilt = Vector3(mouse_pos.y / screen_size.y - .5, mouse_pos.x / screen_size.x - .5, 0) * Vector3(-40,-90,0)
 	
 	camFP.rotation_degrees = cam_default + cam_tilt  
 		
@@ -139,6 +145,7 @@ func dir_to_norm(dir: int): # copy from minimap
 		Vector3(cos(4 * PI / 3), 0, sin(4 * PI / 3)), # (-1/2, -√3 / 2)
 		Vector3(cos(5 * PI / 3), 0, sin(5 * PI / 3))  # (1/2, -√3 / 2)
 	]
+	return normals[dir]
 
 func tile_obj(pos: Vector2i): # copy form minimap
 	return grid[pos.y][pos.x]
@@ -163,3 +170,6 @@ func next_tile(pos : Vector2i, dir : int) -> Vector2i: # copy from minimap
 	
 	newpos = Vector2i(newpos.x, newpos.y)
 	return newpos
+
+func flip_dir(i: int): # copy from minimap
+	return (i+3)%6
