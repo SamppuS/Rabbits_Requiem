@@ -42,6 +42,12 @@ omni_range = 1.277
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_yoqi5")
 
-[node name="Minimap" parent="." instance=ExtResource("2_ah540")]
+[node name="SubViewportContainer" type="SubViewportContainer" parent="."]
+offset_right = 40.0
+offset_bottom = 40.0
 
-[connection signal="send_grid" from="Minimap" to="." method="_on_minimap_send_grid"]
+[node name="SubViewport" type="SubViewport" parent="SubViewportContainer"]
+
+[node name="Minimap" parent="SubViewportContainer/SubViewport" instance=ExtResource("2_ah540")]
+
+[connection signal="send_grid" from="SubViewportContainer/SubViewport/Minimap" to="." method="_on_minimap_send_grid"]

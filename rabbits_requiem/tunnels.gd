@@ -5,6 +5,9 @@ extends Node3D
 
 @onready var camTop = $Spelare/CamTop
 @onready var camFP = $Spelare/CamFP
+@onready var minimap_container = $SubViewportContainer
+@onready var subviewport = $SubViewportContainer/SubViewport
+
 
 var grid: Array
 var starting_point: Vector2i
@@ -38,7 +41,17 @@ var mesh_openings = [ #These are the right patterns but in the wrong phase. So t
 
 
 func _ready(): # we probably don't have grid info here!
+	minimap_container.set_anchors_preset(Control.PRESET_BOTTOM_LEFT)
+	# Set size and position
+	minimap_container.custom_minimum_size = Vector2(200, 200)  # Adjust size as needed
+	minimap_container.size = Vector2(200, 200)
+	minimap_container.position = Vector2(10, -210)  # Adjust position as needed
+	# Get the minimap's SubViewport
 	var minimap = get_node("Minimap")
+	var minimap_viewport = subviewport
+	minimap_viewport.size = Vector2(200, 200)
+	minimap_viewport.render_target_update_mode = SubViewport.UPDATE_ALWAYS
+
 	#minimap.send_grid.connect(_on_grid_received)
 	
 	# Save meshes under array "meshes"
