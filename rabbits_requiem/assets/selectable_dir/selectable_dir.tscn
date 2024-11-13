@@ -1,0 +1,26 @@
+[gd_scene load_steps=4 format=3 uid="uid://dtuwhmswrmn74"]
+
+[ext_resource type="Script" path="res://assets/selectable_dir/selectable_dir.gd" id="1_g7y36"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_xt6el"]
+size = Vector3(1, 0.7, 0.09)
+
+[sub_resource type="BoxMesh" id="BoxMesh_aeld5"]
+size = Vector3(1, 0.7, 0.09)
+
+[node name="SelectableDir" type="Node3D"]
+script = ExtResource("1_g7y36")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="."]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D"]
+transform = Transform3D(0.51, 0, 0, 0, 0.51, 0, 0, 0, 0.51, 0, 0, 0)
+shape = SubResource("BoxShape3D_xt6el")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="StaticBody3D/CollisionShape3D"]
+mesh = SubResource("BoxMesh_aeld5")
+skeleton = NodePath("../../..")
+
+[connection signal="input_event" from="StaticBody3D" to="." method="_on_static_body_3d_input_event"]
+[connection signal="mouse_entered" from="StaticBody3D" to="." method="_on_static_body_3d_mouse_entered"]
+[connection signal="mouse_exited" from="StaticBody3D" to="." method="_on_static_body_3d_mouse_exited"]

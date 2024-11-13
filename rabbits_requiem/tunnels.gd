@@ -2,6 +2,7 @@ extends Node3D
 
 @export var player : Node3D
 @export var tile_material : StandardMaterial3D
+@export var selectable_dir : PackedScene
 
 @onready var camTop = $Spelare/CamTop
 @onready var camFP = $Spelare/CamFP
@@ -21,6 +22,8 @@ var last_movement_dir := 5
 
 var mesh_size = 1.73233866691589 - .05 # true size - gap between tiles
 var tile_offset = mesh_size * 0.22
+
+var s_dir_holder = []
 
 var meshes: Array[Mesh]
 var mesh_openings = [ #These are the right patterns but in the wrong phase. So they return the right tile but wrong rotation.
@@ -91,12 +94,15 @@ func _input(event: InputEvent) -> void:
 			set_facing(facing)
 			print(facing)
 		elif Input.is_action_just_pressed("w") and tile_obj(current).paths[facing]:
-			current = next_tile(current, facing)
-			player.position = pos_from_tile(current) + Vector3(0,player_height,0) + dir_to_norm(flip_dir(facing)) * tile_offset
-
+			move(facing)
 			
-			last_movement_dir = facing
-			#print("CHARGING!! ", current, facing)
+		elif Input.is_action_just_pressed("z"):
+			print("WE HAVE YOU SURROUNDED")
+			surround()
+			
+		elif Input.is_action_just_pressed("e"):
+			s_dir_holder[0].numba += 1
+			s_dir_holder[0].clown_time()
 			
 	if Input.is_action_just_pressed("x"):
 			change_cam()
@@ -106,8 +112,35 @@ func _input(event: InputEvent) -> void:
 		var mouse_pos = get_viewport().get_mouse_position()
 		cam_tilt = Vector3(mouse_pos.y / screen_size.y - .5, mouse_pos.x / screen_size.x - .5, 0) * Vector3(-40,-90,0)
 	
-	camFP.rotation_degrees = cam_default + cam_tilt  
+	camFP.rotation_degrees = cam_default + cam_tilt # this line will be useless probably
 		
+func surround():
+	for dir in range(6):
+		var value = tile_obj(current).paths[dir]
+		if value == true:
+			var norm = dir_to_norm(dir)
+			var surrounder = selectable_dir.instantiate()
+			surrounder.position = pos_from_tile(current) + norm * .5 + Vector3(0,player_height,0)
+			add_child(surrounder)
+			surrounder.look_at(surrounder.position + norm, Vector3.UP)
+			surrounder.represent = dir
+			s_dir_holder.append(surrounder)
+			surrounder.connect("player_wants_to_move", _on_player_wants_to_move)
+
+func scatter():
+	for dir in s_dir_holder:
+		dir.despawn()
+	s_dir_holder = []
+
+func move(dir: int):
+	set_facing(dir)
+	current = next_tile(current, dir)
+	player.position = pos_from_tile(current) + Vector3(0,player_height,0) + dir_to_norm(flip_dir(facing)) * tile_offset
+	last_movement_dir = dir
+	scatter()
+	
+	
+	
 
 func draw_cave():
 	for y in range(len(grid)):
@@ -122,6 +155,7 @@ func draw_cave():
 				palikka.rotation_degrees.y = 60*match[1]
 				palikka.material_override = tile_material
 				add_child(palikka)
+				
 
 
 func find_match(paths: Array[bool]): # from cave_tile.paths to mesh_openings index
@@ -154,7 +188,8 @@ func change_cam(mode: int = -1):
 
 func set_facing(dir: int):
 	cam_default = Vector3(0, 150 - 60 * (dir-2),0)
-	#camFP.rotation_degrees = cam_default
+	facing = dir
+	camFP.rotation_degrees = cam_default + cam_tilt
 	
 func dir_to_norm(dir: int): # copy from minimap
 	var normals = [
@@ -193,3 +228,7 @@ func next_tile(pos : Vector2i, dir : int) -> Vector2i: # copy from minimap
 
 func flip_dir(i: int): # copy from minimap
 	return (i+3)%6
+
+func _on_player_wants_to_move(direction) -> void:
+	move(direction)
+	print("I swear bro, I moved ", direction) 
