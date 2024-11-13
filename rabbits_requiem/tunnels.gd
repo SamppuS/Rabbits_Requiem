@@ -18,7 +18,7 @@ var current : Vector2i
 var player_height := .2
 var cam_default := Vector3(0, 150 ,0)
 var cam_tilt : Vector3
-var last_movement_dir := 5
+var last_movement_dir := 5 # this might be the same as facing
 
 var mesh_size = 1.73233866691589 - .05 # true size - gap between tiles
 var tile_offset = mesh_size * 0.22
@@ -86,61 +86,55 @@ func _on_minimap_send_grid(sent_grid: Variant, sp: Variant) -> void:
 func _input(event: InputEvent) -> void:
 	if cam_mode == 1:
 		if Input.is_action_just_pressed("d"): # turn left
-			facing = (facing + 1) % 6
-			set_facing(facing)
-			print(facing)
+			set_facing((facing + 1) % 6)
+
 		elif Input.is_action_just_pressed("a"): # turn right
-			facing = (facing + 5) % 6
-			set_facing(facing)
-			print(facing)
-		elif Input.is_action_just_pressed("w") and tile_obj(current).paths[facing]:
+			set_facing((facing + 5) % 6)
+
+		elif Input.is_action_just_pressed("w") and tile_obj(current).paths[facing]: # move forwards
 			move(facing)
 			
-		elif Input.is_action_just_pressed("z"):
+		elif Input.is_action_just_pressed("z"): # spawn direction blocks
 			print("WE HAVE YOU SURROUNDED")
 			surround()
+
+	if Input.is_action_just_pressed("x"): # toggle cam
+		change_cam()
 			
-		elif Input.is_action_just_pressed("e"):
-			s_dir_holder[0].numba += 1
-			s_dir_holder[0].clown_time()
-			
-	if Input.is_action_just_pressed("x"):
-			change_cam()
-			
-	if event is InputEventMouseMotion:
+	if event is InputEventMouseMotion: # looking around with mouse
 		var screen_size = get_viewport().get_visible_rect().size
 		var mouse_pos = get_viewport().get_mouse_position()
 		cam_tilt = Vector3(mouse_pos.y / screen_size.y - .5, mouse_pos.x / screen_size.x - .5, 0) * Vector3(-40,-90,0)
 	
-	camFP.rotation_degrees = cam_default + cam_tilt # this line will be useless probably
-		
-func surround():
-	for dir in range(6):
+	camFP.rotation_degrees = cam_default + cam_tilt 
+
+func surround(): # spawn direction blocks around player
+	for dir in range(6): # loop through possible directions
 		var value = tile_obj(current).paths[dir]
-		if value == true:
+		
+		if value == true: 
 			var norm = dir_to_norm(dir)
 			var surrounder = selectable_dir.instantiate()
+			
 			surrounder.position = pos_from_tile(current) + norm * .5 + Vector3(0,player_height,0)
 			add_child(surrounder)
 			surrounder.look_at(surrounder.position + norm, Vector3.UP)
 			surrounder.represent = dir
+			
 			s_dir_holder.append(surrounder)
 			surrounder.connect("player_wants_to_move", _on_player_wants_to_move)
 
-func scatter():
+func scatter(): # despawn direction blocks
 	for dir in s_dir_holder:
 		dir.despawn()
 	s_dir_holder = []
 
-func move(dir: int):
+func move(dir: int): # move player in direction
 	set_facing(dir)
 	current = next_tile(current, dir)
 	player.position = pos_from_tile(current) + Vector3(0,player_height,0) + dir_to_norm(flip_dir(facing)) * tile_offset
 	last_movement_dir = dir
 	scatter()
-	
-	
-	
 
 func draw_cave():
 	for y in range(len(grid)):
@@ -162,7 +156,7 @@ func find_match(paths: Array[bool]): # from cave_tile.paths to mesh_openings ind
 	var paths_copy = paths.duplicate() # non-destructive
 	var rotations = 0
 	while true:
-		if paths_copy in mesh_openings: # we have found a match! 
+		if paths_copy in mesh_openings: # we have found a match!
 			break
 		elif paths_copy == paths and rotations > 0: # match will never be found (will return -1 on index 0)
 			#print("no pair ??")
@@ -181,7 +175,7 @@ func change_cam(mode: int = -1):
 	elif mode == 0:
 		camTop.current = true
 		cam_mode = 0
-	else: 
+	else:
 		change_cam((cam_mode + 1) % 2) # whoa recursion!
 		
 		
@@ -213,7 +207,6 @@ func next_tile(pos : Vector2i, dir : int) -> Vector2i: # copy from minimap
 			newpos = pos + Vector2i(-1, 0)
 		3:
 			newpos = pos + Vector2i(1, 0)
-		
 		1:
 			newpos = pos + Vector2i(-right, 1)
 		2:
@@ -231,4 +224,4 @@ func flip_dir(i: int): # copy from minimap
 
 func _on_player_wants_to_move(direction) -> void:
 	move(direction)
-	print("I swear bro, I moved ", direction) 
+	#print("I swear bro, I moved ", direction)

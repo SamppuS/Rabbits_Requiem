@@ -27,7 +27,7 @@ func _on_static_body_3d_mouse_exited() -> void:
 
 func _on_static_body_3d_input_event(camera: Node, event: InputEvent, event_position: Vector3, normal: Vector3, shape_idx: int) -> void:
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
-		print("YOU HAVE CHOSEN ", represent)
+		#print("YOU HAVE CHOSEN ", represent)
 		player_wants_to_move.emit(represent)
 
 func despawn():
