@@ -1,13 +1,20 @@
 extends Node3D
 
+@export_subgroup("Meshes")
 @export var player : Node3D
 @export var tile_material : StandardMaterial3D
 @export var selectable_dir : PackedScene
+
+@export_subgroup("Assets")
+@export var walking_sounds : Array[AudioStreamWAV]
+
 
 @onready var camTop = $Spelare/CamTop
 @onready var camFP = $Spelare/CamFP
 @onready var minimap_container = $SubViewportContainer
 @onready var subviewport = $SubViewportContainer/SubViewport
+
+@onready var audioplayer = $Spelare/AudioStreamPlayer3D
 
 
 var grid: Array
@@ -135,6 +142,7 @@ func move(dir: int): # move player in direction
 	player.position = pos_from_tile(current) + Vector3(0,player_height,0) + dir_to_norm(flip_dir(facing)) * tile_offset
 	last_movement_dir = dir
 	scatter()
+	play("walk")
 
 func draw_cave():
 	for y in range(len(grid)):
@@ -225,3 +233,9 @@ func flip_dir(i: int): # copy from minimap
 func _on_player_wants_to_move(direction) -> void:
 	move(direction)
 	#print("I swear bro, I moved ", direction)
+	
+func play(sound : String):
+	if sound == "walk":
+		audioplayer.stream = walking_sounds[randi() % len(walking_sounds)]
+		audioplayer.seek(0)
+		audioplayer.play()
