@@ -3,10 +3,10 @@
 [ext_resource type="Script" path="res://assets/selectable_dir/selectable_dir.gd" id="1_g7y36"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_xt6el"]
-size = Vector3(1, 0.7, 0.09)
+size = Vector3(1, 1, 0.09)
 
 [sub_resource type="BoxMesh" id="BoxMesh_aeld5"]
-size = Vector3(1, 0.7, 0.09)
+size = Vector3(1, 1, 0.09)
 
 [node name="SelectableDir" type="Node3D"]
 script = ExtResource("1_g7y36")
