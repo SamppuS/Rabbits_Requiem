@@ -3,11 +3,13 @@ extends Node3D
 @export var player : Node3D
 @export var tile_material : StandardMaterial3D
 @export var selectable_dir : PackedScene
+@export var minimap_scale := 0.3
 
 @onready var camTop = $Spelare/CamTop
 @onready var camFP = $Spelare/CamFP
-@onready var minimap_container = $SubViewportContainer
-@onready var subviewport = $SubViewportContainer/SubViewport
+@onready var minimap_container = $Control/SubViewportContainer
+@onready var subviewport = $Control/SubViewportContainer/SubViewport
+@onready var minimap = $Control/SubViewportContainer/SubViewport/Minimap
 
 
 var grid: Array
@@ -44,15 +46,17 @@ var mesh_openings = [ #These are the right patterns but in the wrong phase. So t
 
 
 func _ready(): # we probably don't have grid info here!
-	minimap_container.set_anchors_preset(Control.PRESET_BOTTOM_LEFT)
-	# Set size and position
-	minimap_container.custom_minimum_size = Vector2(200, 200)  # Adjust size as needed
-	minimap_container.size = Vector2(200, 200)
-	minimap_container.position = Vector2(10, -210)  # Adjust position as needed
+	var screen_size = get_viewport().get_visible_rect().size
+	var minimap_size = screen_size * minimap_scale
+	minimap_container.size = minimap_size
+	minimap_container.position = Vector2(10, -200)
+	subviewport.size = minimap_size
+	## Set size and position
+	#minimap_container.custom_minimum_size = Vector2(200, 200)  # Adjust size as needed
+	#minimap_container.size = Vector2(200, 200)
+	#minimap_container.position = Vector2(10, -210)  # Adjust position as needed
 	# Get the minimap's SubViewport
-	var minimap = get_node("Minimap")
 	var minimap_viewport = subviewport
-	minimap_viewport.size = Vector2(200, 200)
 	minimap_viewport.render_target_update_mode = SubViewport.UPDATE_ALWAYS
 
 	#minimap.send_grid.connect(_on_grid_received)

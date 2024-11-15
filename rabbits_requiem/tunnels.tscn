@@ -44,14 +44,28 @@ omni_range = 1.277
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_yoqi5")
 
-[node name="SubViewportContainer" type="SubViewportContainer" parent="."]
+[node name="Control" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_top = -40.0
 offset_right = 40.0
-offset_bottom = 40.0
+grow_vertical = 0
+scale = Vector2(2, 2)
 
-[node name="SubViewport" type="SubViewport" parent="SubViewportContainer"]
+[node name="SubViewportContainer" type="SubViewportContainer" parent="Control"]
+layout_mode = 0
+offset_right = 780.0
+offset_bottom = 646.0
+stretch = true
+
+[node name="SubViewport" type="SubViewport" parent="Control/SubViewportContainer"]
+own_world_3d = true
 handle_input_locally = false
+size = Vector2i(780, 646)
 render_target_update_mode = 4
 
-[node name="Minimap" parent="SubViewportContainer/SubViewport" instance=ExtResource("2_ah540")]
+[node name="Minimap" parent="Control/SubViewportContainer/SubViewport" instance=ExtResource("2_ah540")]
 
-[connection signal="send_grid" from="SubViewportContainer/SubViewport/Minimap" to="." method="_on_minimap_send_grid"]
+[connection signal="send_grid" from="Control/SubViewportContainer/SubViewport/Minimap" to="." method="_on_minimap_send_grid"]

@@ -36,21 +36,21 @@ var grid_size = (cave_depth+1) * 2 # grid size is based on longest possible cave
 var grid = []
 var current : Vector2i
 var sp : Vector2i
+@onready var camera = $Camera3D
 
 
 func _ready():
 
 	# Generate grid
 	var row = []
-	
 	grid.resize(grid_size)
 	for y in range(grid_size):
 		grid[y]=[]
 		grid[y].resize(grid_size)
 		for x in range(grid_size):
-			var tt := tile_mesh.instantiate()
-			tt.position = pos_from_tile(Vector2i(x,y))
-			add_child(tt)
+			#var tt := tile_mesh.instantiate()
+			#tt.position = pos_from_tile(Vector2i(x,y))
+			#add_child(tt)
 			grid[y][x] = CaveTile.new()
 			grid[y][x].pos = Vector2i(x, y)
 			#print(x," - ", y)
@@ -172,6 +172,8 @@ func draw_cave():
 	#draw sp mesh
 	var sp_tt := sp_mesh.instantiate()
 	sp_tt.position = pos_from_tile(sp)
+	camera.position = pos_from_tile(sp)
+	camera.position.y += 20
 	add_child(sp_tt)
 
 func pos_from_tile(pos : Vector2i) -> Vector3:
