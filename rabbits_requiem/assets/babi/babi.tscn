@@ -1,0 +1,48 @@
+[gd_scene load_steps=10 format=3 uid="uid://r48mhqwa1b7d"]
+
+[ext_resource type="Texture2D" uid="uid://bsqkfjm73ncuv" path="res://assets/images/babi.png" id="1_l7x6l"]
+[ext_resource type="Script" path="res://assets/babi/babi.gd" id="1_yrwcv"]
+[ext_resource type="AudioStream" uid="uid://c3tx0qklomuml" path="res://assets/Sounds/babi sounds/crunches/poikanen eated 2.wav" id="2_wnnjm"]
+[ext_resource type="AudioStream" uid="uid://bdiwnrh62mume" path="res://assets/Sounds/babi sounds/jänisito.wav" id="3_ccu61"]
+[ext_resource type="AudioStream" uid="uid://b0xvbc3v8sxwx" path="res://assets/Sounds/babi sounds/crunches/poikanen eated 5.wav" id="3_vhtan"]
+[ext_resource type="AudioStream" uid="uid://bqo74sikf6j6k" path="res://assets/Sounds/babi sounds/crunches/poikanen eated 7.wav" id="4_nywdk"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_yx8ln"]
+size = Vector3(1, 1, 0.0693359)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ssn7p"]
+transparency = 1
+albedo_texture = ExtResource("1_l7x6l")
+metallic = 1.0
+
+[sub_resource type="QuadMesh" id="QuadMesh_fk5v6"]
+
+[node name="Babi" type="Node3D"]
+script = ExtResource("1_yrwcv")
+cruches = Array[AudioStreamWAV]([ExtResource("2_wnnjm"), ExtResource("3_vhtan"), ExtResource("4_nywdk")])
+
+[node name="StaticBody3D" type="StaticBody3D" parent="."]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D"]
+transform = Transform3D(0.175, 0, 0, 0, 0.175, 0, 0, 0, 0.175, 0, 0.087, 0)
+shape = SubResource("BoxShape3D_yx8ln")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="StaticBody3D/CollisionShape3D"]
+transform = Transform3D(-1, 0, 8.74228e-08, 0, 1, 0, -8.74228e-08, 0, -1, 0, 0, 0)
+material_override = SubResource("StandardMaterial3D_ssn7p")
+mesh = SubResource("QuadMesh_fk5v6")
+
+[node name="Mumbling" type="AudioStreamPlayer3D" parent="."]
+stream = ExtResource("3_ccu61")
+attenuation_model = 2
+volume_db = -35.0
+unit_size = 2.0
+autoplay = true
+max_distance = 3.0
+panning_strength = 3.0
+
+[node name="Crunch" type="AudioStreamPlayer3D" parent="."]
+volume_db = -20.0
+
+[connection signal="input_event" from="StaticBody3D" to="." method="_on_static_body_3d_input_event"]
+[connection signal="finished" from="Crunch" to="." method="_on_crunch_finished"]

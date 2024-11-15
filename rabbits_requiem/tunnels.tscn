@@ -1,12 +1,13 @@
-[gd_scene load_steps=12 format=3 uid="uid://d4fl1op437uoe"]
+[gd_scene load_steps=13 format=3 uid="uid://d4fl1op437uoe"]
 
 [ext_resource type="Script" path="res://tunnels.gd" id="1_bfp66"]
 [ext_resource type="PackedScene" uid="uid://c1vv05834q1vo" path="res://levels/minimap.tscn" id="2_ah540"]
 [ext_resource type="PackedScene" uid="uid://dtuwhmswrmn74" path="res://assets/selectable_dir/selectable_dir.tscn" id="3_34knt"]
 [ext_resource type="Material" uid="uid://dd4us8ayx8u2x" path="res://assets/Materials/Cavelike.tres" id="4_njief"]
-[ext_resource type="AudioStream" uid="uid://b66fjxyi1j2km" path="res://assets/Walking sounds/walk mud 2.wav" id="4_nl5un"]
-[ext_resource type="AudioStream" uid="uid://dmvpk0jlmpigs" path="res://assets/Walking sounds/walk mud 3.wav" id="5_st604"]
-[ext_resource type="AudioStream" uid="uid://dbk4irm1ywct4" path="res://assets/Walking sounds/walk mud.wav" id="6_jrtrq"]
+[ext_resource type="AudioStream" uid="uid://b66fjxyi1j2km" path="res://assets/Sounds/walking sounds/walk mud 2.wav" id="4_nl5un"]
+[ext_resource type="AudioStream" uid="uid://dmvpk0jlmpigs" path="res://assets/Sounds/walking sounds/walk mud 3.wav" id="5_st604"]
+[ext_resource type="AudioStream" uid="uid://dbk4irm1ywct4" path="res://assets/Sounds/walking sounds/walk mud.wav" id="6_jrtrq"]
+[ext_resource type="PackedScene" uid="uid://r48mhqwa1b7d" path="res://assets/babi/babi.tscn" id="7_ilsec"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_redg8"]
 albedo_color = Color(0.860799, 1.01075e-05, 0.572914, 1)
@@ -18,6 +19,7 @@ height = 0.8
 [sub_resource type="Sky" id="Sky_1cfuc"]
 
 [sub_resource type="Environment" id="Environment_yoqi5"]
+background_mode = 3
 sky = SubResource("Sky_1cfuc")
 volumetric_fog_density = 1.0
 
@@ -25,8 +27,9 @@ volumetric_fog_density = 1.0
 script = ExtResource("1_bfp66")
 player = NodePath("Spelare")
 tile_material = ExtResource("4_njief")
-selectable_dir = ExtResource("3_34knt")
 walking_sounds = Array[AudioStreamWAV]([ExtResource("4_nl5un"), ExtResource("5_st604"), ExtResource("6_jrtrq")])
+selectable_dir = ExtResource("3_34knt")
+babi_scene = ExtResource("7_ilsec")
 
 [node name="Spelare" type="MeshInstance3D" parent="."]
 material_override = SubResource("StandardMaterial3D_redg8")
@@ -43,7 +46,7 @@ fov = 70.0
 
 [node name="OmniLight3D" type="OmniLight3D" parent="Spelare"]
 light_energy = 0.3
-omni_range = 1.277
+omni_range = 1.2
 
 [node name="SubViewport" type="SubViewport" parent="Spelare"]
 

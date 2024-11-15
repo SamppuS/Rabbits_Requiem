@@ -3,12 +3,12 @@
 importer="wav"
 type="AudioStreamWAV"
 uid="uid://dbk4irm1ywct4"
-path="res://.godot/imported/walk mud.wav-664ea964da6deeb7953acc08437e96fe.sample"
+path="res://.godot/imported/walk mud.wav-caf920f1dae9bf765aff7f1aee41ba74.sample"
 
 [deps]
 
-source_file="res://assets/Walking sounds/walk mud.wav"
-dest_files=["res://.godot/imported/walk mud.wav-664ea964da6deeb7953acc08437e96fe.sample"]
+source_file="res://assets/Sounds/walking sounds/walk mud.wav"
+dest_files=["res://.godot/imported/walk mud.wav-caf920f1dae9bf765aff7f1aee41ba74.sample"]
 
 [params]
 

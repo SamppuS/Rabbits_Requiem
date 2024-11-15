@@ -1,13 +1,17 @@
 extends Node3D
 
-@export_subgroup("Meshes")
-@export var player : Node3D
-@export var tile_material : StandardMaterial3D
-@export var selectable_dir : PackedScene
+@export_subgroup("Parameters")
 @export var minimap_scale := 0.3
 
-@export_subgroup("Assets")
+@export_subgroup("Nodes+")
+@export var player : Node3D
+@export var tile_material : StandardMaterial3D
+
+
+@export_subgroup("Scenes")
 @export var walking_sounds : Array[AudioStreamWAV]
+@export var selectable_dir : PackedScene
+@export var babi_scene : PackedScene
 
 
 @onready var camTop = $Spelare/CamTop
@@ -33,6 +37,7 @@ var mesh_size = 1.73233866691589 - .05 # true size - gap between tiles
 var tile_offset = mesh_size * 0.22
 
 var s_dir_holder = []
+var babi_holder = [[], []] # [[scenes], [rooms]]
 
 var meshes: Array[Mesh]
 var mesh_openings = [ #These are the right patterns but in the wrong phase. So they return the right tile but wrong rotation.
@@ -53,6 +58,8 @@ var mesh_openings = [ #These are the right patterns but in the wrong phase. So t
 
 
 func _ready(): # we probably don't have grid info here!
+	var environment = $WorldEnvironment.environment
+	print(environment.get_background())
 	var screen_size = get_viewport().get_visible_rect().size
 	var minimap_size = screen_size * minimap_scale
 	minimap_container.size = minimap_size
@@ -87,6 +94,7 @@ func _ready(): # we probably don't have grid info here!
 		for file_name in mesh_files:
 			meshes.append(load("res://palikoita/Closed Meshes/" + file_name))
 	draw_cave()
+	spawn_babis()
 
 func _on_minimap_send_grid(sent_grid: Variant, sp: Variant) -> void:
 	grid = sent_grid
@@ -106,7 +114,7 @@ func _input(event: InputEvent) -> void:
 			move(facing)
 			
 		elif Input.is_action_just_pressed("z"): # spawn direction blocks
-			print("WE HAVE YOU SURROUNDED")
+			#print("WE HAVE YOU SURROUNDED")
 			surround()
 
 	if Input.is_action_just_pressed("x"): # toggle cam
@@ -181,12 +189,16 @@ func pos_from_tile(pos : Vector2i) -> Vector3:
 	return Vector3(-pos.x + pos.y%2*0.5, 0, float(pos.y) - pos.y * (1-sqrt(3)/2)) * mesh_size
 
 func change_cam(mode: int = -1):
+	
+	var environment = $WorldEnvironment.environment
 	if mode == 1:
 		camFP.current = true
 		cam_mode = 1
+		environment.set_background(5) # temp fix probably
 	elif mode == 0:
 		camTop.current = true
 		cam_mode = 0
+		environment.set_background(0) # temp fix probably
 	else:
 		change_cam((cam_mode + 1) % 2) # whoa recursion!
 		
@@ -243,3 +255,29 @@ func play(sound : String):
 		audioplayer.stream = walking_sounds[randi() % len(walking_sounds)]
 		audioplayer.seek(0)
 		audioplayer.play()
+
+func spawn_babis():
+	for y in range(len(grid)):
+		for x in range(len(grid)):
+			if grid[y][x].paths.count(true) == 1 and Vector2i(x,y) != starting_point:
+				var babi = babi_scene.instantiate()
+				var norm = dir_to_norm((grid[y][x].paths.find(true)))
+				
+				babi.position = pos_from_tile(grid[y][x].pos) + Vector3(0,.035,0)
+				add_child(babi)
+				babi.look_at(babi.position + norm + Vector3(0,player_height,0), Vector3.UP)
+				babi_holder[0].append(babi)
+				babi_holder[1].append(Vector2i(x,y))
+				babi.connect("babi_wants_to_die", _on_babi_wants_to_die)
+				babi.location = Vector2i(x,y)
+	print("there are ", len(babi_holder[0]), " babis, how cute!")
+	
+func _on_babi_wants_to_die(location):
+	print(current, location, current.distance_to(location))
+	if current.distance_to(location) == 0:
+		var babindex = babi_holder[1].find(location)
+		var babi = babi_holder[0][babindex]
+		babi_holder[0].pop_at(babindex)
+		babi_holder[1].pop_at(babindex)
+		babi.die() # :(
+		print("We lost a good one today. ", len(babi_holder[0]), " babis remain o7")

@@ -1,0 +1,24 @@
+[remap]
+
+importer="wav"
+type="AudioStreamWAV"
+uid="uid://b0xvbc3v8sxwx"
+path="res://.godot/imported/poikanen eated 5.wav-70ff463670b8fbad9c5eaf73bc95e60e.sample"
+
+[deps]
+
+source_file="res://assets/Sounds/babi sounds/crunches/poikanen eated 5.wav"
+dest_files=["res://.godot/imported/poikanen eated 5.wav-70ff463670b8fbad9c5eaf73bc95e60e.sample"]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop_mode=0
+edit/loop_begin=0
+edit/loop_end=-1
+compress/mode=0
