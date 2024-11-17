@@ -2,13 +2,15 @@ extends Node3D
 
 @export_subgroup("Parameters")
 @export var minimap_scale := 0.3
+@export var babi_count : int = 15 # note: this needs to be lower than dead end count set in minimap! 
+
 
 @export_subgroup("Nodes+")
 @export var player : Node3D
 @export var tile_material : StandardMaterial3D
 
 
-@export_subgroup("Scenes")
+@export_subgroup("Scenes+")
 @export var walking_sounds : Array[AudioStreamWAV]
 @export var selectable_dir : PackedScene
 @export var babi_scene : PackedScene
@@ -21,6 +23,7 @@ extends Node3D
 @onready var minimap = $Control/SubViewportContainer/SubViewport/Minimap
 
 @onready var audioplayer = $Spelare/AudioStreamPlayer3D
+@onready var snake : Node3D = $Snake
 
 
 var grid: Array
@@ -38,6 +41,7 @@ var tile_offset = mesh_size * 0.22
 
 var s_dir_holder = []
 var babi_holder = [[], []] # [[scenes], [rooms]]
+var dead_end_locations : Array[Vector2i]
 
 var meshes: Array[Mesh]
 var mesh_openings = [ #These are the right patterns but in the wrong phase. So they return the right tile but wrong rotation.
@@ -53,8 +57,6 @@ var mesh_openings = [ #These are the right patterns but in the wrong phase. So t
 	[true, false, true, true, true, false],     # 41
 	[true, false, true, true, false, true]      # 42
 ]
-
-
 
 
 func _ready(): # we probably don't have grid info here!
@@ -95,12 +97,27 @@ func _ready(): # we probably don't have grid info here!
 			meshes.append(load("res://palikoita/Closed Meshes/" + file_name))
 	draw_cave()
 	spawn_babis()
+	
+	snake.position = Vector3(0,0,0)#pos_from_tile(starting_point)
+	snake.add_destination(pos_from_tile(starting_point), starting_point)
+	var last_dir = 2
+	for i in range(3):
+		var tile = snake.goals[1][-1]
+		var dirs = tile_obj(tile).paths.duplicate()
+		dirs[flip_dir(last_dir)] = false
+		print(tile, dirs)
+		var next = next_tile(tile, dirs.find(true))
+		snake.add_destination(pos_from_tile(next), next)
 
-func _on_minimap_send_grid(sent_grid: Variant, sp: Variant) -> void:
+
+func _on_minimap_send_grid(sent_grid: Variant, sp: Variant, dead_ends : Variant) -> void:
 	grid = sent_grid
 	starting_point = sp
 	current = starting_point
+	dead_end_locations = dead_ends
 	player.position = pos_from_tile(current) + Vector3(0,player_height,0)
+	
+	
 
 func _input(event: InputEvent) -> void:
 	if cam_mode == 1:
@@ -257,19 +274,18 @@ func play(sound : String):
 		audioplayer.play()
 
 func spawn_babis():
-	for y in range(len(grid)):
-		for x in range(len(grid)):
-			if grid[y][x].paths.count(true) == 1 and Vector2i(x,y) != starting_point:
-				var babi = babi_scene.instantiate()
-				var norm = dir_to_norm((grid[y][x].paths.find(true)))
-				
-				babi.position = pos_from_tile(grid[y][x].pos) + Vector3(0,.035,0)
-				add_child(babi)
-				babi.look_at(babi.position + norm + Vector3(0,player_height,0), Vector3.UP)
-				babi_holder[0].append(babi)
-				babi_holder[1].append(Vector2i(x,y))
-				babi.connect("babi_wants_to_die", _on_babi_wants_to_die)
-				babi.location = Vector2i(x,y)
+	dead_end_locations.shuffle() # randomize order
+	for location in dead_end_locations.slice(0, babi_count): # pick [babi_count] "random" dead ends
+		var babi = babi_scene.instantiate()
+		var norm = dir_to_norm((tile_obj(location).paths.find(true)))
+		
+		babi.position = pos_from_tile(location) + Vector3(0,.035,0)
+		add_child(babi)
+		babi.look_at(babi.position + norm + Vector3(0,player_height,0), Vector3.UP)
+		babi_holder[0].append(babi)
+		babi_holder[1].append(location)
+		babi.connect("babi_wants_to_die", _on_babi_wants_to_die)
+		babi.location = location
 	print("there are ", len(babi_holder[0]), " babis, how cute!")
 	
 func _on_babi_wants_to_die(location):

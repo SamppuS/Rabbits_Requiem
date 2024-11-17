@@ -1,5 +1,5 @@
 extends Node3D
-signal send_grid(grid, sp)
+signal send_grid(grid, sp, dead_ends)
 
 
 @export_category("Exports")
@@ -9,6 +9,8 @@ signal send_grid(grid, sp)
 @export var max_variance: int = 10 # higher variance leads to faster cave generation but more random results
 
 @export var traffic_limit: int = 20 # controls how densely caves are generated (around 20 seems good!!!)
+
+@export var min_dead_ends: int = 20 # this is to allow for more babi spawns
 
 # Varying the ratio between cave_depth and average_tile_count leads to differently shaped caves!
 # Examples:
@@ -38,6 +40,8 @@ var current : Vector2i
 var sp : Vector2i
 @onready var camera = $Camera3D
 
+var dead_ends : Array[Vector2i] # this will be sent to tunnels.gd
+
 
 func _ready():
 
@@ -60,12 +64,15 @@ func _ready():
 	while true:
 		generate_maze()
 		var cavern = count_cave_tiles()
-		if cavern > average_tile_count + max_variance/2 or cavern < average_tile_count - max_variance/2:
+		var rooms = count_dead_ends()
+		if (cavern > average_tile_count + max_variance/2 
+			or cavern < average_tile_count - max_variance/2
+			or rooms < min_dead_ends): # whoa long if statement
 			clear_cave()
 		else:
 			print("Number of cave tiles is ", cavern)
 			break
-	send_grid.emit(grid, sp)
+	send_grid.emit(grid, sp, dead_ends)
 	draw_cave()
 	player.position = pos_from_tile(current)
 
@@ -229,3 +236,13 @@ func count_cave_tiles():
 			if true in grid[y][x].paths:
 				sum+=1
 	return sum
+
+func count_dead_ends():
+	var total = 0
+	dead_ends = []
+	for y in range(len(grid)):
+		for x in range(len(grid)):
+			if grid[y][x].paths.count(true) == 1 and Vector2i(x,y) != sp:
+				dead_ends.append(Vector2i(x,y))
+				total += 1
+	return total
