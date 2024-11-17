@@ -4,14 +4,15 @@
 [ext_resource type="PackedScene" uid="uid://chpmf6rvomro0" path="res://assets/cave/diddy.tscn" id="2_57xv2"]
 
 [sub_resource type="SphereMesh" id="SphereMesh_mpgmc"]
-height = 0.5
+radius = 0.1
+height = 0.15
 is_hemisphere = true
 
 [node name="Snake" type="Node3D"]
 script = ExtResource("1_wnujq")
 thingy = ExtResource("2_57xv2")
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+[node name="Head" type="MeshInstance3D" parent="."]
 mesh = SubResource("SphereMesh_mpgmc")
 
 [node name="OmniLight3D" type="OmniLight3D" parent="."]

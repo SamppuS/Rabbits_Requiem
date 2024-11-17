@@ -101,12 +101,13 @@ func _ready(): # we probably don't have grid info here!
 	snake.position = Vector3(0,0,0)#pos_from_tile(starting_point)
 	snake.add_destination(pos_from_tile(starting_point), starting_point)
 	var last_dir = 2
-	for i in range(3):
+	for i in range(10):
 		var tile = snake.goals[1][-1]
 		var dirs = tile_obj(tile).paths.duplicate()
 		dirs[flip_dir(last_dir)] = false
 		print(tile, dirs)
 		var next = next_tile(tile, dirs.find(true))
+		last_dir = dirs.find(true)
 		snake.add_destination(pos_from_tile(next), next)
 
 
