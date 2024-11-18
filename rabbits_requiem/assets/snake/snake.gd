@@ -19,28 +19,22 @@ var path_blobs = []
 var bump
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	bump = thingy.instantiate()
+	bump = thingy.instantiate() # oonpas mä hyvä nimee variableita :)
 	bump.scale = Vector3(8, .02, 8)
 	add_child(bump)
-	#path_blobs.append(hahaa)
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
-	#if position.distance_to(goals[2]) < 0.1:
-		#remove_first()
 	if !goals[0].is_empty() and goals != old_goals:
-		#print("we got path at")
-		#for i in goals[1]: print(i)
 		snake_path = generate_path()
-		#print("wowie, we can slither up to ", len(snake_path))
+		print("wowie, we can slither up to ", len(snake_path))
 		for a in snake_path:
 			var hahaa = thingy.instantiate()
 			hahaa.scale = Vector3(.4, .05, .4)
 			hahaa.position = a + Vector3.UP * .1
 			add_child(hahaa)
 			path_blobs.append(hahaa)
-		#print("whoaaa we making new")
 	
 	if !goals[0].is_empty():
 		if head.position.distance_to(goals[0][next[2]]) < 0.3:
@@ -50,12 +44,7 @@ func _process(delta: float) -> void:
 			print("reached next ", current[2])
 	
 	old_goals = goals.duplicate()
-	
-	#if next[2] == 5:
-		#clear_path()
-		#print("DESTRUCTION ", goals[0])
-	
-	
+
 	bump.position = next[0]
 	
 	if !goals[0].is_empty():
@@ -101,8 +90,6 @@ func generate_path():
 	# smooth curve
 	discrete_path = moving_average(discrete_path, 50)
 
-	#print("discreted ", discrete_path[0], discrete_path[-1])
-
 	# add slithering
 	for point_index in range(1, len(discrete_path)):
 		var base_point = discrete_path[point_index]
@@ -135,10 +122,6 @@ func moving_average(arr: PackedVector3Array, window: int = 0):
 
 		new_array.append(vectorsum / (max_n * 2 + 1 ))
 		
-		#if (vectorsum / (window * 2 + 1)).length() < 5:
-			#print("wtf alert at ", i, " ", arr[i], " ", (vectorsum / (window * 2 + 1)))
-		
-		#print(mid_point, " turned into ", vectorsum / (window * 2 + 1), " with ", (window * 2 + 1))
 	return new_array
 		
 func clear_path():
@@ -149,7 +132,6 @@ func clear_path():
 
 	current[2] = 0
 	next[2] = len(goals[0])
-	#next = [goals[0][next[2]], goals[1][next[2]], next[2]]
 	
 	for i in path_blobs:
 		i.queue_free()
@@ -165,8 +147,3 @@ func find_best_index():
 			best[1] = dist
 			best[0] = i
 	return int(best[0] * speed)
-	
-	#path_index = path_index % int(len(snake_path) / speed)
-	#head.position = snake_path[path_index * speed]
-			
-		

@@ -22,6 +22,10 @@ height = 0.8
 [sub_resource type="Environment" id="Environment_yoqi5"]
 background_mode = 3
 sky = SubResource("Sky_1cfuc")
+fog_light_color = Color(0.498039, 0.807843, 0.458824, 1)
+fog_density = 0.02
+fog_height = 0.15
+fog_height_density = 0.2
 volumetric_fog_density = 1.0
 
 [node name="tunnels" type="Node3D" node_paths=PackedStringArray("player")]
@@ -46,6 +50,7 @@ transform = Transform3D(-0.866025, 0, 0.5, 0, 1, 0, -0.5, 0, -0.866025, 0, 0, 0)
 fov = 70.0
 
 [node name="OmniLight3D" type="OmniLight3D" parent="Spelare"]
+light_color = Color(0.888897, 0.765198, 0.680788, 1)
 light_energy = 0.3
 omni_range = 1.2
 
@@ -70,7 +75,6 @@ grow_vertical = 0
 scale = Vector2(2, 2)
 
 [node name="SubViewportContainer" type="SubViewportContainer" parent="Control"]
-visible = false
 layout_mode = 0
 offset_right = 780.0
 offset_bottom = 646.0
@@ -80,7 +84,7 @@ stretch = true
 own_world_3d = true
 handle_input_locally = false
 size = Vector2i(780, 646)
-render_target_update_mode = 0
+render_target_update_mode = 4
 
 [node name="Minimap" parent="Control/SubViewportContainer/SubViewport" instance=ExtResource("2_ah540")]
 

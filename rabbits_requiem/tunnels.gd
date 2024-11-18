@@ -135,7 +135,6 @@ func _input(event: InputEvent) -> void:
 	if Input.is_action_just_pressed("e"): # snake new target
 		snake.clear_path()
 		var path = a_star(snake.next[1], babi_holder[1][randi() % babi_count])
-		#snake.clear_path()
 		for i in path: 
 			snake.add_destination(pos_from_tile(i), i)
 			
