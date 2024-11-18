@@ -61,7 +61,6 @@ var mesh_openings = [ #These are the right patterns but in the wrong phase. So t
 
 func _ready(): # we probably don't have grid info here!
 	var environment = $WorldEnvironment.environment
-	print(environment.get_background())
 	var screen_size = get_viewport().get_visible_rect().size
 	var minimap_size = screen_size * minimap_scale
 	minimap_container.size = minimap_size
@@ -99,16 +98,11 @@ func _ready(): # we probably don't have grid info here!
 	spawn_babis()
 	
 	snake.position = Vector3(0,0,0)#pos_from_tile(starting_point)
-	snake.add_destination(pos_from_tile(starting_point), starting_point)
-	var last_dir = 2
-	for i in range(10):
-		var tile = snake.goals[1][-1]
-		var dirs = tile_obj(tile).paths.duplicate()
-		dirs[flip_dir(last_dir)] = false
-		print(tile, dirs)
-		var next = next_tile(tile, dirs.find(true))
-		last_dir = dirs.find(true)
-		snake.add_destination(pos_from_tile(next), next)
+	
+	
+	var path = a_star(starting_point, babi_holder[1][0])
+	for i in path: 
+		snake.add_destination(pos_from_tile(i), i)
 
 
 func _on_minimap_send_grid(sent_grid: Variant, sp: Variant, dead_ends : Variant) -> void:
@@ -137,6 +131,13 @@ func _input(event: InputEvent) -> void:
 
 	if Input.is_action_just_pressed("x"): # toggle cam
 		change_cam()
+		
+	if Input.is_action_just_pressed("e"): # snake new target
+		snake.clear_path()
+		var path = a_star(snake.next[1], babi_holder[1][randi() % babi_count])
+		#snake.clear_path()
+		for i in path: 
+			snake.add_destination(pos_from_tile(i), i)
 			
 	if event is InputEventMouseMotion: # looking around with mouse
 		var screen_size = get_viewport().get_visible_rect().size
@@ -179,7 +180,6 @@ func draw_cave():
 		for x in range(len(grid)):
 			var tile = grid[y][x]
 			var match = find_match(tile.paths)
-			#print(tile.paths, match)
 			if match[0] != -1:
 				var palikka := MeshInstance3D.new()
 				palikka.mesh = meshes[match[0]]
@@ -266,7 +266,6 @@ func flip_dir(i: int): # copy from minimap
 
 func _on_player_wants_to_move(direction) -> void:
 	move(direction)
-	#print("I swear bro, I moved ", direction)
 	
 func play(sound : String):
 	if sound == "walk":
@@ -290,7 +289,6 @@ func spawn_babis():
 	print("there are ", len(babi_holder[0]), " babis, how cute!")
 	
 func _on_babi_wants_to_die(location):
-	print(current, location, current.distance_to(location))
 	if current.distance_to(location) == 0:
 		var babindex = babi_holder[1].find(location)
 		var babi = babi_holder[0][babindex]
@@ -298,3 +296,64 @@ func _on_babi_wants_to_die(location):
 		babi_holder[1].pop_at(babindex)
 		babi.die() # :(
 		print("We lost a good one today. ", len(babi_holder[0]), " babis remain o7")
+
+func a_star(start: Vector2i, target: Vector2i) -> Array:
+	
+	var to_search = {} # dictionary for tiles to search
+	var processed = {} # dictionary for tiles that don't need to be searched
+	
+	# define first tile:
+	to_search[start] = {"G": 0,"H": distance_in_vec3(start,target)}
+	to_search[start]["F"] = to_search[start]["G"] + to_search[start]["H"]
+	
+	while !to_search.is_empty():
+		
+		# find best tile to search
+		var current = to_search.keys()[0]
+		for tile in to_search: 
+			if to_search[tile]["F"] < to_search[current]["F"] or (to_search[tile]["F"] == to_search[current]["F"] and to_search[tile]["H"] < to_search[current]["H"]):
+				current = tile
+	
+		# put current to processed
+		processed[current] = to_search[current]
+		to_search.erase(current)
+		
+		if current == target:
+			var current_path_tile = target
+			var path = []
+			while current_path_tile != start:
+				path.append(current_path_tile)
+				if current_path_tile in to_search.keys():
+					current_path_tile = to_search[current_path_tile]["C"]
+				else:
+					current_path_tile = processed[current_path_tile]["C"]
+			path.append(start)
+			path.reverse()
+			return path
+		
+		
+		# Loop through neighbours
+		for dir in range(6):
+			var neighbour = next_tile(current, dir)
+			if tile_obj(current).paths[dir] == false or neighbour in processed: continue
+			
+			var in_search = neighbour in to_search.keys() # is the neighbour already in "to_search"
+			var cost_to_neighbour = processed[current]["G"] + distance_in_vec3(current, neighbour)
+			
+			if neighbour in snake.goals[1]:
+				cost_to_neighbour += 5000 # NO OVERLAPPING
+	
+			if !in_search:
+				to_search[neighbour] = {"G": cost_to_neighbour,"H": distance_in_vec3(neighbour, target),"C": current}
+				to_search[neighbour]["F"] = to_search[neighbour]["G"] + to_search[neighbour]["H"]
+				
+			elif cost_to_neighbour < to_search[neighbour]["G"]:
+				to_search[neighbour]["G"] = cost_to_neighbour
+				to_search[neighbour]["C"] = current
+				to_search[neighbour]["F"] = to_search[neighbour]["G"] + to_search[neighbour]["H"]
+			
+	return []
+
+
+func distance_in_vec3(start: Vector2i, target: Vector2i):
+	return pos_from_tile(start).distance_to(pos_from_tile(target))

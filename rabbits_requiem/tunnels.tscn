@@ -37,7 +37,7 @@ material_override = SubResource("StandardMaterial3D_redg8")
 mesh = SubResource("SphereMesh_5l3hi")
 
 [node name="CamTop" type="Camera3D" parent="Spelare"]
-transform = Transform3D(-1, -2.68946e-08, 8.3183e-08, 7.45218e-08, 0.235244, 0.971936, -4.57082e-08, 0.971936, -0.235244, 0.0928936, 11.1984, -2.0475)
+transform = Transform3D(-1, -2.68946e-08, 8.3183e-08, 7.45218e-08, 0.235244, 0.971936, -4.57082e-08, 0.971936, -0.235244, 0.0928936, 12.8948, -2.0475)
 current = true
 fov = 45.0
 
@@ -70,6 +70,7 @@ grow_vertical = 0
 scale = Vector2(2, 2)
 
 [node name="SubViewportContainer" type="SubViewportContainer" parent="Control"]
+visible = false
 layout_mode = 0
 offset_right = 780.0
 offset_bottom = 646.0
@@ -79,7 +80,7 @@ stretch = true
 own_world_3d = true
 handle_input_locally = false
 size = Vector2i(780, 646)
-render_target_update_mode = 4
+render_target_update_mode = 0
 
 [node name="Minimap" parent="Control/SubViewportContainer/SubViewport" instance=ExtResource("2_ah540")]
 

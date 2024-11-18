@@ -105,7 +105,7 @@ func _input(event):
 	if tile_obj(current).paths[next_dir] && move: current = next_tile(current, next_dir);
 	
 	if current != last_current: 
-		print(current, tile_obj(current).paths); 
+		#print(current, tile_obj(current).paths); 
 		player.position = pos_from_tile(current)
 
 func flip_dir(i: int):
