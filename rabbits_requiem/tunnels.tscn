@@ -65,6 +65,7 @@ environment = SubResource("Environment_yoqi5")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.18071, 0, 0.739734)
 
 [node name="Control" type="Control" parent="."]
+visible = false
 layout_mode = 3
 anchors_preset = 2
 anchor_top = 1.0
@@ -84,7 +85,7 @@ stretch = true
 own_world_3d = true
 handle_input_locally = false
 size = Vector2i(780, 646)
-render_target_update_mode = 4
+render_target_update_mode = 0
 
 [node name="Minimap" parent="Control/SubViewportContainer/SubViewport" instance=ExtResource("2_ah540")]
 

@@ -103,6 +103,8 @@ func _ready(): # we probably don't have grid info here!
 	var path = a_star(starting_point, babi_holder[1][0])
 	for i in path: 
 		snake.add_destination(pos_from_tile(i), i)
+	#snake.add_destination(pos_from_tile(next_tile(starting_point, 2)), next_tile(starting_point, 2))
+		
 
 
 func _on_minimap_send_grid(sent_grid: Variant, sp: Variant, dead_ends : Variant) -> void:
