@@ -96,15 +96,7 @@ func _ready(): # we probably don't have grid info here!
 			meshes.append(load("res://palikoita/Closed Meshes/" + file_name))
 	draw_cave()
 	spawn_babis()
-	
-	snake.position = Vector3(0,0,0)#pos_from_tile(starting_point)
-	
-	
-	var path = a_star(starting_point, babi_holder[1][0])
-	for i in path: 
-		snake.add_destination(pos_from_tile(i), i)
-	#snake.add_destination(pos_from_tile(next_tile(starting_point, 2)), next_tile(starting_point, 2))
-		
+	snak_action("babi")
 
 
 func _on_minimap_send_grid(sent_grid: Variant, sp: Variant, dead_ends : Variant) -> void:
@@ -135,10 +127,7 @@ func _input(event: InputEvent) -> void:
 		change_cam()
 		
 	if Input.is_action_just_pressed("e"): # snake new target
-		snake.clear_path()
-		var path = a_star(snake.next[1], babi_holder[1][randi() % babi_count])
-		for i in path: 
-			snake.add_destination(pos_from_tile(i), i)
+		snak_action("player")
 			
 	if event is InputEventMouseMotion: # looking around with mouse
 		var screen_size = get_viewport().get_visible_rect().size
@@ -358,3 +347,37 @@ func a_star(start: Vector2i, target: Vector2i) -> Array:
 
 func distance_in_vec3(start: Vector2i, target: Vector2i):
 	return pos_from_tile(start).distance_to(pos_from_tile(target))
+	
+
+func _on_snake_snaking_complete() -> void:
+	if babi_holder[0].size() > 0:
+		snak_action("babi")
+	else: 
+		snak_action("player")
+	
+func  snak_action(action : String = ""):
+	
+	var start
+	var target
+	
+	# check for snake starting pos
+	if snake.goals[0].is_empty():
+		start = starting_point
+	else:
+		start = snake.next[1]
+		snake.clear_path()
+	
+	# choose target
+	match action:
+		"player": # hunt player
+			target = current
+		"babi": # hunt babi
+			target = babi_holder[1][randi() % babi_holder[0].size()]
+		_:
+			snak_action("babi")
+
+	# pathfind
+	var path = a_star(start, target)
+	for i in path: 
+		snake.add_destination(pos_from_tile(i), i)
+		

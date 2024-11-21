@@ -1,4 +1,6 @@
 extends Node3D
+signal snaking_complete()
+
 
 @onready var head := $Head
 
@@ -49,6 +51,8 @@ func _process(delta: float) -> void:
 	
 	if !goals[0].is_empty() and int(path_index * speed) < len(snake_path) - 2 :
 		move()
+	elif !goals[0].is_empty() and int(path_index * speed) >= len(snake_path) - 2:
+		emit_signal("snaking_complete")
 	
 
 func move():
