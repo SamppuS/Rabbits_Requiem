@@ -2,7 +2,7 @@ extends Node3D
 
 @export_subgroup("Parameters")
 @export var minimap_scale := 0.3
-@export var babi_count : int = 15 # note: this needs to be lower than dead end count set in minimap! 
+@export var babi_count : int = 3 # note: this needs to be lower than dead end count set in minimap! 
 
 
 @export_subgroup("Nodes+")
@@ -36,11 +36,13 @@ var cam_default := Vector3(0, 150 ,0)
 var cam_tilt : Vector3
 var last_movement_dir := 5 # this might be the same as facing
 
+var snak_target
+
 var mesh_size = 1.73233866691589 - .05 # true size - gap between tiles
 var tile_offset = mesh_size * 0.22
 
 var s_dir_holder = []
-var babi_holder = [[], []] # [[scenes], [rooms]]
+var babi_holder = [[], []] # [[scenes], [rooms v2i]]
 var dead_end_locations : Array[Vector2i]
 
 var meshes: Array[Mesh]
@@ -280,12 +282,21 @@ func spawn_babis():
 	
 func _on_babi_wants_to_die(location):
 	if current.distance_to(location) == 0:
-		var babindex = babi_holder[1].find(location)
-		var babi = babi_holder[0][babindex]
-		babi_holder[0].pop_at(babindex)
-		babi_holder[1].pop_at(babindex)
-		babi.die() # :(
-		print("We lost a good one today. ", len(babi_holder[0]), " babis remain o7")
+		kill_babi(location)
+			
+func kill_babi(location):
+	
+	
+	var babindex = babi_holder[1].find(location)
+	var babi = babi_holder[0][babindex]
+	babi_holder[0].pop_at(babindex)
+	babi_holder[1].pop_at(babindex)
+	babi.die() # :(
+	print("We lost a good one today. ", len(babi_holder[0]), " babis remain o7")
+	
+	if snak_target == location:
+		snak_action()
+	
 
 func a_star(start: Vector2i, target: Vector2i) -> Array:
 	
@@ -350,15 +361,19 @@ func distance_in_vec3(start: Vector2i, target: Vector2i):
 	
 
 func _on_snake_snaking_complete() -> void:
-	if babi_holder[0].size() > 0:
-		snak_action("babi")
-	else: 
-		snak_action("player")
+	if snak_target in babi_holder[1]:
+		kill_babi(snak_target)
+		print("man I want to kill")
+		#babi_holder[0][babi_holder[1].find(snak_target)].die()
+	snak_action()
+	#if babi_holder[0].size() > 0:
+		#snak_action("babi")
+	#else: 
+		#snak_action("player")
 	
 func  snak_action(action : String = ""):
 	
 	var start
-	var target
 	
 	# check for snake starting pos
 	if snake.goals[0].is_empty():
@@ -370,14 +385,17 @@ func  snak_action(action : String = ""):
 	# choose target
 	match action:
 		"player": # hunt player
-			target = current
+			snak_target = current
 		"babi": # hunt babi
-			target = babi_holder[1][randi() % babi_holder[0].size()]
+			snak_target = babi_holder[1][randi() % babi_holder[0].size()]
 		_:
-			snak_action("babi")
+			if babi_holder[0].size() > 0:
+				snak_target = babi_holder[1][randi() % babi_holder[0].size()]
+			else: 
+				snak_target = current
 
 	# pathfind
-	var path = a_star(start, target)
+	var path = a_star(start, snak_target)
 	for i in path: 
 		snake.add_destination(pos_from_tile(i), i)
 		
