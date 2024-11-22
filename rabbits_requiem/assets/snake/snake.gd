@@ -1,16 +1,24 @@
 extends Node3D
 signal snaking_complete()
 
+@export var segment : PackedScene
 
 @onready var head := $Head
+
+const snake_lenght = 15
+const segment_frequency = 20
+const snake_height = Vector3.UP * .1
+const shrink_len = 4
+const shrink_ratio = .1
 
 var goals : Array[Array] = [[],[]] # array of points that the snake will trace from start to finish. [v3, v2i]
 var old_goals : Array[Array] = [[],[]] # copy of goals to recognize updates
 
 var snake_path = []
+var snake_body = []
 
 var path_index = 0  # Current progress along the path
-var speed = .15 * 4  # Speed of movement
+var speed = .30   # Speed of movement
 
 var current = [Vector3(0,0,0), Vector2i(0,0), 0]
 var next = [Vector3(0,0,0), Vector2i(0,0), 0]
@@ -22,6 +30,8 @@ var path_blobs = []
 const pt_frequency = 168 # point per tunnel frequency
 var sin_phase = 0
 
+var tangent_path = []
+
 
 @export var thingy : PackedScene
 var bump
@@ -30,6 +40,15 @@ func _ready() -> void:
 	bump = thingy.instantiate() # oonpas mä hyvä nimee variableita :)
 	bump.scale = Vector3(8, .02, 8)
 	add_child(bump)
+	
+	for i in snake_lenght:
+		var seg = segment.instantiate()
+		if i+shrink_len>snake_lenght:
+			seg.scale = Vector3(1-(i+shrink_len-snake_lenght)*shrink_ratio, 1-(i+shrink_len-snake_lenght)*shrink_ratio, 1)
+		var arr = [seg, 0] # obj, index
+		
+		add_child(seg)
+		snake_body.append(arr)
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -56,8 +75,16 @@ func _process(delta: float) -> void:
 	
 
 func move():
+	get_tangents()
 	path_index += 1
-	head.position = snake_path[path_index * speed]
+	var head_index = path_index * speed
+	head.position = snake_path[head_index] + snake_height
+	for segment in snake_lenght:
+		var seg_index = max(head_index - segment_frequency * (segment + 1), 0)
+		snake_body[segment][0].position = snake_path[seg_index] + snake_height
+		snake_body[segment][0].look_at(snake_body[segment][0].position + tangent_path[seg_index], Vector3.UP)
+		
+		
 
 func add_destination(d3 : Vector3, d2i : Vector2i) :
 	if !goals[0].is_empty():
@@ -95,7 +122,7 @@ func generate_path():
 	
 	# smooth curve
 	discrete_path = moving_average(discrete_path, 50)
-
+	
 	# add slithering
 	for point_index in range(1, len(discrete_path)):
 		var base_point = discrete_path[point_index]
@@ -103,6 +130,8 @@ func generate_path():
 		
 		var tangent = (base_point - last_point).normalized()
 		var perpendicular = tangent.cross(Vector3.UP).normalized()
+		
+		tangent_path.append(tangent)
 		
 		var sine_offset = amplitude * sin(frequency *  point_index - sin_phase)
 		var slither_point = base_point + perpendicular * sine_offset
@@ -144,8 +173,7 @@ func clear_path(): # Calling before snake having moved at least "keep_on_clear" 
 		i.queue_free()
 	path_blobs = []
 	
-	
-		
+
 func find_best_index():
 	var best = [0, 100]
 	for i in range(min(len(snake_path) - pt_frequency * 2, pt_frequency * 2), len(snake_path)):
@@ -170,4 +198,8 @@ func advance():
 	next[2] = next[2] + 1
 	next = [goals[0][next[2]], goals[1][next[2]], next[2]]
 
-	
+func get_tangents():
+	tangent_path = []
+	for i in len(snake_path) - 1:
+		tangent_path.append(snake_path[i] - snake_path[i + 1])
+		

@@ -64,6 +64,7 @@ environment = SubResource("Environment_yoqi5")
 [node name="Snake" parent="." instance=ExtResource("8_di8tg")]
 
 [node name="Control" type="Control" parent="."]
+visible = false
 layout_mode = 3
 anchors_preset = 2
 anchor_top = 1.0
@@ -83,7 +84,7 @@ stretch = true
 own_world_3d = true
 handle_input_locally = false
 size = Vector2i(780, 646)
-render_target_update_mode = 4
+render_target_update_mode = 0
 
 [node name="Minimap" parent="Control/SubViewportContainer/SubViewport" instance=ExtResource("2_ah540")]
 

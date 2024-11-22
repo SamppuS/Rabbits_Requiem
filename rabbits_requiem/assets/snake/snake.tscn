@@ -1,6 +1,7 @@
-[gd_scene load_steps=4 format=3 uid="uid://e2453vreljj2"]
+[gd_scene load_steps=5 format=3 uid="uid://e2453vreljj2"]
 
 [ext_resource type="Script" path="res://assets/snake/snake.gd" id="1_wnujq"]
+[ext_resource type="PackedScene" uid="uid://b6akk6d2la0br" path="res://assets/snake/snake_segment.tscn" id="2_4iyo3"]
 [ext_resource type="PackedScene" uid="uid://chpmf6rvomro0" path="res://assets/cave/diddy.tscn" id="2_57xv2"]
 
 [sub_resource type="SphereMesh" id="SphereMesh_mpgmc"]
@@ -10,6 +11,7 @@ is_hemisphere = true
 
 [node name="Snake" type="Node3D"]
 script = ExtResource("1_wnujq")
+segment = ExtResource("2_4iyo3")
 thingy = ExtResource("2_57xv2")
 
 [node name="Head" type="MeshInstance3D" parent="."]

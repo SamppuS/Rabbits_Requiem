@@ -1,0 +1,3 @@
+[gd_scene format=3 uid="uid://be65iescablco"]
+
+[node name="SnakeHead" type="Node3D"]
