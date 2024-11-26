@@ -1,0 +1,22 @@
+[remap]
+
+importer="wavefront_obj"
+importer_version=1
+type="Mesh"
+uid="uid://dd5r5mcadonwg"
+path="res://.godot/imported/snak_seg.obj-93aa44aab70f842706b256d610ea00cc.mesh"
+
+[deps]
+
+files=["res://.godot/imported/snak_seg.obj-93aa44aab70f842706b256d610ea00cc.mesh"]
+
+source_file="res://assets/snake/Snak/snak_seg.obj"
+dest_files=["res://.godot/imported/snak_seg.obj-93aa44aab70f842706b256d610ea00cc.mesh", "res://.godot/imported/snak_seg.obj-93aa44aab70f842706b256d610ea00cc.mesh"]
+
+[params]
+
+generate_tangents=true
+scale_mesh=Vector3(1, 1, 1)
+offset_mesh=Vector3(0, 0, 0)
+optimize_mesh=true
+force_disable_mesh_compression=false

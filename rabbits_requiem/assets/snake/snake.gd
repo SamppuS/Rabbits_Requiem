@@ -79,6 +79,7 @@ func move():
 	path_index += 1
 	var head_index = path_index * speed
 	head.position = snake_path[head_index] + snake_height
+	head.look_at(head.position - tangent_path[head_index], Vector3.UP)
 	for segment in snake_lenght:
 		var seg_index = max(head_index - segment_frequency * (segment + 1), 0)
 		snake_body[segment][0].position = snake_path[seg_index] + snake_height
