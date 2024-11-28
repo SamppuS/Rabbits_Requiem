@@ -38,7 +38,7 @@ var last_movement_dir := 5 # this might be the same as facing
 
 var snak_target
 
-var mesh_size = 1.73233866691589 - .05 # true size - gap between tiles
+const mesh_size = 1.73233866691589 - .05 # true size - gap between tiles
 var tile_offset = mesh_size * 0.22
 
 var s_dir_holder = []
@@ -99,6 +99,8 @@ func _ready(): # we probably don't have grid info here!
 	draw_cave()
 	spawn_babis()
 	snak_action("babi")
+	snake.straighten()
+	
 
 
 func _on_minimap_send_grid(sent_grid: Variant, sp: Variant, dead_ends : Variant) -> void:
@@ -363,7 +365,7 @@ func distance_in_vec3(start: Vector2i, target: Vector2i):
 func _on_snake_snaking_complete() -> void:
 	if snak_target in babi_holder[1]:
 		kill_babi(snak_target)
-		print("man I want to kill")
+		#print("man I want to kill")
 		#babi_holder[0][babi_holder[1].find(snak_target)].die()
 	snak_action()
 	#if babi_holder[0].size() > 0:
@@ -372,7 +374,6 @@ func _on_snake_snaking_complete() -> void:
 		#snak_action("player")
 	
 func  snak_action(action : String = ""):
-	
 	var start
 	
 	# check for snake starting pos
@@ -399,3 +400,10 @@ func  snak_action(action : String = ""):
 	for i in path: 
 		snake.add_destination(pos_from_tile(i), i)
 		
+
+
+func _on_snake_snake_moved() -> void:
+	if current in snake.sight and (babi_holder[0].size() != babi_count or snake.next[2]>3):
+		#print("player seen!")
+		await get_tree().create_timer(0.1).timeout # wait fixed weird generation bug
+		snak_action("player")

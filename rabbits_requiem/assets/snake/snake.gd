@@ -1,7 +1,14 @@
 extends Node3D
 signal snaking_complete()
+signal snake_moved()
+
+@export var debug_draw : bool = true
 
 @export var segment : PackedScene
+@export var debug_mesh : PackedScene
+var marker
+var markers = []
+
 
 @onready var head := $Head
 
@@ -11,6 +18,10 @@ const snake_height = Vector3.UP * .1
 const shrink_len = 4
 const shrink_ratio = .1
 
+const mesh_size = 1.73233866691589 - .05
+
+var tunnel_grid : Array
+
 var goals : Array[Array] = [[],[]] # array of points that the snake will trace from start to finish. [v3, v2i]
 var old_goals : Array[Array] = [[],[]] # copy of goals to recognize updates
 
@@ -18,28 +29,30 @@ var snake_path = []
 var snake_body = []
 
 var path_index = 0  # Current progress along the path
-var speed = .30   # Speed of movement
+var speed = .25   # Speed of movement
 
 var current = [Vector3(0,0,0), Vector2i(0,0), 0]
 var next = [Vector3(0,0,0), Vector2i(0,0), 0]
+var sight = []
 
 var keep_on_clear : int = 3
 
-var path_blobs = []
+var path_markers = []
 
 const pt_frequency = 168 # point per tunnel frequency
 var sin_phase = 0
 
 var tangent_path = []
 
+var times_moved = 0 # this is to make sure snake got started correctly
 
-@export var thingy : PackedScene
-var bump
+
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	bump = thingy.instantiate() # oonpas mä hyvä nimee variableita :)
-	bump.scale = Vector3(8, .02, 8)
-	add_child(bump)
+	if debug_draw:
+		marker = debug_mesh.instantiate() # oonpas mä hyvä nimee variableita :)
+		marker.scale = Vector3(8, .02, 8)
+		add_child(marker)
 	
 	for i in snake_lenght:
 		var seg = segment.instantiate()
@@ -55,9 +68,9 @@ func _ready() -> void:
 func _process(delta: float) -> void:
 	if !goals[0].is_empty() and goals != old_goals:
 		snake_path = generate_path()
-		if path_index > 100:
+		if path_index > 100 and times_moved > 3: # times moved is to make game start correctly
 			path_index = find_best_index()
-		draw_path()
+		if debug_draw: draw_path()
 		
 		#print("wowie, we can slither up to ", len(snake_path), " with the power of ", goals[0].size() - 1, " giving ratio of ", len(snake_path)/(goals[0].size() - 1))
 	
@@ -65,8 +78,9 @@ func _process(delta: float) -> void:
 			advance()
 	
 	old_goals = goals.duplicate()
-
-	bump.position = next[0]
+	
+	if debug_draw:
+		marker.position = next[0]
 	
 	if !goals[0].is_empty() and int(path_index * speed) < len(snake_path) - 2 :
 		move()
@@ -139,7 +153,7 @@ func generate_path():
 		
 		slither_path.append(slither_point)
 		
-
+	slither_path = redistribute_path(slither_path)
 	return slither_path
 
 func moving_average(arr: PackedVector3Array, window: int = 0):
@@ -160,7 +174,7 @@ func moving_average(arr: PackedVector3Array, window: int = 0):
 	return new_array
 		
 func clear_path(): # Calling before snake having moved at least "keep_on_clear" amount of tiles causes snap back. (this shouldn't be problem often)
-
+	#print("claring!")
 	#current = [next[0], next[1], 0]
 	goals[0] = goals[0].slice(max(0, next[2] - keep_on_clear ), max(next[2] + 1, 2))
 	goals[1] = goals[1].slice(max(0, next[2] - keep_on_clear ), max(next[2] + 1, 2))
@@ -170,9 +184,10 @@ func clear_path(): # Calling before snake having moved at least "keep_on_clear" 
 	current[2] = 0
 	next[2] = len(goals[0]) - 1 
 	
-	for i in path_blobs:
-		i.queue_free()
-	path_blobs = []
+	if debug_draw:
+		for i in path_markers:
+			i.queue_free()
+		path_markers = []
 	
 
 func find_best_index():
@@ -184,23 +199,111 @@ func find_best_index():
 			best[0] = i
 		if i - best[0] > 40:
 			break
-	return int(best[0] / speed) 
+	return int(best[0] / speed)  - 50 # not sure why - 50. Somehow it makes snake smother
 	
 func draw_path():
 	for a in snake_path:
-		var hahaa = thingy.instantiate()
-		hahaa.scale = Vector3(.4, .05, .4)
-		hahaa.position = a + Vector3.UP * .1
-		add_child(hahaa)
-		path_blobs.append(hahaa)
+		var blob = debug_mesh.instantiate()
+		blob.scale = Vector3(.4, .05, .4)
+		blob.position = a + Vector3.UP * .1
+		add_child(blob)
+		path_markers.append(blob)
 
 func advance():
+	times_moved += 1
 	current = next
 	next[2] = next[2] + 1
 	next = [goals[0][next[2]], goals[1][next[2]], next[2]]
+	
+	#set snake sight tiles
+	sight = []
+	for dir in range(6):
+		var checking = next[1]
+		for distance in range(3):
+			var tile_dirs = tile_obj(checking).paths
+			if tile_dirs[dir] == true:
+				var neighbour = next_tile(checking, dir)
+				if neighbour != current[1] and neighbour not in sight:
+					sight.append(neighbour)
+					checking = neighbour
+				else: continue
+	
+	emit_signal("snake_moved")
+	
+	#drawing sight
+	if debug_draw:
+		for mark in markers:
+			mark.queue_free()
+		markers = []
+		for tile in sight:
+			var marker2 = debug_mesh.instantiate() # oonpas mä hyvä nimee variableita :)
+			marker2.scale = Vector3(4, .4, 4)
+			marker2.position = pos_from_tile(tile)
+			add_child(marker2)
+			markers.append(marker2)
+	
 
 func get_tangents():
 	tangent_path = []
 	for i in len(snake_path) - 1:
-		tangent_path.append(snake_path[i] - snake_path[i + 1])
-		
+		var tangent = (snake_path[i] - snake_path[i + 1]).normalized()
+		#if tangent_path.size() > 2 and tangent.angle_to(tangent_path[i-1]) > 10:
+			#tangent_path.append((tangent + 5 * tangent_path[i-1]) / 6)
+		#else: tangent_path.append(tangent)
+		tangent_path.append(tangent)
+	#tangent_path = moving_average(tangent_path, 2)
+
+func next_tile(pos : Vector2i, dir : int) -> Vector2i: # copy from minimap
+	var right = pos.y % 2
+	var newpos = pos
+	match dir:
+		0:
+			newpos = pos + Vector2i(-1, 0)
+		3:
+			newpos = pos + Vector2i(1, 0)
+		1:
+			newpos = pos + Vector2i(-right, 1)
+		2:
+			newpos = pos + Vector2i(1-right, 1)
+		4:
+			newpos = pos + Vector2i(1-right, -1)
+		5:
+			newpos = pos + Vector2i(-right, -1)
+	
+	newpos = Vector2i(newpos.x, newpos.y)
+	return newpos
+
+func tile_obj(pos: Vector2i): # copy form minimap
+	return tunnel_grid[pos.y][pos.x]
+
+func _on_minimap_send_grid(grid: Variant, sp: Variant, dead_ends: Variant) -> void:
+	tunnel_grid = grid
+
+func pos_from_tile(pos : Vector2i) -> Vector3:
+	return Vector3(-pos.x + pos.y%2*0.5, 0, float(pos.y) - pos.y * (1-sqrt(3)/2)) * mesh_size
+	
+func straighten():
+	print(path_index)
+	advance()
+	advance()
+	advance()
+	path_index = 1500 # if snake len is adjusted this also needs to be adjusted
+
+func redistribute_path(points: Array[Vector3]) -> Array[Vector3]:
+	var curve = Curve3D.new()
+	
+	# Add points to the curve
+	for point in points:
+		curve.add_point(point)
+	
+	# Get the total length of the curve
+	var total_length = curve.get_baked_length()
+	
+	# Redistribute the points along the curve
+	var redistributed_points : Array[Vector3] = []
+	for i in range(points.size()):
+		var t = i / float(points.size() - 1)  # Get the normalized position
+		var position = curve.sample_baked(t * total_length)  # Use sample_baked() instead
+		redistributed_points.append(position)
+	
+	return redistributed_points

@@ -3,15 +3,15 @@
 [ext_resource type="Script" path="res://assets/snake/snake.gd" id="1_wnujq"]
 [ext_resource type="PackedScene" uid="uid://b6akk6d2la0br" path="res://assets/snake/snake_segment.tscn" id="2_4iyo3"]
 [ext_resource type="PackedScene" uid="uid://chpmf6rvomro0" path="res://assets/cave/diddy.tscn" id="2_57xv2"]
-[ext_resource type="ArrayMesh" uid="uid://cmkarhmtyu58s" path="res://assets/snake/Snak/snak.obj" id="4_7td73"]
+[ext_resource type="ArrayMesh" uid="uid://c5456ajhnr71a" path="res://assets/snake/Snak/snak_head_still.obj" id="4_7rbg3"]
 
 [node name="Snake" type="Node3D"]
 script = ExtResource("1_wnujq")
 segment = ExtResource("2_4iyo3")
-thingy = ExtResource("2_57xv2")
+debug_mesh = ExtResource("2_57xv2")
 
 [node name="Head" type="MeshInstance3D" parent="."]
 transform = Transform3D(0.195, 0, 0, 0, 0.195, 0, 0, 0, 0.195, 0, 0, 0)
-mesh = ExtResource("4_7td73")
+mesh = ExtResource("4_7rbg3")
 
 [node name="OmniLight3D" type="OmniLight3D" parent="."]
