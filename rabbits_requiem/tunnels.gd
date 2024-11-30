@@ -2,8 +2,8 @@ extends Node3D
 
 @export_subgroup("Parameters")
 @export var minimap_scale := 0.3
-@export var babi_count : int = 3 # note: this needs to be lower than dead end count set in minimap! 
-
+@export var babi_count : int = 10 # note: this needs to be lower than dead end count set in minimap! 
+@export var min_roam_tiles = 7
 
 @export_subgroup("Nodes+")
 @export var player : Node3D
@@ -14,6 +14,7 @@ extends Node3D
 @export var walking_sounds : Array[AudioStreamWAV]
 @export var selectable_dir : PackedScene
 @export var babi_scene : PackedScene
+@export var entrance : PackedScene
 
 
 @onready var camTop = $Spelare/CamTop
@@ -22,7 +23,7 @@ extends Node3D
 @onready var subviewport = $Control/SubViewportContainer/SubViewport
 @onready var minimap = $Control/SubViewportContainer/SubViewport/Minimap
 
-@onready var audioplayer = $Spelare/AudioStreamPlayer3D
+@onready var walk_player = $Spelare/WalkSoundplayer
 @onready var snake : Node3D = $Snake
 
 
@@ -31,7 +32,7 @@ var starting_point: Vector2i
 var facing := 2
 var cam_mode := 0
 var current : Vector2i
-var player_height := .2
+const player_height := .2
 var cam_default := Vector3(0, 150 ,0)
 var cam_tilt : Vector3
 var last_movement_dir := 5 # this might be the same as facing
@@ -39,7 +40,11 @@ var last_movement_dir := 5 # this might be the same as facing
 var snak_target
 
 const mesh_size = 1.73233866691589 - .05 # true size - gap between tiles
-var tile_offset = mesh_size * 0.22
+const tile_offset = mesh_size * 0.22
+
+var snake_roam_distance = mesh_size * 6 # distance form start pos that snake is allowed to roam
+var snake_roam_tiles : Array # specific roam tiles
+var to_be_roamed : Array # variable to prevent snake camping
 
 var s_dir_holder = []
 var babi_holder = [[], []] # [[scenes], [rooms v2i]]
@@ -110,6 +115,13 @@ func _on_minimap_send_grid(sent_grid: Variant, sp: Variant, dead_ends : Variant)
 	dead_end_locations = dead_ends
 	player.position = pos_from_tile(current) + Vector3(0,player_height,0)
 	
+	# assign roam spots
+	while snake_roam_tiles.size() < min_roam_tiles and snake_roam_tiles.size() < dead_ends.size():
+		for tile in dead_ends:
+			if distance_in_vec3(tile, starting_point) < snake_roam_distance and tile not in snake_roam_tiles:
+				snake_roam_tiles.append(tile)
+				snake_roam_distance += mesh_size
+	
 	
 
 func _input(event: InputEvent) -> void:
@@ -162,12 +174,18 @@ func scatter(): # despawn direction blocks
 	s_dir_holder = []
 
 func move(dir: int): # move player in direction
+	if current == starting_point and dir == 5: 
+		return # Here would be leaving the game :)
+	
 	set_facing(dir)
 	current = next_tile(current, dir)
 	player.position = pos_from_tile(current) + Vector3(0,player_height,0) + dir_to_norm(flip_dir(facing)) * tile_offset
 	last_movement_dir = dir
 	scatter()
 	play("walk")
+	
+	if current in snake.sight: # check if player moved to snake sight
+		snak_action("player")
 
 func draw_cave():
 	for y in range(len(grid)):
@@ -181,8 +199,11 @@ func draw_cave():
 				palikka.rotation_degrees.y = 60*match[1]
 				palikka.material_override = tile_material
 				add_child(palikka)
-				
-
+	
+	var shine = entrance.instantiate()
+	shine.position = pos_from_tile(starting_point) + tile_offset * dir_to_norm(5)
+	add_child(shine)
+	shine.look_at(shine.position + dir_to_norm(5), Vector3.UP)
 
 func find_match(paths: Array[bool]): # from cave_tile.paths to mesh_openings index
 	var paths_copy = paths.duplicate() # non-destructive
@@ -207,10 +228,12 @@ func change_cam(mode: int = -1):
 		camFP.current = true
 		cam_mode = 1
 		environment.set_background(5) # temp fix probably
+		environment.volumetric_fog_enabled = true
 	elif mode == 0:
 		camTop.current = true
 		cam_mode = 0
 		environment.set_background(0) # temp fix probably
+		environment.volumetric_fog_enabled = false
 	else:
 		change_cam((cam_mode + 1) % 2) # whoa recursion!
 		
@@ -263,9 +286,9 @@ func _on_player_wants_to_move(direction) -> void:
 	
 func play(sound : String):
 	if sound == "walk":
-		audioplayer.stream = walking_sounds[randi() % len(walking_sounds)]
-		audioplayer.seek(0)
-		audioplayer.play()
+		walk_player.stream = walking_sounds[randi() % len(walking_sounds)]
+		walk_player.seek(0)
+		walk_player.play()
 
 func spawn_babis():
 	dead_end_locations.shuffle() # randomize order
@@ -297,7 +320,7 @@ func kill_babi(location):
 	print("We lost a good one today. ", len(babi_holder[0]), " babis remain o7")
 	
 	if snak_target == location:
-		snak_action()
+		snak_action() # possible trouble maker
 	
 
 func a_star(start: Vector2i, target: Vector2i) -> Array:
@@ -312,16 +335,16 @@ func a_star(start: Vector2i, target: Vector2i) -> Array:
 	while !to_search.is_empty():
 		
 		# find best tile to search
-		var current = to_search.keys()[0]
+		var checking = to_search.keys()[0]
 		for tile in to_search: 
-			if to_search[tile]["F"] < to_search[current]["F"] or (to_search[tile]["F"] == to_search[current]["F"] and to_search[tile]["H"] < to_search[current]["H"]):
-				current = tile
+			if to_search[tile]["F"] < to_search[checking]["F"] or (to_search[tile]["F"] == to_search[checking]["F"] and to_search[tile]["H"] < to_search[checking]["H"]):
+				checking = tile
 	
 		# put current to processed
-		processed[current] = to_search[current]
-		to_search.erase(current)
+		processed[checking] = to_search[checking]
+		to_search.erase(checking)
 		
-		if current == target:
+		if checking == target:
 			var current_path_tile = target
 			var path = []
 			while current_path_tile != start:
@@ -337,22 +360,23 @@ func a_star(start: Vector2i, target: Vector2i) -> Array:
 		
 		# Loop through neighbours
 		for dir in range(6):
-			var neighbour = next_tile(current, dir)
-			if tile_obj(current).paths[dir] == false or neighbour in processed: continue
+			if checking == starting_point and dir == 5: continue # snake cant go through entrance lol
+			var neighbour = next_tile(checking, dir)
+			if tile_obj(checking).paths[dir] == false or neighbour in processed: continue
 			
 			var in_search = neighbour in to_search.keys() # is the neighbour already in "to_search"
-			var cost_to_neighbour = processed[current]["G"] + distance_in_vec3(current, neighbour)
+			var cost_to_neighbour = processed[checking]["G"] + distance_in_vec3(checking, neighbour)
 			
 			if neighbour in snake.goals[1]:
 				cost_to_neighbour += 5000 # NO OVERLAPPING
 	
 			if !in_search:
-				to_search[neighbour] = {"G": cost_to_neighbour,"H": distance_in_vec3(neighbour, target),"C": current}
+				to_search[neighbour] = {"G": cost_to_neighbour,"H": distance_in_vec3(neighbour, target),"C": checking}
 				to_search[neighbour]["F"] = to_search[neighbour]["G"] + to_search[neighbour]["H"]
 				
 			elif cost_to_neighbour < to_search[neighbour]["G"]:
 				to_search[neighbour]["G"] = cost_to_neighbour
-				to_search[neighbour]["C"] = current
+				to_search[neighbour]["C"] = checking
 				to_search[neighbour]["F"] = to_search[neighbour]["G"] + to_search[neighbour]["H"]
 			
 	return []
@@ -365,13 +389,8 @@ func distance_in_vec3(start: Vector2i, target: Vector2i):
 func _on_snake_snaking_complete() -> void:
 	if snak_target in babi_holder[1]:
 		kill_babi(snak_target)
-		#print("man I want to kill")
-		#babi_holder[0][babi_holder[1].find(snak_target)].die()
-	snak_action()
-	#if babi_holder[0].size() > 0:
-		#snak_action("babi")
-	#else: 
-		#snak_action("player")
+	snak_action() # trouble maker 2
+	print("snaking complete ig")
 	
 func  snak_action(action : String = ""):
 	var start
@@ -383,17 +402,33 @@ func  snak_action(action : String = ""):
 		start = snake.next[1]
 		snake.clear_path()
 	
+	if to_be_roamed.is_empty():
+		to_be_roamed = snake_roam_tiles.duplicate()
+	
 	# choose target
 	match action:
 		"player": # hunt player
+			if snak_target != current:
+				snake.alert()
 			snak_target = current
+			
 		"babi": # hunt babi
-			snak_target = babi_holder[1][randi() % babi_holder[0].size()]
+			# find furthest babi (this is to prevent bugs caused from first babi being near start area)
+			var furthest
+			var max_distance = 0
+			for babi in range(babi_holder.size()):
+				var distance = distance_in_vec3(babi_holder[1][babi], starting_point)
+				if  distance > max_distance:
+					max_distance = distance
+					furthest = babi_holder[1][babi]
+					
+			snak_target = furthest
 		_:
 			if babi_holder[0].size() > 0:
 				snak_target = babi_holder[1][randi() % babi_holder[0].size()]
-			else: 
-				snak_target = current
+			else: # roam
+				snak_target = to_be_roamed[randi() % to_be_roamed.size()]
+				to_be_roamed.remove_at(to_be_roamed.find(snak_target))
 
 	# pathfind
 	var path = a_star(start, snak_target)

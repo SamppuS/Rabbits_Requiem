@@ -1,0 +1,15 @@
+[gd_scene load_steps=3 format=3 uid="uid://yp1omp0talc8"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_0aigc"]
+emission_enabled = true
+emission = Color(1, 1, 1, 1)
+emission_energy_multiplier = 10.0
+anisotropy = -0.75
+
+[sub_resource type="QuadMesh" id="QuadMesh_fvf6y"]
+
+[node name="Entrance" type="Node3D"]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+material_override = SubResource("StandardMaterial3D_0aigc")
+mesh = SubResource("QuadMesh_fvf6y")

@@ -2,13 +2,13 @@
 
 importer="wav"
 type="AudioStreamWAV"
-uid="uid://dgjvcyevaavij"
-path="res://.godot/imported/kolodrone.wav-0301cb14db7beff2f6cec61c74be18ca.sample"
+uid="uid://cq0b6s8ilsf7g"
+path="res://.godot/imported/hiss.wav-e96ed891500258203b2d4784c2a843ef.sample"
 
 [deps]
 
-source_file="res://kolodrone.wav"
-dest_files=["res://.godot/imported/kolodrone.wav-0301cb14db7beff2f6cec61c74be18ca.sample"]
+source_file="res://assets/Sounds/Snake sounds/hiss.wav"
+dest_files=["res://.godot/imported/hiss.wav-e96ed891500258203b2d4784c2a843ef.sample"]
 
 [params]
 

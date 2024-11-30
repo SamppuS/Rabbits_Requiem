@@ -2,15 +2,24 @@ extends Node3D
 signal snaking_complete()
 signal snake_moved()
 
-@export var debug_draw : bool = true
+@export var debug_draw : bool = false
 
 @export var segment : PackedScene
 @export var debug_mesh : PackedScene
+
+@export var hissing_sounds : Array[AudioStreamWAV]
+@export var alert_sounds : Array[AudioStreamWAV]
+
+var alert_cooldown = 0
+
 var marker
 var markers = []
 
 
 @onready var head := $Head
+
+@onready var hisser := $"Head/Snake noises"
+@onready var alerter := $"Head/Alert player"
 
 const snake_lenght = 15
 const segment_frequency = 20
@@ -62,6 +71,10 @@ func _ready() -> void:
 		
 		add_child(seg)
 		snake_body.append(arr)
+		
+	# simple hisser loop
+	hiss()
+		
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -70,7 +83,9 @@ func _process(delta: float) -> void:
 		snake_path = generate_path()
 		if path_index > 100 and times_moved > 3: # times moved is to make game start correctly
 			path_index = find_best_index()
+		get_tangents()
 		if debug_draw: draw_path()
+		
 		
 		#print("wowie, we can slither up to ", len(snake_path), " with the power of ", goals[0].size() - 1, " giving ratio of ", len(snake_path)/(goals[0].size() - 1))
 	
@@ -89,11 +104,13 @@ func _process(delta: float) -> void:
 	
 
 func move():
-	get_tangents()
+	
+	#if tangent_path.is_empty(): get_tangents()
+	
 	path_index += 1
 	var head_index = path_index * speed
 	head.position = snake_path[head_index] + snake_height
-	head.look_at(head.position - tangent_path[head_index], Vector3.UP)
+	head.look_at(head.position + tangent_path[head_index], Vector3.UP)
 	for segment in snake_lenght:
 		var seg_index = max(head_index - segment_frequency * (segment + 1), 0)
 		snake_body[segment][0].position = snake_path[seg_index] + snake_height
@@ -154,6 +171,7 @@ func generate_path():
 		slither_path.append(slither_point)
 		
 	slither_path = redistribute_path(slither_path)
+	
 	return slither_path
 
 func moving_average(arr: PackedVector3Array, window: int = 0):
@@ -188,6 +206,8 @@ func clear_path(): # Calling before snake having moved at least "keep_on_clear" 
 		for i in path_markers:
 			i.queue_free()
 		path_markers = []
+		
+	#get_tangents()
 	
 
 func find_best_index():
@@ -202,12 +222,19 @@ func find_best_index():
 	return int(best[0] / speed)  - 50 # not sure why - 50. Somehow it makes snake smother
 	
 func draw_path():
-	for a in snake_path:
+	for a in range(snake_path.size() -1):
 		var blob = debug_mesh.instantiate()
 		blob.scale = Vector3(.4, .05, .4)
-		blob.position = a + Vector3.UP * .1
+		blob.position = snake_path[a] + Vector3.UP * .1
 		add_child(blob)
 		path_markers.append(blob)
+		
+		var bap = debug_mesh.instantiate()
+		bap.scale = Vector3(.01, .1, 1)
+		bap.position = snake_path[a] + Vector3.UP * .1 + tangent_path[a] * .1
+		add_child(bap)
+		bap.look_at(blob.position + tangent_path[a], Vector3.UP)
+		path_markers.append(bap)
 
 func advance():
 	times_moved += 1
@@ -246,12 +273,21 @@ func advance():
 func get_tangents():
 	tangent_path = []
 	for i in len(snake_path) - 1:
-		var tangent = (snake_path[i] - snake_path[i + 1]).normalized()
-		#if tangent_path.size() > 2 and tangent.angle_to(tangent_path[i-1]) > 10:
-			#tangent_path.append((tangent + 5 * tangent_path[i-1]) / 6)
-		#else: tangent_path.append(tangent)
+		var tangent = (snake_path[i + 1] - snake_path[i]).normalized()
+		
+		# FIX FIX FIX FIX FIX FIX FIX FIX FIX FIX FIX FIX FIX FIX FIX FIX FIX FIX FIX FIX FIX FIX FIX FIX FIX FIX FIX FIX
+
+		#if tangent_path.size() > 2 and tangent.angle_to(tangent_path[i - 1]) > deg_to_rad(5):
+			#var rotation_angle = min(deg_to_rad(5), tangent.angle_to(tangent_path[i - 1]))  # Fixed small rotation step
+			## Determine the sign of the angle to know which direction to rotate
+			#var cross_product = tangent.cross(tangent_path[i - 1])
+			#var direction = sign(cross_product.y)  # Assuming rotation around Y-axis
+			## Rotate tangent by the small step in the correct direction
+			#tangent = tangent_path[i-1].rotated(Vector3.UP, rotation_angle * direction)
+			
+		# FIX FIX FIX FIX FIX FIX FIX FIX FIX FIX FIX FIX FIX FIX FIX FIX FIX FIX FIX FIX FIX FIX FIX FIX FIX FIX FIX
+			
 		tangent_path.append(tangent)
-	#tangent_path = moving_average(tangent_path, 2)
 
 func next_tile(pos : Vector2i, dir : int) -> Vector2i: # copy from minimap
 	var right = pos.y % 2
@@ -307,3 +343,26 @@ func redistribute_path(points: Array[Vector3]) -> Array[Vector3]:
 		redistributed_points.append(position)
 	
 	return redistributed_points
+	
+
+func hiss():
+	hisser.stream = hissing_sounds[randi() % hissing_sounds.size()]
+	hisser.seek(0)
+	hisser.pitch_scale = randf_range(1,2.5) 
+	hisser.play()
+	
+func alert():
+	if Time.get_unix_time_from_system() > alert_cooldown:
+		alerter.stream = alert_sounds[randi() % alert_sounds.size()]
+		alerter.seek(0)
+		#alerter.pitch_scale = randf_range(0.8,1.2) 
+		alerter.play()
+		alert_cooldown = Time.get_unix_time_from_system() + 5
+		#print(Time.get_unix_time_from_system(), " ", alert_cooldown)
+
+
+func _on_snake_noises_finished() -> void:
+	var wait = randi() % 100 / 100.0
+	print("waiting for ", wait)
+	await get_tree().create_timer(wait).timeout
+	hiss()

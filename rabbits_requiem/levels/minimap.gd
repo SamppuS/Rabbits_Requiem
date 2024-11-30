@@ -31,6 +31,7 @@ var grid_size = (cave_depth+1) * 2 # grid size is based on longest possible cave
 @export var sp_mesh : PackedScene
 @export var dir_mesh : PackedScene
 
+
 @export_subgroup("Nodes")
 @export var player : Node3D
 
@@ -118,18 +119,12 @@ func generate_maze():
 	
 	var next_tiles = []
 	
-	#generate 2 new tiles from sp
-	#var next = tile_obj(sp).next_paths()
 	
 	tile_obj(sp).add_dir(2)
 	next_tiles.append(next_tile(sp,2))
 	tile_obj(next_tile(sp,2)).add_dir(flip_dir(2))
-	#for d in next:
-		#var new = next_tile(sp, d)
-		#tile_obj(new).add_dir(flip_dir(d)) #add entraces to new tiles
-		#next_tiles.append(new)
 	
-	
+	tile_obj(sp).add_dir(5)
 	
 	#start generating new tiles until we have wanted depth
 	var i = 0
@@ -152,8 +147,16 @@ func generate_maze():
 			
 			#generate cave
 			var next = tile_obj.next_paths(randi())
+			
+			
 			for d in next:
 				var new = next_tile(tile, d)
+				
+				if new == sp: # remove connection to start pos if one exists
+					#print("I tried to be cringe")
+					tile_obj(next_tile(new, flip_dir(d))).paths[d] = false
+					continue # no new connections to start pos
+				
 				tile_obj(new).add_dir(flip_dir(d)) #add entraces to new tiles
 				new_tiles.append(new)
 		
