@@ -36,9 +36,10 @@ mesh = SubResource("QuadMesh_fk5v6")
 stream = ExtResource("3_ccu61")
 attenuation_model = 2
 volume_db = -35.0
-unit_size = 2.0
+unit_size = 4.0
+max_db = -5.0
 autoplay = true
-max_distance = 3.0
+max_distance = 4.0
 panning_strength = 3.0
 
 [node name="Crunch" type="AudioStreamPlayer3D" parent="."]
