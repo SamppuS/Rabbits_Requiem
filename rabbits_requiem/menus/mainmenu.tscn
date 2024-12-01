@@ -1,0 +1,42 @@
+[gd_scene load_steps=2 format=3 uid="uid://boil8m7sjd0so"]
+
+[ext_resource type="Script" path="res://menus/mainmenu.gd" id="1_3evwv"]
+
+[node name="Mainmenu" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_3evwv")
+
+[node name="start" type="Button" parent="."]
+layout_mode = 2
+offset_left = 102.0
+offset_top = 63.0
+offset_right = 208.0
+offset_bottom = 94.0
+text = "GAME START"
+
+[node name="quit" type="Button" parent="."]
+layout_mode = 0
+offset_left = 106.0
+offset_top = 142.0
+offset_right = 203.0
+offset_bottom = 173.0
+text = "QUIT GAME
+"
+
+[node name="settings" type="Button" parent="."]
+layout_mode = 0
+offset_left = 110.0
+offset_top = 104.0
+offset_right = 192.0
+offset_bottom = 135.0
+text = "SETTINGS
+"
+
+[connection signal="pressed" from="start" to="." method="_on_start_pressed"]
+[connection signal="pressed" from="quit" to="." method="_on_quit_pressed"]
+[connection signal="pressed" from="settings" to="." method="_on_settings_pressed"]

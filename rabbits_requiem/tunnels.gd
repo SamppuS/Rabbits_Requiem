@@ -65,17 +65,7 @@ func _ready(): # we probably don't have grid info here!
 	var environment = $WorldEnvironment.environment
 	var screen_size = get_viewport().get_visible_rect().size
 	var minimap_size = screen_size * minimap_scale
-	minimap_container.size = minimap_size
-	minimap_container.position = Vector2(10, -200)
-	subviewport.size = minimap_size
-	## Set size and position
-	#minimap_container.custom_minimum_size = Vector2(200, 200)  # Adjust size as needed
-	#minimap_container.size = Vector2(200, 200)
-	#minimap_container.position = Vector2(10, -210)  # Adjust position as needed
-	# Get the minimap's SubViewport
 	var minimap_viewport = subviewport
-	minimap_viewport.render_target_update_mode = SubViewport.UPDATE_ALWAYS
-
 	#minimap.send_grid.connect(_on_grid_received)
 	
 	# Save meshes under array "meshes"
@@ -399,3 +389,9 @@ func  snak_action(action : String = ""):
 	for i in path: 
 		snake.add_destination(pos_from_tile(i), i)
 		
+
+func pull_map():
+	minimap_container.size = minimap_size
+	minimap_container.position = Vector2(10, -200)
+	subviewport.size = minimap_size
+	minimap_viewport.render_target_update_mode = SubViewport.UPDATE_ALWAYS
