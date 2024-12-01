@@ -38,6 +38,8 @@ var cam_tilt : Vector3
 var last_movement_dir := 5 # this might be the same as facing
 
 var snak_target
+var shine 
+var shiny_tiles : Array[Vector2i]
 
 const mesh_size = 1.73233866691589 - .05 # true size - gap between tiles
 const tile_offset = mesh_size * 0.22
@@ -122,6 +124,11 @@ func _on_minimap_send_grid(sent_grid: Variant, sp: Variant, dead_ends : Variant)
 				snake_roam_tiles.append(tile)
 				snake_roam_distance += mesh_size
 	
+	# assign shine spots
+	shiny_tiles.append(starting_point)
+	while tile_obj(shiny_tiles[-1]).paths[2]:
+		shiny_tiles.append(next_tile(shiny_tiles[-1], 2))
+	
 	
 
 func _input(event: InputEvent) -> void:
@@ -184,8 +191,15 @@ func move(dir: int): # move player in direction
 	scatter()
 	play("walk")
 	
-	if current in snake.sight: # check if player moved to snake sight
+	# check if player moved to snake sight
+	if current in snake.sight: 
 		snak_action("player")
+
+	# check if player moved to shiny tile
+	if current in shiny_tiles and last_movement_dir in [2,5]:
+		shine.glare(true)
+	else:
+		shine.glare(false)
 
 func draw_cave():
 	for y in range(len(grid)):
@@ -200,8 +214,8 @@ func draw_cave():
 				palikka.material_override = tile_material
 				add_child(palikka)
 	
-	var shine = entrance.instantiate()
-	shine.position = pos_from_tile(starting_point) + tile_offset * dir_to_norm(5)
+	shine = entrance.instantiate()
+	shine.position = pos_from_tile(starting_point) + tile_offset * dir_to_norm(5) + Vector3.UP * player_height
 	add_child(shine)
 	shine.look_at(shine.position + dir_to_norm(5), Vector3.UP)
 
@@ -282,6 +296,29 @@ func flip_dir(i: int): # copy from minimap
 	return (i+3)%6
 
 func _on_player_wants_to_move(direction) -> void:
+	
+	if next_tile(current, direction) in snake.snake_tiles.slice(-2, -1): return
+	if current in snake.snake_tiles:
+		
+		#print("shiver me timbers")
+		
+		
+		var past_dir = flip_dir(last_movement_dir)
+		var can_move_here = [false, false, false, false, false, false]
+		can_move_here[past_dir] = true
+		
+		for dir in range(1,5):
+			
+			if can_move_here[(past_dir + dir - 1) % 6] == true and next_tile(current, (past_dir + dir) % 6) not in snake.snake_tiles:
+				can_move_here[(past_dir + dir) % 6] = true
+			if can_move_here[(past_dir - dir + 1) % 6] == true and next_tile(current, (past_dir - dir) % 6) not in snake.snake_tiles:
+				can_move_here[(past_dir - dir) % 6] = true
+			#print(can_move_here)
+		
+		if !can_move_here[direction]: return
+		
+		#print("giga chad move bro")
+		
 	move(direction)
 	
 func play(sound : String):
@@ -390,7 +427,6 @@ func _on_snake_snaking_complete() -> void:
 	if snak_target in babi_holder[1]:
 		kill_babi(snak_target)
 	snak_action() # trouble maker 2
-	print("snaking complete ig")
 	
 func  snak_action(action : String = ""):
 	var start
@@ -435,7 +471,6 @@ func  snak_action(action : String = ""):
 	for i in path: 
 		snake.add_destination(pos_from_tile(i), i)
 		
-
 
 func _on_snake_snake_moved() -> void:
 	if current in snake.sight and (babi_holder[0].size() != babi_count or snake.next[2]>3):
