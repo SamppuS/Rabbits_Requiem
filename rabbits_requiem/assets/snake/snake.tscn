@@ -1,17 +1,51 @@
-[gd_scene load_steps=5 format=3 uid="uid://e2453vreljj2"]
+[gd_scene load_steps=9 format=3 uid="uid://e2453vreljj2"]
 
 [ext_resource type="Script" path="res://assets/snake/snake.gd" id="1_wnujq"]
 [ext_resource type="PackedScene" uid="uid://b6akk6d2la0br" path="res://assets/snake/snake_segment.tscn" id="2_4iyo3"]
 [ext_resource type="PackedScene" uid="uid://chpmf6rvomro0" path="res://assets/cave/diddy.tscn" id="2_57xv2"]
-[ext_resource type="ArrayMesh" uid="uid://cmkarhmtyu58s" path="res://assets/snake/Snak/snak.obj" id="4_7td73"]
+[ext_resource type="ArrayMesh" uid="uid://c5456ajhnr71a" path="res://assets/snake/Snak/snak_head_still.obj" id="4_7rbg3"]
+[ext_resource type="AudioStream" uid="uid://cq0b6s8ilsf7g" path="res://assets/Sounds/Snake sounds/hiss.wav" id="4_ioe15"]
+[ext_resource type="AudioStream" uid="uid://dsohs5g43ey0s" path="res://assets/Sounds/Snake sounds/hiss 2.wav" id="5_mykn0"]
+[ext_resource type="AudioStream" uid="uid://bos1y1p3xsq20" path="res://assets/Sounds/Snake sounds/snak attak.wav" id="6_p6h7t"]
+[ext_resource type="AudioStream" uid="uid://bdiwnrh62mume" path="res://assets/Sounds/babi sounds/jänisito.wav" id="7_dd7kv"]
 
 [node name="Snake" type="Node3D"]
 script = ExtResource("1_wnujq")
 segment = ExtResource("2_4iyo3")
-thingy = ExtResource("2_57xv2")
+debug_mesh = ExtResource("2_57xv2")
+hissing_sounds = Array[AudioStreamWAV]([ExtResource("4_ioe15"), ExtResource("5_mykn0")])
+alert_sounds = Array[AudioStreamWAV]([ExtResource("6_p6h7t")])
 
 [node name="Head" type="MeshInstance3D" parent="."]
 transform = Transform3D(0.195, 0, 0, 0, 0.195, 0, 0, 0, 0.195, 0, 0, 0)
-mesh = ExtResource("4_7td73")
+mesh = ExtResource("4_7rbg3")
+
+[node name="Snake noises" type="AudioStreamPlayer3D" parent="Head"]
+transform = Transform3D(5.12821, 0, 0, 0, 5.12821, 0, 0, 0, 5.12821, 0, 0, 0)
+volume_db = -5.0
+unit_size = 13.0
+max_db = 0.0
+max_distance = 20.0
+panning_strength = 3.0
+
+[node name="Alert player" type="AudioStreamPlayer3D" parent="Head"]
+transform = Transform3D(5.12821, 0, 0, 0, 5.12821, 0, 0, 0, 5.12821, 0, 0, 0)
+volume_db = -10.0
+max_db = -10.0
+pitch_scale = 0.8
+max_distance = 20.0
+panning_strength = 3.0
 
 [node name="OmniLight3D" type="OmniLight3D" parent="."]
+
+[node name="Mumbling" type="AudioStreamPlayer3D" parent="."]
+visible = false
+stream = ExtResource("7_dd7kv")
+attenuation_model = 2
+volume_db = -35.0
+unit_size = 2.0
+autoplay = true
+max_distance = 3.0
+panning_strength = 3.0
+
+[connection signal="finished" from="Head/Snake noises" to="." method="_on_snake_noises_finished"]

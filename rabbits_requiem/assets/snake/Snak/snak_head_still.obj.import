@@ -1,0 +1,22 @@
+[remap]
+
+importer="wavefront_obj"
+importer_version=1
+type="Mesh"
+uid="uid://c5456ajhnr71a"
+path="res://.godot/imported/snak_head_still.obj-04b5c7d3e22c2028d10bd02998a9b0ec.mesh"
+
+[deps]
+
+files=["res://.godot/imported/snak_head_still.obj-04b5c7d3e22c2028d10bd02998a9b0ec.mesh"]
+
+source_file="res://assets/snake/Snak/snak_head_still.obj"
+dest_files=["res://.godot/imported/snak_head_still.obj-04b5c7d3e22c2028d10bd02998a9b0ec.mesh", "res://.godot/imported/snak_head_still.obj-04b5c7d3e22c2028d10bd02998a9b0ec.mesh"]
+
+[params]
+
+generate_tangents=true
+scale_mesh=Vector3(1, 1, 1)
+offset_mesh=Vector3(0, 0, 0)
+optimize_mesh=true
+force_disable_mesh_compression=false
