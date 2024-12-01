@@ -37,6 +37,8 @@ var old_goals : Array[Array] = [[],[]] # copy of goals to recognize updates
 var snake_path = []
 var snake_body = []
 
+var snake_tiles = []
+
 var path_index = 0  # Current progress along the path
 var speed = .25   # Speed of movement
 
@@ -257,6 +259,8 @@ func advance():
 	
 	emit_signal("snake_moved")
 	
+	get_snake_tiles()
+	
 	#drawing sight
 	if debug_draw:
 		for mark in markers:
@@ -366,3 +370,7 @@ func _on_snake_noises_finished() -> void:
 	print("waiting for ", wait)
 	await get_tree().create_timer(wait).timeout
 	hiss()
+
+
+func get_snake_tiles():
+	snake_tiles = goals[1].slice(max(next[2]-3, 0), next[2] + 1)

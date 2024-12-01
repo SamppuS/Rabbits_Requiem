@@ -1,15 +1,47 @@
-[gd_scene load_steps=3 format=3 uid="uid://yp1omp0talc8"]
+[gd_scene load_steps=7 format=3 uid="uid://yp1omp0talc8"]
+
+[ext_resource type="Script" path="res://assets/cave/entrance.gd" id="1_3yr76"]
+[ext_resource type="Texture2D" uid="uid://ch7ihoqcnxs75" path="res://assets/images/Glares/output_image.png" id="2_ph5pa"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_0aigc"]
+metallic = 1.0
+metallic_specular = 1.0
 emission_enabled = true
-emission = Color(1, 1, 1, 1)
-emission_energy_multiplier = 10.0
+emission = Color(0.784314, 1, 0.690196, 1)
+emission_energy_multiplier = 5.0
 anisotropy = -0.75
+grow_amount = 4.085
 
 [sub_resource type="QuadMesh" id="QuadMesh_fvf6y"]
 
-[node name="Entrance" type="Node3D"]
+[sub_resource type="QuadMesh" id="QuadMesh_gfv8w"]
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_qdr8v"]
+transparency = 1
+blend_mode = 1
+no_depth_test = true
+albedo_texture = ExtResource("2_ph5pa")
+emission_enabled = true
+emission = Color(1, 1, 1, 1)
+emission_energy_multiplier = 5.0
+subsurf_scatter_strength = 1.0
+billboard_mode = 1
+billboard_keep_scale = true
+grow_amount = -0.1
+proximity_fade_distance = 10.0
+distance_fade_max_distance = 5.0
+
+[node name="Entrance" type="Node3D"]
+transform = Transform3D(0.4, 0, 0, 0, 0.4, 0, 0, 0, 0.4, 0, 0, 0)
+script = ExtResource("1_3yr76")
+
+[node name="Whiteness" type="MeshInstance3D" parent="."]
 material_override = SubResource("StandardMaterial3D_0aigc")
 mesh = SubResource("QuadMesh_fvf6y")
+
+[node name="Glare" type="MeshInstance3D" parent="."]
+transform = Transform3D(10, 0, 0, 0, 10, 0, 0, 0, 10, 0, 0.215042, 0)
+transparency = 0.1
+cast_shadow = 0
+mesh = SubResource("QuadMesh_gfv8w")
+surface_material_override/0 = SubResource("StandardMaterial3D_qdr8v")
