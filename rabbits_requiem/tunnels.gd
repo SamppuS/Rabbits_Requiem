@@ -141,6 +141,7 @@ func _input(event: InputEvent) -> void:
 		
 	if Input.is_action_just_pressed("e"): # snake new target
 		snak_action("player")
+	
 			
 	if event is InputEventMouseMotion: # looking around with mouse
 		var screen_size = get_viewport().get_visible_rect().size
@@ -462,20 +463,14 @@ func  snak_action(action : String = ""):
 		snake.add_destination(pos_from_tile(i), i)
 		
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-func pull_map():
-	minimap_container.size = minimap_size
-	minimap_container.position = Vector2(10, -200)
-	subviewport.size = minimap_size
-	minimap_viewport.render_target_update_mode = SubViewport.UPDATE_ALWAYS
-=======
+#func pull_map():
+	#minimap_container.size = minimap_size
+	#minimap_container.position = Vector2(10, -200)
+	#subviewport.size = minimap_size
+	#minimap_viewport.render_target_update_mode = SubViewport.UPDATE_ALWAYS
 
-=======
->>>>>>> 78c28db635f400e8b7eb29735f3b436bc4f6d3ae
 func _on_snake_snake_moved() -> void:
 	if current in snake.sight and (babi_holder[0].size() != babi_count or snake.next[2]>3):
 		#print("player seen!")
 		await get_tree().create_timer(0.1).timeout # wait fixed weird generation bug
 		snak_action("player")
->>>>>>> 4f8b8c915658a3dee95d25b9e37703d63686c9b2
