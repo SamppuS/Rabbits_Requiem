@@ -323,7 +323,6 @@ func pos_from_tile(pos : Vector2i) -> Vector3:
 	return Vector3(-pos.x + pos.y%2*0.5, 0, float(pos.y) - pos.y * (1-sqrt(3)/2)) * mesh_size
 	
 func straighten():
-	print(path_index)
 	advance()
 	advance()
 	advance()
@@ -367,7 +366,7 @@ func alert():
 
 func _on_snake_noises_finished() -> void:
 	var wait = randi() % 100 / 100.0
-	print("waiting for ", wait)
+	#print("waiting for ", wait)
 	await get_tree().create_timer(wait).timeout
 	hiss()
 

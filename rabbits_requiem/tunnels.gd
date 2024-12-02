@@ -76,6 +76,7 @@ func _ready(): # we probably don't have grid info here!
 	#minimap.send_grid.connect(_on_grid_received)
 	
 	# Save meshes under array "meshes"
+	print("Saving meshes...")
 	var dir = DirAccess.open("res://palikoita/Closed Meshes/")
 	if dir:
 		dir.list_dir_begin()
@@ -93,14 +94,20 @@ func _ready(): # we probably don't have grid info here!
 		meshes = []  # Clear the meshes array before loading
 		for file_name in mesh_files:
 			meshes.append(load("res://palikoita/Closed Meshes/" + file_name))
+	print("Drawing cave...")
 	draw_cave()
+	print("Spawning babis...")
 	spawn_babis()
+	print("Taking fist snak action...")
 	snak_action("babi")
+	print("Straightening snake...")
 	snake.straighten()
+	print("---")
 	
 
 
 func _on_minimap_send_grid(sent_grid: Variant, sp: Variant, dead_ends : Variant) -> void:
+	print("grid has been recieved")
 	grid = sent_grid
 	starting_point = sp
 	current = starting_point
@@ -108,17 +115,22 @@ func _on_minimap_send_grid(sent_grid: Variant, sp: Variant, dead_ends : Variant)
 	player.position = pos_from_tile(current) + Vector3(0,player_height,0)
 	
 	# assign roam spots
+	print("Making roam tiles...")
 	while snake_roam_tiles.size() < min_roam_tiles and snake_roam_tiles.size() < dead_ends.size():
 		for tile in dead_ends:
 			if distance_in_vec3(tile, starting_point) < snake_roam_distance and tile not in snake_roam_tiles:
 				snake_roam_tiles.append(tile)
-				snake_roam_distance += mesh_size
+		snake_roam_distance += mesh_size
+		if snake_roam_distance > 1000:
+			print("snake roam tiles were reduced to ", snake_roam_tiles.size(), " from ", min_roam_tiles)
+			break
 	
 	# assign shine spots
+	print("Making shine tiles...")
 	shiny_tiles.append(starting_point)
 	while tile_obj(shiny_tiles[-1]).paths[2]:
 		shiny_tiles.append(next_tile(shiny_tiles[-1], 2))
-	
+	print("---")
 	
 
 func _input(event: InputEvent) -> void:

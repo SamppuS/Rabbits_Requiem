@@ -4,13 +4,14 @@ signal send_grid(grid, sp, dead_ends)
 
 @export_category("Exports")
 @export_subgroup("Maze Settings")
-@export var cave_depth : int = 14 # generates cave systems that are n steps away from sp.
-@export var average_tile_count : int = 80 # the closer the av_tilecount is to cave depth tile average, the faster cave is generated 
+@export var cave_depth : int = 11 # generates cave systems that are n steps away from sp.
+@export var average_tile_count : int = 100 # the closer the av_tilecount is to cave depth tile average, the faster cave is generated 
 @export var max_variance: int = 10 # higher variance leads to faster cave generation but more random results
 
 @export var traffic_limit: int = 20 # controls how densely caves are generated (around 20 seems good!!!)
 
 @export var min_dead_ends: int = 20 # this is to allow for more babi spawns
+@export var min_loops: int = 11 #20 # this is to allow for more babi spawns
 
 # Varying the ratio between cave_depth and average_tile_count leads to differently shaped caves!
 # Examples:
@@ -62,20 +63,35 @@ func _ready():
 	
 	
 	current = Vector2i(cave_depth, cave_depth)
+	var generations = 0
+	var start_time = Time.get_ticks_usec()
 	while true:
 		generate_maze()
+		generations += 1
+		if generations % 100 == 0:
+			var time = (Time.get_ticks_usec() - start_time) / 1000000.0
+			
+			print("%.2f: " % time, "Generating maze... ", generations)
+		
 		var cavern = count_cave_tiles()
 		var rooms = count_dead_ends()
+		var loops = count_loops()
 		if (cavern > average_tile_count + max_variance/2 
 			or cavern < average_tile_count - max_variance/2
-			or rooms < min_dead_ends): # whoa long if statement
+			or rooms < min_dead_ends
+			or loops < min_loops): # whoa long if statement
 			clear_cave()
 		else:
-			print("Number of cave tiles is ", cavern)
+			var time = (Time.get_ticks_usec() - start_time) / 1000000.0
+			time 
+			print("cave took ", generations, " generations and %.2f" % time, " s" )
+			print("We have ", cavern, " tiles and ", loops, " loops")
+			print("---")
 			break
 	send_grid.emit(grid, sp, dead_ends)
 	draw_cave()
 	player.position = pos_from_tile(current)
+	
 
 
 func _input(event):
@@ -249,3 +265,74 @@ func count_dead_ends():
 				dead_ends.append(Vector2i(x,y))
 				total += 1
 	return total
+
+func count_loops():
+	# checks paths from right to left
+	
+	#print("sp is ", sp)
+	
+	var count = 0
+	var been_here = [sp]
+	var cross_road = [[sp, [2]]] # [tile with cross (v2i), [unchecked directions]]
+	var checking = sp
+	var last_dir = 2
+	
+	
+	while !cross_road.is_empty():
+		
+		if cross_road[-1][1].size() == 0:
+			print("WARNING WARNING WARNING WARNING WARNING")
+			break
+		
+		last_dir = cross_road[-1][1][-1]
+		checking = next_tile(cross_road[-1][0], last_dir)
+		
+		#print("I chose to go ", last_dir, " from ", cross_road[-1][0])
+		
+		#print("I removed ", cross_road[-1][1][-1], " from ", cross_road[-1][0])
+		cross_road[-1][1].remove_at(cross_road[-1][1].size() - 1)
+		#print("Now ", cross_road[-1][0], " is ", cross_road[-1][1])
+		if cross_road[-1][1].is_empty():
+			#print("I removed ", cross_road[-1][0])
+			cross_road.remove_at(cross_road.size() - 1)
+			
+		
+		var directions = []
+		
+		 # loop directions from left to right relative to last_dir
+		for dir in range(5):
+			var checking_dir = (last_dir -2 + 6 + dir) % 6
+			
+			# if path was found
+			if tile_obj(checking).paths[checking_dir]:
+				var neighbour = next_tile(checking, checking_dir)
+				
+				# check if path leads to visited tile
+				if neighbour in been_here:
+					count += 1
+					#print("we reached loop by going ", checking_dir, " from ", checking," total count is " , count)
+					
+					# remove opposing road.
+					for item in range(cross_road.size()):
+						if cross_road[item][0] == neighbour:
+							cross_road[item][1].remove_at(cross_road[item][1].find(flip_dir(checking_dir)))
+							#print("yippee double removal!")
+							
+							if cross_road[item][1].is_empty():
+								#print("I removed ", cross_road[-1][0])
+								cross_road.remove_at(item)
+							
+							break
+					continue # go to next dir
+					
+				# if not, add direction to cross roads
+				directions.append(checking_dir)
+		
+		# add direction array to cross roads along with relative tile
+		if !directions.is_empty():
+			cross_road.append([checking, directions])
+		#else: print("I hit a dead end.")
+		
+		# mark tile as checked
+		been_here.append(checking)
+	return count
