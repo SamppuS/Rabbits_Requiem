@@ -67,6 +67,18 @@ var mesh_openings = [ #These are the right patterns but in the wrong phase. So t
 	[true, false, true, true, false, true]      # 42
 ]
 
+const walk_speed = 0.75
+var walk_path : Path3D
+var walk_follow : PathFollow3D
+var walking : bool = false
+var walk_progress := 0.0
+
+const rotation_speed = 75
+var target_rotation : float
+var previous_rotation : float
+var rotating : bool = false
+var rotation_progress := 0.0
+
 
 func _ready(): # we probably don't have grid info here!
 	var environment = $WorldEnvironment.environment
@@ -74,6 +86,15 @@ func _ready(): # we probably don't have grid info here!
 	var minimap_size = screen_size * minimap_scale
 	var minimap_viewport = subviewport
 	#minimap.send_grid.connect(_on_grid_received)
+	
+	# set up walk animation
+	walk_path = Path3D.new()
+	walk_follow = PathFollow3D.new()
+	walk_follow.loop = false
+	walk_follow.set_cubic_interpolation(true)
+
+	add_child(walk_path)
+	walk_path.add_child(walk_follow)
 	
 	# Save meshes under array "meshes"
 	print("Saving meshes...")
@@ -104,6 +125,29 @@ func _ready(): # we probably don't have grid info here!
 	snake.straighten()
 	print("---")
 	
+
+func _process(delta: float) -> void:
+	if walking:
+		var max_walk = walk_path.curve.get_baked_length()
+		walk_progress += walk_speed * delta
+		walk_follow.set_progress_ratio(smoothstep(0, max_walk, walk_progress))
+		player.position = walk_follow.position
+		
+		if walk_follow.get_progress_ratio() >= 1:
+			walking = false
+			#print("nice im done walking")
+			surround()
+	
+	if rotating:
+		var full_rotation = int(previous_rotation - target_rotation + 360) % 360
+		if full_rotation > 180: full_rotation -= 360
+		rotation_progress += rotation_speed * delta * sign(full_rotation)
+		cam_default.y = previous_rotation - full_rotation * smoothstep(0, full_rotation, rotation_progress)
+		camFP.rotation_degrees = cam_default + cam_tilt
+		
+		if abs(rotation_progress) >= abs(full_rotation):
+			rotating = false
+			#print("yo we rotated")
 
 
 func _on_minimap_send_grid(sent_grid: Variant, sp: Variant, dead_ends : Variant) -> void:
@@ -187,9 +231,24 @@ func move(dir: int): # move player in direction
 	if current == starting_point and dir == 5: 
 		return # Here would be leaving the game :)
 	
+	if walking: return
+	
+	#player.position = pos_from_tile(current) + Vector3(0,player_height,0) + dir_to_norm(flip_dir(facing)) * tile_offset
+	var start = player.position
+	var mid = pos_from_tile(current) + Vector3(0,player_height,0)
+	
 	set_facing(dir)
 	current = next_tile(current, dir)
-	player.position = pos_from_tile(current) + Vector3(0,player_height,0) + dir_to_norm(flip_dir(facing)) * tile_offset
+	
+	var end = pos_from_tile(current) + Vector3(0,player_height,0) + dir_to_norm(flip_dir(facing)) * tile_offset
+	var skip_mid = dir in [last_movement_dir, flip_dir(last_movement_dir)]
+	walk_path.curve = generate_turn(start, mid, end, skip_mid)
+	walk_follow.set_progress_ratio(0)
+	walk_progress = 0
+	walking = true
+	
+	
+	
 	last_movement_dir = dir
 	scatter()
 	play("walk")
@@ -253,14 +312,18 @@ func change_cam(mode: int = -1):
 		environment.volumetric_fog_enabled = false
 	else:
 		change_cam((cam_mode + 1) % 2) # whoa recursion!
-		
-		
+
 
 func set_facing(dir: int):
-	cam_default = Vector3(0, 150 - 60 * (dir-2),0)
+	target_rotation = (150 - 60 * (dir-2)) % 360
+	previous_rotation = int(cam_default.y + 360) % 360
+
 	facing = dir
-	camFP.rotation_degrees = cam_default + cam_tilt
 	
+	rotation_progress = 0
+	rotating = true
+
+
 func dir_to_norm(dir: int): # copy from minimap
 	var normals = [
 		Vector3(cos(0), 0, sin(0)),                  # (1, 0)
@@ -300,6 +363,8 @@ func flip_dir(i: int): # copy from minimap
 
 func _on_player_wants_to_move(direction) -> void:
 	
+	
+	if walking: return
 	if next_tile(current, direction) in snake.snake_tiles.slice(-2, -1): return
 	if current in snake.snake_tiles:
 		
@@ -321,7 +386,8 @@ func _on_player_wants_to_move(direction) -> void:
 		if !can_move_here[direction]: return
 		
 		#print("giga chad move bro")
-		
+	
+	
 	move(direction)
 	
 func play(sound : String):
@@ -486,3 +552,49 @@ func _on_snake_snake_moved() -> void:
 		#print("player seen!")
 		await get_tree().create_timer(0.1).timeout # wait fixed weird generation bug
 		snak_action("player")
+		
+func generate_turn(start: Vector3, mid: Vector3, end: Vector3, skip : bool):
+	
+	var turn_path : PackedVector3Array
+	var step_size = 0.01  # Now supports smaller step sizes
+
+	# generate path along goals
+	var path = Curve3D.new()
+	path.add_point(start)
+	if not skip:
+		path.add_point(mid)
+	path.add_point(end)
+	
+	# subdivide path
+	var discrete_path = []
+	var i = 0
+	while i < path.get_baked_length():
+		discrete_path.append(path.sample_baked(i))
+		i += step_size
+	
+	# smooth curve
+	discrete_path = moving_average(discrete_path, 30)
+	
+	path = Curve3D.new()
+	for a in discrete_path:
+		path.add_point(a)
+	
+	return path
+
+
+func moving_average(arr: PackedVector3Array, window: int = 0):
+	var new_array = []
+	for i in range(len(arr)):
+		var vectorsum = arr[i]
+		var mid_point = arr[i]
+		
+		var max_n = 0
+		for n in range(window):
+			if i-n >= 0 and i+n <= len(arr) - 1:
+				vectorsum += arr[i-n]
+				vectorsum += arr[i+n]
+				max_n += 1
+
+		new_array.append(vectorsum / (max_n * 2 + 1 ))
+		
+	return new_array

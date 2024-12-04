@@ -70,6 +70,7 @@ environment = SubResource("Environment_yoqi5")
 [node name="Snake" parent="." instance=ExtResource("8_di8tg")]
 
 [node name="Control" type="Control" parent="."]
+visible = false
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
