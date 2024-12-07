@@ -44,7 +44,7 @@ var shine
 var shiny_tiles : Array[Vector2i]
 
 const mesh_size = 1.73233866691589 - .05 # true size - gap between tiles
-const tile_offset = mesh_size * 0.22
+var tile_offset = mesh_size * 0.22
 
 var snake_roam_distance = mesh_size * 6 # distance form start pos that snake is allowed to roam
 var snake_roam_tiles : Array # specific roam tiles
@@ -69,18 +69,18 @@ var mesh_openings = [ #These are the right patterns but in the wrong phase. So t
 	[true, false, true, true, false, true]      # 42
 ]
 
-const walk_speed = 0.75
+var walk_speed = 0.75
 var walk_path : Path3D
 var walk_follow : PathFollow3D
 var walking : bool = false
 var walk_progress := 0.0
 
-const rotation_speed = 75 / 50
+const rotation_speed = 0.8
 var target_rotation : float
 var previous_rotation : float
 var rotating : bool = false
 var rotation_progress := 0.0
-var rotadir = 0
+var rotadir = 1
 
 
 func _ready(): # we probably don't have grid info here!
@@ -137,6 +137,9 @@ func _process(delta: float) -> void:
 		player.position = walk_follow.position
 		
 		if walk_follow.get_progress_ratio() >= 1:
+			if current == next_tile(starting_point, 5):
+				leave()
+			
 			walking = false
 			#print("nice im done walking")
 			surround()
@@ -144,14 +147,16 @@ func _process(delta: float) -> void:
 	if rotating:
 		var full_rotation = int(previous_rotation - target_rotation + 360) % 360
 		if full_rotation > 182: full_rotation -= 360
-		
+		if abs(full_rotation) < 175:
+			rotadir = 1
+		print(rotadir)
 		rotation_progress += rotation_speed * delta * full_rotation
-		cam_default.y = previous_rotation - full_rotation * smoothstep(0, full_rotation, rotation_progress)
+		cam_default.y = previous_rotation - full_rotation * smoothstep(0, full_rotation, rotation_progress) * rotadir
 		camFP.rotation_degrees = cam_default + cam_tilt
 		
 		if abs(rotation_progress) >= abs(full_rotation):
 			rotating = false
-			rotadir = 0
+			 # sets to 0
 			#print("yo we rotated")
 
 
@@ -177,6 +182,7 @@ func _on_minimap_send_grid(sent_grid: Variant, sp: Variant, dead_ends : Variant)
 	# assign shine spots
 	print("Making shine tiles...")
 	shiny_tiles.append(starting_point)
+	shiny_tiles.append(next_tile(starting_point, 5))
 	while tile_obj(shiny_tiles[-1]).paths[2]:
 		shiny_tiles.append(next_tile(shiny_tiles[-1], 2))
 	print("---")
@@ -185,6 +191,7 @@ func _on_minimap_send_grid(sent_grid: Variant, sp: Variant, dead_ends : Variant)
 func _input(event: InputEvent) -> void:
 	if cam_mode == 1:
 		if Input.is_action_just_pressed("d") and !rotating and !walking: # turn left
+			rotadir = 1
 			set_facing(flip_dir(facing))
 			play("turn")
 
@@ -194,7 +201,6 @@ func _input(event: InputEvent) -> void:
 			play("turn")
 
 		elif Input.is_action_just_pressed("w") and tile_obj(current).paths[facing]: # move forwards
-			rotadir = 1
 			move(facing)
 			
 		elif Input.is_action_just_pressed("z"): # spawn direction blocks
@@ -237,16 +243,22 @@ func scatter(): # despawn direction blocks
 	s_dir_holder = []
 
 func move(dir: int): # move player in direction
+	if walking or rotating: 
+		return
+
 	if current == starting_point and dir == 5: 
-		return # Here would be leaving the game :)
+		print("leaving lol")
+		tile_offset *= 3.75
+		walk_speed /= 5
+		#return # Here would be leaving the game :)
 	
-	if walking: return
 	
 	#player.position = pos_from_tile(current) + Vector3(0,player_height,0) + dir_to_norm(flip_dir(facing)) * tile_offset
 	var start = player.position
 	var mid = pos_from_tile(current) + Vector3(0,player_height,0)
 	
 	set_facing(dir)
+	
 	current = next_tile(current, dir)
 	
 	var end = pos_from_tile(current) + Vector3(0,player_height,0) + dir_to_norm(flip_dir(facing)) * tile_offset
@@ -271,6 +283,7 @@ func move(dir: int): # move player in direction
 		shine.glare(true)
 	else:
 		shine.glare(false)
+		print("NOOOOO ", current in shiny_tiles )
 
 func draw_cave():
 	for y in range(len(grid)):
@@ -324,6 +337,7 @@ func change_cam(mode: int = -1):
 
 
 func set_facing(dir: int):
+	if walking or rotating: return
 	target_rotation = (150 - 60 * (dir-2)) % 360
 	previous_rotation = int(cam_default.y + 360) % 360
 
@@ -614,3 +628,7 @@ func moving_average(arr: PackedVector3Array, window: int = 0):
 		new_array.append(vectorsum / (max_n * 2 + 1 ))
 		
 	return new_array
+
+func leave():
+	print("BAZINGA!")
+	get_tree().change_scene_to_file("res://menus/victorymenu.tscn")
