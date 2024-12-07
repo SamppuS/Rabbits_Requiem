@@ -137,7 +137,7 @@ func _process(delta: float) -> void:
 		player.position = walk_follow.position
 		
 		if walk_follow.get_progress_ratio() >= 1:
-			if current == next_tile(starting_point, 5):
+			if current == next_tile(starting_point, 5) and last_movement_dir == 5:
 				leave()
 			
 			walking = false
@@ -183,7 +183,6 @@ func _on_minimap_send_grid(sent_grid: Variant, sp: Variant, dead_ends : Variant)
 	shiny_tiles.append(starting_point)
 	while tile_obj(shiny_tiles[-1]).paths[2]:
 		shiny_tiles.append(next_tile(shiny_tiles[-1], 2))
-	shiny_tiles.append(next_tile(starting_point, 5))
 	print("---")
 	
 
@@ -279,7 +278,7 @@ func move(dir: int): # move player in direction
 		snak_action("player")
 
 	# check if player moved to shiny tile
-	if current in shiny_tiles and last_movement_dir in [2,5]:
+	if current in shiny_tiles and last_movement_dir in [2,5] or (current == next_tile(starting_point, 5) and last_movement_dir == 5):
 		shine.glare(true)
 	else:
 		shine.glare(false)
