@@ -149,7 +149,6 @@ func _process(delta: float) -> void:
 		if full_rotation > 182: full_rotation -= 360
 		if abs(full_rotation) < 175:
 			rotadir = 1
-		print(rotadir)
 		rotation_progress += rotation_speed * delta * full_rotation
 		cam_default.y = previous_rotation - full_rotation * smoothstep(0, full_rotation, rotation_progress) * rotadir
 		camFP.rotation_degrees = cam_default + cam_tilt
@@ -230,6 +229,7 @@ func surround(): # spawn direction blocks around player
 			var surrounder = selectable_dir.instantiate()
 			
 			surrounder.position = pos_from_tile(current) + norm * .5 + Vector3(0,player_height,0)
+			if dir == flip_dir(last_movement_dir): surrounder.position += norm * 0.6
 			add_child(surrounder)
 			surrounder.look_at(surrounder.position + norm, Vector3.UP)
 			surrounder.represent = dir
@@ -283,7 +283,6 @@ func move(dir: int): # move player in direction
 		shine.glare(true)
 	else:
 		shine.glare(false)
-		print("NOOOOO ", current in shiny_tiles )
 
 func draw_cave():
 	for y in range(len(grid)):
