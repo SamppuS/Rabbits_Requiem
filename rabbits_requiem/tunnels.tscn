@@ -105,6 +105,7 @@ autoplay = true
 
 [node name="pausemenu" parent="." instance=ExtResource("12_5a0ey")]
 
+[connection signal="jumping_scaring" from="." to="Snake" method="_on_tunnels_jumping_scaring"]
 [connection signal="snake_moved" from="Snake" to="." method="_on_snake_snake_moved"]
 [connection signal="snaking_complete" from="Snake" to="." method="_on_snake_snaking_complete"]
 [connection signal="send_grid" from="Control/SubViewportContainer/SubViewport/Minimap" to="." method="_on_minimap_send_grid"]

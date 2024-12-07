@@ -11,14 +11,19 @@ var new_material
 
 var represent : int # holds information about direction
 
+var player_alive = true
+
 func _ready():
 	new_material = StandardMaterial3D.new()
 	new_material.albedo_color = Color("#646464")
 	mesh_instance.material_override = new_material
 	arrow.transparency = 1
+	
+	get_parent().connect("jumping_scaring", _on_jumping_scaring)
 
 
 func _on_static_body_3d_mouse_entered() -> void:
+	if !player_alive: return
 	#print("great heavens!")
 	mesh_instance.material_override.albedo_color = Color("#37ff94")
 	lamp.light_energy = .03
@@ -40,3 +45,8 @@ func _on_static_body_3d_input_event(camera: Node, event: InputEvent, event_posit
 
 func despawn():
 	queue_free()
+
+func _on_jumping_scaring():
+	player_alive = false
+	_on_static_body_3d_mouse_exited()
+	

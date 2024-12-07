@@ -1,4 +1,5 @@
 extends Node3D
+signal jumping_scaring()
 
 @export_subgroup("Parameters")
 @export var minimap_scale := 0.3
@@ -8,7 +9,6 @@ extends Node3D
 @export_subgroup("Nodes+")
 @export var player : Node3D
 @export var tile_material : StandardMaterial3D
-
 
 @export_subgroup("Scenes")
 @export var selectable_dir : PackedScene
@@ -40,6 +40,7 @@ var cam_tilt : Vector3
 var last_movement_dir := 5 # this might be the same as facing
 
 var snak_target
+const snake_hitbox = 0.6
 var shine 
 var shiny_tiles : Array[Vector2i]
 
@@ -82,6 +83,7 @@ var rotating : bool = false
 var rotation_progress := 0.0
 var rotadir = 1
 
+var alive := true
 
 func _ready(): # we probably don't have grid info here!
 	var environment = $WorldEnvironment.environment
@@ -130,7 +132,7 @@ func _ready(): # we probably don't have grid info here!
 	
 
 func _process(delta: float) -> void:
-	if walking:
+	if walking and alive:
 		var max_walk = walk_path.curve.get_baked_length()
 		walk_progress += walk_speed * delta
 		walk_follow.set_progress_ratio(smoothstep(0, max_walk, walk_progress))
@@ -143,7 +145,7 @@ func _process(delta: float) -> void:
 			walking = false
 			#print("nice im done walking")
 			surround()
-	
+
 	if rotating:
 		var full_rotation = int(previous_rotation - target_rotation + 360) % 360
 		if full_rotation > 182: full_rotation -= 360
@@ -155,8 +157,9 @@ func _process(delta: float) -> void:
 		
 		if abs(rotation_progress) >= abs(full_rotation):
 			rotating = false
-			 # sets to 0
 			#print("yo we rotated")
+	if player.position.distance_to(snake.head.position) < snake_hitbox and alive:
+		jump_scare()
 
 
 func _on_minimap_send_grid(sent_grid: Variant, sp: Variant, dead_ends : Variant) -> void:
@@ -187,6 +190,7 @@ func _on_minimap_send_grid(sent_grid: Variant, sp: Variant, dead_ends : Variant)
 	
 
 func _input(event: InputEvent) -> void:
+	if !alive: return
 	if cam_mode == 1:
 		if Input.is_action_just_pressed("d") and !rotating and !walking: # turn left
 			rotadir = 1
@@ -630,3 +634,11 @@ func moving_average(arr: PackedVector3Array, window: int = 0):
 func leave():
 	print("BAZINGA!")
 	get_tree().change_scene_to_file("res://menus/victorymenu.tscn")
+	
+
+func jump_scare():
+	emit_signal("jumping_scaring")
+	print("oh wow that's tragic")
+	alive = false
+	await get_tree().create_timer(1).timeout
+	get_tree().change_scene_to_file("res://menus/deathmenu.tscn")

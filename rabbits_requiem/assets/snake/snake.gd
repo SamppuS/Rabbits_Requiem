@@ -14,7 +14,7 @@ var alert_cooldown = 0
 
 var marker
 var markers = []
-
+var player_alive = true
 
 @onready var head := $Head
 
@@ -81,6 +81,7 @@ func _ready() -> void:
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
+	if !player_alive: return
 	if !goals[0].is_empty() and goals != old_goals:
 		snake_path = generate_path()
 		if path_index > 100 and times_moved > 3: # times moved is to make game start correctly
@@ -211,7 +212,6 @@ func clear_path(): # Calling before snake having moved at least "keep_on_clear" 
 		
 	#get_tangents()
 	
-
 func find_best_index():
 	var best = [0, 100]
 	for i in range(min(len(snake_path) - pt_frequency * 2, pt_frequency * 2), len(snake_path)):
@@ -273,7 +273,6 @@ func advance():
 			add_child(marker2)
 			markers.append(marker2)
 	
-
 func get_tangents():
 	tangent_path = []
 	for i in len(snake_path) - 1:
@@ -347,7 +346,6 @@ func redistribute_path(points: Array[Vector3]) -> Array[Vector3]:
 	
 	return redistributed_points
 	
-
 func hiss():
 	hisser.stream = hissing_sounds[randi() % hissing_sounds.size()]
 	hisser.seek(0)
@@ -363,13 +361,14 @@ func alert():
 		alert_cooldown = Time.get_unix_time_from_system() + 5
 		#print(Time.get_unix_time_from_system(), " ", alert_cooldown)
 
-
 func _on_snake_noises_finished() -> void:
+	if !player_alive: return
 	var wait = randi() % 100 / 100.0
-	#print("waiting for ", wait)
 	await get_tree().create_timer(wait).timeout
 	hiss()
 
-
 func get_snake_tiles():
 	snake_tiles = goals[1].slice(max(next[2]-3, 0), next[2] + 1)
+
+func _on_tunnels_jumping_scaring() -> void:
+	player_alive = false
