@@ -3,10 +3,11 @@ extends Node3D
 signal babi_wants_to_die(location)
 
 @export var cruches : Array[AudioStreamWAV]
+@export var pickups : Array[AudioStreamWAV]
 
 @onready var body = $StaticBody3D
 @onready var mumbling = $Mumbling
-@onready var cruncher = $Crunch
+@onready var speaker = $FinalWords
 
 var location : Vector2i 
 
@@ -18,12 +19,17 @@ func _ready() -> void:
 func die():
 	body.visible = false
 	mumbling.playing = false
-	#cruncher
-	cruncher.stream = cruches[randi() % len(cruches)]
-	cruncher.seek(0)
-	cruncher.play()
-	#continues in "_on_crunch_finished()"
+	speaker.stream = cruches[randi() % len(cruches)]
+	speaker.seek(0)
+	speaker.play()
 	
+func yoink():
+	body.visible = false
+	mumbling.playing = false
+	speaker.stream = pickups[randi() % len(pickups)]
+	speaker.seek(0)
+	speaker.play()
+	speaker.volume_db = -35
 
 func _on_static_body_3d_input_event(camera: Node, event: InputEvent, event_position: Vector3, normal: Vector3, shape_idx: int) -> void:
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
@@ -31,5 +37,5 @@ func _on_static_body_3d_input_event(camera: Node, event: InputEvent, event_posit
 
 
 func _on_crunch_finished() -> void:
-	#print("I hav deid :(")
+	speaker.volume_db = -20
 	queue_free()

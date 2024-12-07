@@ -10,12 +10,14 @@ extends Node3D
 @export var tile_material : StandardMaterial3D
 
 
-@export_subgroup("Scenes+")
-@export var walking_sounds : Array[AudioStreamWAV]
+@export_subgroup("Scenes")
 @export var selectable_dir : PackedScene
 @export var babi_scene : PackedScene
 @export var entrance : PackedScene
 
+@export_subgroup("Sounds")
+@export var walking_sounds : Array[AudioStreamWAV]
+@export var turnin_sounds : Array[AudioStreamWAV]
 
 @onready var camTop = $Spelare/CamTop
 @onready var camFP = $Spelare/CamFP
@@ -73,11 +75,12 @@ var walk_follow : PathFollow3D
 var walking : bool = false
 var walk_progress := 0.0
 
-const rotation_speed = 75
+const rotation_speed = 75 / 50
 var target_rotation : float
 var previous_rotation : float
 var rotating : bool = false
 var rotation_progress := 0.0
+var rotadir = 0
 
 
 func _ready(): # we probably don't have grid info here!
@@ -140,13 +143,15 @@ func _process(delta: float) -> void:
 	
 	if rotating:
 		var full_rotation = int(previous_rotation - target_rotation + 360) % 360
-		if full_rotation > 180: full_rotation -= 360
-		rotation_progress += rotation_speed * delta * sign(full_rotation)
+		if full_rotation > 182: full_rotation -= 360
+		
+		rotation_progress += rotation_speed * delta * full_rotation
 		cam_default.y = previous_rotation - full_rotation * smoothstep(0, full_rotation, rotation_progress)
 		camFP.rotation_degrees = cam_default + cam_tilt
 		
 		if abs(rotation_progress) >= abs(full_rotation):
 			rotating = false
+			rotadir = 0
 			#print("yo we rotated")
 
 
@@ -179,13 +184,17 @@ func _on_minimap_send_grid(sent_grid: Variant, sp: Variant, dead_ends : Variant)
 
 func _input(event: InputEvent) -> void:
 	if cam_mode == 1:
-		if Input.is_action_just_pressed("d"): # turn left
-			set_facing((facing + 1) % 6)
+		if Input.is_action_just_pressed("d") and !rotating and !walking: # turn left
+			set_facing(flip_dir(facing))
+			play("turn")
 
-		elif Input.is_action_just_pressed("a"): # turn right
-			set_facing((facing + 5) % 6)
+		elif Input.is_action_just_pressed("a") and !rotating and !walking: # turn right
+			rotadir = -1
+			set_facing(flip_dir(facing))
+			play("turn")
 
 		elif Input.is_action_just_pressed("w") and tile_obj(current).paths[facing]: # move forwards
+			rotadir = 1
 			move(facing)
 			
 		elif Input.is_action_just_pressed("z"): # spawn direction blocks
@@ -393,8 +402,11 @@ func _on_player_wants_to_move(direction) -> void:
 func play(sound : String):
 	if sound == "walk":
 		walk_player.stream = walking_sounds[randi() % len(walking_sounds)]
-		walk_player.seek(0)
-		walk_player.play()
+	if sound == "turn":
+		walk_player.stream = turnin_sounds[randi() % len(turnin_sounds)]
+		
+	walk_player.seek(0)
+	walk_player.play()
 
 func spawn_babis():
 	dead_end_locations.shuffle() # randomize order
@@ -413,11 +425,9 @@ func spawn_babis():
 	
 func _on_babi_wants_to_die(location):
 	if current.distance_to(location) == 0:
-		kill_babi(location)
+		yoink_babi(location)
 			
 func kill_babi(location):
-	
-	
 	var babindex = babi_holder[1].find(location)
 	var babi = babi_holder[0][babindex]
 	babi_holder[0].pop_at(babindex)
@@ -427,7 +437,13 @@ func kill_babi(location):
 	
 	if snak_target == location:
 		snak_action() # possible trouble maker
-	
+
+func yoink_babi(location):
+	var babindex = babi_holder[1].find(location)
+	var babi = babi_holder[0][babindex]
+	babi_holder[0].pop_at(babindex)
+	babi_holder[1].pop_at(babindex)
+	babi.yoink() # :)
 
 func a_star(start: Vector2i, target: Vector2i) -> Array:
 	

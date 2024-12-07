@@ -1,4 +1,4 @@
-[gd_scene load_steps=17 format=3 uid="uid://d4fl1op437uoe"]
+[gd_scene load_steps=18 format=3 uid="uid://d4fl1op437uoe"]
 
 [ext_resource type="Script" path="res://tunnels.gd" id="1_bfp66"]
 [ext_resource type="PackedScene" uid="uid://c1vv05834q1vo" path="res://levels/minimap.tscn" id="2_ah540"]
@@ -10,6 +10,7 @@
 [ext_resource type="PackedScene" uid="uid://r48mhqwa1b7d" path="res://assets/babi/babi.tscn" id="7_ilsec"]
 [ext_resource type="PackedScene" uid="uid://e2453vreljj2" path="res://assets/snake/snake.tscn" id="8_di8tg"]
 [ext_resource type="PackedScene" uid="uid://yp1omp0talc8" path="res://assets/cave/Entrance.tscn" id="8_ykwd4"]
+[ext_resource type="AudioStream" uid="uid://cu5euftt64e84" path="res://assets/Sounds/walking sounds/turn round.wav" id="9_mi50u"]
 [ext_resource type="AudioStream" uid="uid://dgjvcyevaavij" path="res://assets/Sounds/Ambiance/kolodrone.wav" id="11_cw0t6"]
 [ext_resource type="PackedScene" uid="uid://m8ymecebrtn1" path="res://menus/pausemenu.tscn" id="12_5a0ey"]
 
@@ -38,10 +39,11 @@ volumetric_fog_albedo = Color(0.172309, 0.1103, 0.0675609, 1)
 script = ExtResource("1_bfp66")
 player = NodePath("Spelare")
 tile_material = ExtResource("4_njief")
-walking_sounds = Array[AudioStreamWAV]([ExtResource("4_nl5un"), ExtResource("5_st604"), ExtResource("6_jrtrq")])
 selectable_dir = ExtResource("3_34knt")
 babi_scene = ExtResource("7_ilsec")
 entrance = ExtResource("8_ykwd4")
+walking_sounds = Array[AudioStreamWAV]([ExtResource("4_nl5un"), ExtResource("5_st604"), ExtResource("6_jrtrq")])
+turnin_sounds = Array[AudioStreamWAV]([ExtResource("9_mi50u")])
 
 [node name="Spelare" type="MeshInstance3D" parent="."]
 material_override = SubResource("StandardMaterial3D_redg8")
@@ -59,8 +61,6 @@ fov = 70.0
 light_color = Color(0.888897, 0.765198, 0.680788, 1)
 light_energy = 0.5
 omni_range = 2.0
-
-[node name="SubViewport" type="SubViewport" parent="Spelare"]
 
 [node name="WalkSoundplayer" type="AudioStreamPlayer3D" parent="Spelare"]
 

@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=3 uid="uid://r48mhqwa1b7d"]
+[gd_scene load_steps=11 format=3 uid="uid://r48mhqwa1b7d"]
 
 [ext_resource type="Texture2D" uid="uid://bsqkfjm73ncuv" path="res://assets/images/babi.png" id="1_l7x6l"]
 [ext_resource type="Script" path="res://assets/babi/babi.gd" id="1_yrwcv"]
@@ -6,6 +6,7 @@
 [ext_resource type="AudioStream" uid="uid://bdiwnrh62mume" path="res://assets/Sounds/babi sounds/jänisito.wav" id="3_ccu61"]
 [ext_resource type="AudioStream" uid="uid://b0xvbc3v8sxwx" path="res://assets/Sounds/babi sounds/crunches/poikanen eated 5.wav" id="3_vhtan"]
 [ext_resource type="AudioStream" uid="uid://bqo74sikf6j6k" path="res://assets/Sounds/babi sounds/crunches/poikanen eated 7.wav" id="4_nywdk"]
+[ext_resource type="AudioStream" uid="uid://cgunha46qdkti" path="res://assets/Sounds/babi sounds/Pickup/babi collec kahinalla.wav" id="5_kjrr5"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_yx8ln"]
 size = Vector3(1, 1, 0.0693359)
@@ -20,6 +21,7 @@ metallic = 1.0
 [node name="Babi" type="Node3D"]
 script = ExtResource("1_yrwcv")
 cruches = Array[AudioStreamWAV]([ExtResource("2_wnnjm"), ExtResource("3_vhtan"), ExtResource("4_nywdk")])
+pickups = Array[AudioStreamWAV]([ExtResource("5_kjrr5")])
 
 [node name="StaticBody3D" type="StaticBody3D" parent="."]
 
@@ -42,8 +44,8 @@ autoplay = true
 max_distance = 4.0
 panning_strength = 3.0
 
-[node name="Crunch" type="AudioStreamPlayer3D" parent="."]
+[node name="FinalWords" type="AudioStreamPlayer3D" parent="."]
 volume_db = -20.0
 
 [connection signal="input_event" from="StaticBody3D" to="." method="_on_static_body_3d_input_event"]
-[connection signal="finished" from="Crunch" to="." method="_on_crunch_finished"]
+[connection signal="finished" from="FinalWords" to="." method="_on_crunch_finished"]
