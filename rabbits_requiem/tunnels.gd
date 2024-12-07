@@ -182,9 +182,9 @@ func _on_minimap_send_grid(sent_grid: Variant, sp: Variant, dead_ends : Variant)
 	# assign shine spots
 	print("Making shine tiles...")
 	shiny_tiles.append(starting_point)
-	shiny_tiles.append(next_tile(starting_point, 5))
 	while tile_obj(shiny_tiles[-1]).paths[2]:
 		shiny_tiles.append(next_tile(shiny_tiles[-1], 2))
+	shiny_tiles.append(next_tile(starting_point, 5))
 	print("---")
 	
 
