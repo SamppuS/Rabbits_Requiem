@@ -1,5 +1,6 @@
 extends Node3D
 signal jumping_scaring()
+signal game_over(type: String, count: int)
 
 @export_subgroup("Parameters")
 @export var minimap_scale := 0.3
@@ -633,12 +634,14 @@ func moving_average(arr: PackedVector3Array, window: int = 0):
 
 func leave():
 	print("BAZINGA!")
-	get_tree().change_scene_to_file("res://menus/victorymenu.tscn")
-	
+	emit_signal("game_over", "left", babi_count)
+	#get_tree().change_scene_to_file("res://menus/victorymenu.tscn")
+
 
 func jump_scare():
 	emit_signal("jumping_scaring")
 	print("oh wow that's tragic")
 	alive = false
 	await get_tree().create_timer(1).timeout
-	get_tree().change_scene_to_file("res://menus/deathmenu.tscn")
+	emit_signal("game_over", "died", babi_count)
+	#get_tree().change_scene_to_file("res://menus/deathmenu.tscn")

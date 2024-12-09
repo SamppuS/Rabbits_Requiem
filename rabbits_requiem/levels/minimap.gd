@@ -11,7 +11,7 @@ signal send_grid(grid, sp, dead_ends)
 @export var traffic_limit: int = 20 # controls how densely caves are generated (around 20 seems good!!!)
 
 @export var min_dead_ends: int = 20 # this is to allow for more babi spawns
-@export var min_loops: int = 14 #20 # this is to allow for more babi spawns
+@export var min_loops: int = 11 #20 # this is to allow for more babi spawns
 
 # Varying the ratio between cave_depth and average_tile_count leads to differently shaped caves!
 # Examples:

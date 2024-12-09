@@ -1,4 +1,4 @@
-[gd_scene load_steps=18 format=3 uid="uid://d4fl1op437uoe"]
+[gd_scene load_steps=19 format=3 uid="uid://d4fl1op437uoe"]
 
 [ext_resource type="Script" path="res://tunnels.gd" id="1_bfp66"]
 [ext_resource type="PackedScene" uid="uid://c1vv05834q1vo" path="res://levels/minimap.tscn" id="2_ah540"]
@@ -13,6 +13,7 @@
 [ext_resource type="AudioStream" uid="uid://cu5euftt64e84" path="res://assets/Sounds/walking sounds/turn round.wav" id="9_mi50u"]
 [ext_resource type="AudioStream" uid="uid://dgjvcyevaavij" path="res://assets/Sounds/Ambiance/kolodrone.wav" id="11_cw0t6"]
 [ext_resource type="PackedScene" uid="uid://m8ymecebrtn1" path="res://menus/pausemenu.tscn" id="12_5a0ey"]
+[ext_resource type="PackedScene" uid="uid://dk7b1a1resbbt" path="res://menus/victorymenu.tscn" id="14_sxlku"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_redg8"]
 albedo_color = Color(0.860799, 1.01075e-05, 0.572914, 1)
@@ -87,6 +88,8 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 offset_right = -536.0
 offset_bottom = -284.0
+grow_horizontal = 2
+grow_vertical = 2
 
 [node name="SubViewportContainer" type="SubViewportContainer" parent="Control/CenterContainer"]
 layout_mode = 2
@@ -110,6 +113,9 @@ autoplay = true
 
 [node name="pausemenu" parent="." instance=ExtResource("12_5a0ey")]
 
+[node name="victorymenu" parent="." instance=ExtResource("14_sxlku")]
+
+[connection signal="game_over" from="." to="victorymenu" method="_on_tunnels_game_over"]
 [connection signal="jumping_scaring" from="." to="Snake" method="_on_tunnels_jumping_scaring"]
 [connection signal="snake_moved" from="Snake" to="." method="_on_snake_snake_moved"]
 [connection signal="snaking_complete" from="Snake" to="." method="_on_snake_snaking_complete"]

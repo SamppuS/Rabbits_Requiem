@@ -101,16 +101,16 @@ func _process(delta: float) -> void:
 		marker.position = next[0]
 	
 	if !goals[0].is_empty() and int(path_index * speed) < len(snake_path) - 2 :
-		move()
+		move(delta)
 	elif !goals[0].is_empty() and int(path_index * speed) >= len(snake_path) - 2:
 		emit_signal("snaking_complete")
 	
 
-func move():
+func move(delta: float):
 	
 	#if tangent_path.is_empty(): get_tangents()
 	
-	path_index += 1
+	path_index += 120 * delta
 	var head_index = path_index * speed
 	head.position = snake_path[head_index] + snake_height
 	head.look_at(head.position + tangent_path[head_index], Vector3.UP)
