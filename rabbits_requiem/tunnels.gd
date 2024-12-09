@@ -1,4 +1,5 @@
 extends Node3D
+signal jumping_scaring()
 
 @export_subgroup("Parameters")
 @export var minimap_scale := 0.3
@@ -9,13 +10,14 @@ extends Node3D
 @export var player : Node3D
 @export var tile_material : StandardMaterial3D
 
-
-@export_subgroup("Scenes+")
-@export var walking_sounds : Array[AudioStreamWAV]
+@export_subgroup("Scenes")
 @export var selectable_dir : PackedScene
 @export var babi_scene : PackedScene
 @export var entrance : PackedScene
 
+@export_subgroup("Sounds")
+@export var walking_sounds : Array[AudioStreamWAV]
+@export var turnin_sounds : Array[AudioStreamWAV]
 
 @onready var camTop = $Spelare/CamTop
 @onready var camFP = $Spelare/CamFP
@@ -38,11 +40,12 @@ var cam_tilt : Vector3
 var last_movement_dir := 5 # this might be the same as facing
 
 var snak_target
+const snake_hitbox = 0.6
 var shine 
 var shiny_tiles : Array[Vector2i]
 
 const mesh_size = 1.73233866691589 - .05 # true size - gap between tiles
-const tile_offset = mesh_size * 0.22
+var tile_offset = mesh_size * 0.22
 
 var snake_roam_distance = mesh_size * 6 # distance form start pos that snake is allowed to roam
 var snake_roam_tiles : Array # specific roam tiles
@@ -67,18 +70,20 @@ var mesh_openings = [ #These are the right patterns but in the wrong phase. So t
 	[true, false, true, true, false, true]      # 42
 ]
 
-const walk_speed = 0.75
+var walk_speed = 0.75
 var walk_path : Path3D
 var walk_follow : PathFollow3D
 var walking : bool = false
 var walk_progress := 0.0
 
-const rotation_speed = 75
+const rotation_speed = 0.8
 var target_rotation : float
 var previous_rotation : float
 var rotating : bool = false
 var rotation_progress := 0.0
+var rotadir = 1
 
+var alive := true
 
 func _ready(): # we probably don't have grid info here!
 	var environment = $WorldEnvironment.environment
@@ -127,27 +132,34 @@ func _ready(): # we probably don't have grid info here!
 	
 
 func _process(delta: float) -> void:
-	if walking:
+	if walking and alive:
 		var max_walk = walk_path.curve.get_baked_length()
 		walk_progress += walk_speed * delta
 		walk_follow.set_progress_ratio(smoothstep(0, max_walk, walk_progress))
 		player.position = walk_follow.position
 		
 		if walk_follow.get_progress_ratio() >= 1:
+			if current == next_tile(starting_point, 5) and last_movement_dir == 5:
+				leave()
+			
 			walking = false
 			#print("nice im done walking")
 			surround()
-	
+
 	if rotating:
 		var full_rotation = int(previous_rotation - target_rotation + 360) % 360
-		if full_rotation > 180: full_rotation -= 360
-		rotation_progress += rotation_speed * delta * sign(full_rotation)
-		cam_default.y = previous_rotation - full_rotation * smoothstep(0, full_rotation, rotation_progress)
+		if full_rotation > 182: full_rotation -= 360
+		if abs(full_rotation) < 175:
+			rotadir = 1
+		rotation_progress += rotation_speed * delta * full_rotation
+		cam_default.y = previous_rotation - full_rotation * smoothstep(0, full_rotation, rotation_progress) * rotadir
 		camFP.rotation_degrees = cam_default + cam_tilt
 		
 		if abs(rotation_progress) >= abs(full_rotation):
 			rotating = false
 			#print("yo we rotated")
+	if player.position.distance_to(snake.head.position) < snake_hitbox and alive:
+		jump_scare()
 
 
 func _on_minimap_send_grid(sent_grid: Variant, sp: Variant, dead_ends : Variant) -> void:
@@ -178,12 +190,17 @@ func _on_minimap_send_grid(sent_grid: Variant, sp: Variant, dead_ends : Variant)
 	
 
 func _input(event: InputEvent) -> void:
+	if !alive: return
 	if cam_mode == 1:
-		if Input.is_action_just_pressed("d"): # turn left
-			set_facing((facing + 1) % 6)
+		if Input.is_action_just_pressed("d") and !rotating and !walking: # turn left
+			rotadir = 1
+			set_facing(flip_dir(facing))
+			play("turn")
 
-		elif Input.is_action_just_pressed("a"): # turn right
-			set_facing((facing + 5) % 6)
+		elif Input.is_action_just_pressed("a") and !rotating and !walking: # turn right
+			rotadir = -1
+			set_facing(flip_dir(facing))
+			play("turn")
 
 		elif Input.is_action_just_pressed("w") and tile_obj(current).paths[facing]: # move forwards
 			move(facing)
@@ -215,6 +232,7 @@ func surround(): # spawn direction blocks around player
 			var surrounder = selectable_dir.instantiate()
 			
 			surrounder.position = pos_from_tile(current) + norm * .5 + Vector3(0,player_height,0)
+			if dir == flip_dir(last_movement_dir): surrounder.position += norm * 0.6
 			add_child(surrounder)
 			surrounder.look_at(surrounder.position + norm, Vector3.UP)
 			surrounder.represent = dir
@@ -228,16 +246,22 @@ func scatter(): # despawn direction blocks
 	s_dir_holder = []
 
 func move(dir: int): # move player in direction
+	if walking or rotating: 
+		return
+
 	if current == starting_point and dir == 5: 
-		return # Here would be leaving the game :)
+		print("leaving lol")
+		tile_offset *= 3.75
+		walk_speed /= 5
+		#return # Here would be leaving the game :)
 	
-	if walking: return
 	
 	#player.position = pos_from_tile(current) + Vector3(0,player_height,0) + dir_to_norm(flip_dir(facing)) * tile_offset
 	var start = player.position
 	var mid = pos_from_tile(current) + Vector3(0,player_height,0)
 	
 	set_facing(dir)
+	
 	current = next_tile(current, dir)
 	
 	var end = pos_from_tile(current) + Vector3(0,player_height,0) + dir_to_norm(flip_dir(facing)) * tile_offset
@@ -258,7 +282,7 @@ func move(dir: int): # move player in direction
 		snak_action("player")
 
 	# check if player moved to shiny tile
-	if current in shiny_tiles and last_movement_dir in [2,5]:
+	if current in shiny_tiles and last_movement_dir in [2,5] or (current == next_tile(starting_point, 5) and last_movement_dir == 5):
 		shine.glare(true)
 	else:
 		shine.glare(false)
@@ -315,6 +339,7 @@ func change_cam(mode: int = -1):
 
 
 func set_facing(dir: int):
+	if walking or rotating: return
 	target_rotation = (150 - 60 * (dir-2)) % 360
 	previous_rotation = int(cam_default.y + 360) % 360
 
@@ -393,8 +418,11 @@ func _on_player_wants_to_move(direction) -> void:
 func play(sound : String):
 	if sound == "walk":
 		walk_player.stream = walking_sounds[randi() % len(walking_sounds)]
-		walk_player.seek(0)
-		walk_player.play()
+	if sound == "turn":
+		walk_player.stream = turnin_sounds[randi() % len(turnin_sounds)]
+		
+	walk_player.seek(0)
+	walk_player.play()
 
 func spawn_babis():
 	dead_end_locations.shuffle() # randomize order
@@ -413,11 +441,9 @@ func spawn_babis():
 	
 func _on_babi_wants_to_die(location):
 	if current.distance_to(location) == 0:
-		kill_babi(location)
+		yoink_babi(location)
 			
 func kill_babi(location):
-	
-	
 	var babindex = babi_holder[1].find(location)
 	var babi = babi_holder[0][babindex]
 	babi_holder[0].pop_at(babindex)
@@ -427,7 +453,13 @@ func kill_babi(location):
 	
 	if snak_target == location:
 		snak_action() # possible trouble maker
-	
+
+func yoink_babi(location):
+	var babindex = babi_holder[1].find(location)
+	var babi = babi_holder[0][babindex]
+	babi_holder[0].pop_at(babindex)
+	babi_holder[1].pop_at(babindex)
+	babi.yoink() # :)
 
 func a_star(start: Vector2i, target: Vector2i) -> Array:
 	
@@ -598,3 +630,15 @@ func moving_average(arr: PackedVector3Array, window: int = 0):
 		new_array.append(vectorsum / (max_n * 2 + 1 ))
 		
 	return new_array
+
+func leave():
+	print("BAZINGA!")
+	get_tree().change_scene_to_file("res://menus/victorymenu.tscn")
+	
+
+func jump_scare():
+	emit_signal("jumping_scaring")
+	print("oh wow that's tragic")
+	alive = false
+	await get_tree().create_timer(1).timeout
+	get_tree().change_scene_to_file("res://menus/deathmenu.tscn")

@@ -1,0 +1,24 @@
+[remap]
+
+importer="wav"
+type="AudioStreamWAV"
+uid="uid://dswokarbe7xu"
+path="res://.godot/imported/babi collec with rapina.wav-e2e98443ada66667a6c5474fd388860d.sample"
+
+[deps]
+
+source_file="res://assets/Sounds/babi sounds/Pickup/babi collec with rapina.wav"
+dest_files=["res://.godot/imported/babi collec with rapina.wav-e2e98443ada66667a6c5474fd388860d.sample"]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop_mode=0
+edit/loop_begin=0
+edit/loop_end=-1
+compress/mode=0

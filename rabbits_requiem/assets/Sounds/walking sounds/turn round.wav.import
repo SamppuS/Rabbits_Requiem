@@ -1,0 +1,24 @@
+[remap]
+
+importer="wav"
+type="AudioStreamWAV"
+uid="uid://cu5euftt64e84"
+path="res://.godot/imported/turn round.wav-b106a5bacd916f705dff46c1c0f799db.sample"
+
+[deps]
+
+source_file="res://assets/Sounds/walking sounds/turn round.wav"
+dest_files=["res://.godot/imported/turn round.wav-b106a5bacd916f705dff46c1c0f799db.sample"]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop_mode=0
+edit/loop_begin=0
+edit/loop_end=-1
+compress/mode=0
