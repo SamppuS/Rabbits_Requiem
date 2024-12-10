@@ -13,7 +13,7 @@ func _process(delta: float) -> void:
 
 
 func _on_start_pressed() -> void:
-	get_tree().change_scene_to_file("res://tunnels.tscn")
+	$AnimationPlayer.play("Fade out")
 
 
 func _on_quit_pressed() -> void:
@@ -36,3 +36,7 @@ func _on_h_slider_drag_ended(value_changed: bool) -> void:
 	var new = slider.value
 	Settings.change(new)
 	label.text = "Bringtness: " + str(new)
+
+
+func _on_animation_player_animation_finished(anim_name: StringName) -> void:
+	get_tree().change_scene_to_file("res://menus/Intro.tscn")

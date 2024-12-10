@@ -29,6 +29,7 @@ signal game_over(type: String, count: int)
 @onready var walk_player = $Spelare/WalkSoundplayer
 @onready var snake : Node3D = $Snake
 
+@onready var environment = $WorldEnvironment.environment
 
 var grid: Array
 var starting_point: Vector2i
@@ -137,8 +138,8 @@ func _ready(): # we probably don't have grid info here!
 	print("---")
 	
 	#_on_settings_updated()
-	
-	
+	camFP.rotation_degrees = cam_default + cam_tilt
+	environment.adjustment_brightness = 0
 
 func _process(delta: float) -> void:
 	
@@ -666,5 +667,4 @@ func jump_scare():
 	#get_tree().change_scene_to_file("res://menus/deathmenu.tscn")
 
 func _on_settings_updated():
-	var environment = $WorldEnvironment.environment
 	environment.adjustment_brightness = Settings.gamma

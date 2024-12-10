@@ -1,0 +1,24 @@
+[remap]
+
+importer="wav"
+type="AudioStreamWAV"
+uid="uid://drhnuomdd8oj0"
+path="res://.godot/imported/stick.wav-7feeaa5900e22d373dcf7ab0a323948f.sample"
+
+[deps]
+
+source_file="res://assets/Sounds/Intro sounds/stick.wav"
+dest_files=["res://.godot/imported/stick.wav-7feeaa5900e22d373dcf7ab0a323948f.sample"]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop_mode=0
+edit/loop_begin=0
+edit/loop_end=-1
+compress/mode=0
