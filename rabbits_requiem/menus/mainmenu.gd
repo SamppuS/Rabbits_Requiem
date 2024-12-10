@@ -21,4 +21,18 @@ func _on_quit_pressed() -> void:
 
 
 func _on_settings_pressed() -> void:
-	pass # Replace with function body.
+	$"Settings buttons".visible = true
+	$"Menu buttons".visible = false
+
+
+func _on_close_pressed() -> void:
+	$"Settings buttons".visible = false
+	$"Menu buttons".visible = true
+
+
+func _on_h_slider_drag_ended(value_changed: bool) -> void:
+	var slider = $"Settings buttons/Brightness slider"
+	var label = $"Settings buttons/Label"
+	var new = slider.value
+	Settings.change(new)
+	label.text = "Bringtness: " + str(new)

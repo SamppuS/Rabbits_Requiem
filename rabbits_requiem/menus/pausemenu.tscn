@@ -26,22 +26,50 @@ offset_bottom = -1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="VBoxContainer" type="VBoxContainer" parent="CenterContainer"]
+[node name="Main buttons" type="VBoxContainer" parent="CenterContainer"]
 layout_mode = 2
 alignment = 1
 
-[node name="Resume" type="Button" parent="CenterContainer/VBoxContainer"]
+[node name="Resume" type="Button" parent="CenterContainer/Main buttons"]
 layout_mode = 2
 text = "Resume"
 
-[node name="Settings" type="Button" parent="CenterContainer/VBoxContainer"]
+[node name="Settings" type="Button" parent="CenterContainer/Main buttons"]
 layout_mode = 2
 text = "Settings"
 
-[node name="Quit" type="Button" parent="CenterContainer/VBoxContainer"]
+[node name="Main menu" type="Button" parent="CenterContainer/Main buttons"]
+layout_mode = 2
+text = "Main menu"
+
+[node name="Quit" type="Button" parent="CenterContainer/Main buttons"]
 layout_mode = 2
 text = "Quit"
 
-[connection signal="pressed" from="CenterContainer/VBoxContainer/Resume" to="." method="_on_resume_pressed"]
-[connection signal="pressed" from="CenterContainer/VBoxContainer/Settings" to="." method="_on_settings_pressed"]
-[connection signal="pressed" from="CenterContainer/VBoxContainer/Quit" to="." method="_on_quit_pressed"]
+[node name="Settings buttons" type="VBoxContainer" parent="CenterContainer"]
+visible = false
+custom_minimum_size = Vector2(300, 200)
+layout_mode = 2
+alignment = 1
+
+[node name="Label" type="Label" parent="CenterContainer/Settings buttons"]
+layout_mode = 2
+text = "Bringtness: 1"
+
+[node name="Brightness slider" type="HSlider" parent="CenterContainer/Settings buttons"]
+layout_mode = 2
+min_value = 0.5
+max_value = 2.5
+step = 0.1
+value = 1.0
+
+[node name="close" type="Button" parent="CenterContainer/Settings buttons"]
+layout_mode = 2
+text = "Close"
+
+[connection signal="pressed" from="CenterContainer/Main buttons/Resume" to="." method="_on_resume_pressed"]
+[connection signal="pressed" from="CenterContainer/Main buttons/Settings" to="." method="_on_settings_pressed"]
+[connection signal="pressed" from="CenterContainer/Main buttons/Main menu" to="." method="_on_main_menu_pressed"]
+[connection signal="pressed" from="CenterContainer/Main buttons/Quit" to="." method="_on_quit_pressed"]
+[connection signal="drag_ended" from="CenterContainer/Settings buttons/Brightness slider" to="." method="_on_brightness_slider_drag_ended"]
+[connection signal="pressed" from="CenterContainer/Settings buttons/close" to="." method="_on_close_pressed"]

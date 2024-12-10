@@ -1,6 +1,7 @@
-[gd_scene load_steps=2 format=3 uid="uid://boil8m7sjd0so"]
+[gd_scene load_steps=3 format=3 uid="uid://boil8m7sjd0so"]
 
 [ext_resource type="Script" path="res://menus/mainmenu.gd" id="1_3evwv"]
+[ext_resource type="Texture2D" uid="uid://d1l5y4bd0ddmy" path="res://assets/images/Menu art/Snake_tullen.png" id="2_1awbg"]
 
 [node name="Mainmenu" type="Control"]
 layout_mode = 3
@@ -11,32 +12,114 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_3evwv")
 
-[node name="start" type="Button" parent="."]
+[node name="SnakeTullen" type="Sprite2D" parent="."]
+position = Vector2(574.03, 324)
+scale = Vector2(0.611109, 0.666667)
+texture = ExtResource("2_1awbg")
+
+[node name="Menu buttons" type="VBoxContainer" parent="."]
+custom_minimum_size = Vector2(200, 150)
+layout_mode = 1
+offset_left = 29.0
+offset_top = 30.0
+offset_right = 229.0
+offset_bottom = 180.0
+scale = Vector2(1.405, 1.405)
+alignment = 1
+
+[node name="start" type="Button" parent="Menu buttons"]
 layout_mode = 2
-offset_left = 102.0
-offset_top = 63.0
-offset_right = 208.0
-offset_bottom = 94.0
 text = "GAME START"
 
-[node name="quit" type="Button" parent="."]
-layout_mode = 0
-offset_left = 106.0
-offset_top = 142.0
-offset_right = 203.0
-offset_bottom = 173.0
-text = "QUIT GAME
-"
-
-[node name="settings" type="Button" parent="."]
-layout_mode = 0
-offset_left = 110.0
-offset_top = 104.0
-offset_right = 192.0
-offset_bottom = 135.0
+[node name="settings" type="Button" parent="Menu buttons"]
+layout_mode = 2
 text = "SETTINGS
 "
 
-[connection signal="pressed" from="start" to="." method="_on_start_pressed"]
-[connection signal="pressed" from="quit" to="." method="_on_quit_pressed"]
-[connection signal="pressed" from="settings" to="." method="_on_settings_pressed"]
+[node name="quit" type="Button" parent="Menu buttons"]
+layout_mode = 2
+text = "QUIT GAME
+"
+
+[node name="Settings buttons" type="VBoxContainer" parent="."]
+visible = false
+custom_minimum_size = Vector2(300, 200)
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -150.0
+offset_top = -100.0
+offset_right = 150.0
+offset_bottom = 100.0
+grow_horizontal = 2
+grow_vertical = 2
+alignment = 1
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Settings buttons"]
+layout_mode = 2
+alignment = 1
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Settings buttons/HBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Settings buttons/HBoxContainer/VBoxContainer"]
+layout_mode = 2
+text = "1st"
+
+[node name="LineEdit" type="LineEdit" parent="Settings buttons/HBoxContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="VBoxContainer2" type="VBoxContainer" parent="Settings buttons/HBoxContainer"]
+layout_mode = 2
+
+[node name="Label2" type="Label" parent="Settings buttons/HBoxContainer/VBoxContainer2"]
+layout_mode = 2
+text = "2nd"
+
+[node name="LineEdit2" type="LineEdit" parent="Settings buttons/HBoxContainer/VBoxContainer2"]
+layout_mode = 2
+
+[node name="VBoxContainer3" type="VBoxContainer" parent="Settings buttons/HBoxContainer"]
+layout_mode = 2
+
+[node name="Label2" type="Label" parent="Settings buttons/HBoxContainer/VBoxContainer3"]
+layout_mode = 2
+text = "3rd"
+
+[node name="LineEdit2" type="LineEdit" parent="Settings buttons/HBoxContainer/VBoxContainer3"]
+layout_mode = 2
+
+[node name="VBoxContainer4" type="VBoxContainer" parent="Settings buttons/HBoxContainer"]
+layout_mode = 2
+
+[node name="Label2" type="Label" parent="Settings buttons/HBoxContainer/VBoxContainer4"]
+layout_mode = 2
+text = "4th
+"
+
+[node name="LineEdit2" type="LineEdit" parent="Settings buttons/HBoxContainer/VBoxContainer4"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Settings buttons"]
+layout_mode = 2
+text = "Bringtness: 1"
+
+[node name="Brightness slider" type="HSlider" parent="Settings buttons"]
+layout_mode = 2
+min_value = 0.5
+max_value = 2.5
+step = 0.1
+value = 1.0
+
+[node name="close" type="Button" parent="Settings buttons"]
+layout_mode = 2
+text = "Close"
+
+[connection signal="pressed" from="Menu buttons/start" to="." method="_on_start_pressed"]
+[connection signal="pressed" from="Menu buttons/settings" to="." method="_on_settings_pressed"]
+[connection signal="pressed" from="Menu buttons/quit" to="." method="_on_quit_pressed"]
+[connection signal="drag_ended" from="Settings buttons/Brightness slider" to="." method="_on_h_slider_drag_ended"]
+[connection signal="pressed" from="Settings buttons/close" to="." method="_on_close_pressed"]

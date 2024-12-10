@@ -8,10 +8,10 @@ func _ready() -> void:
 	visible = false
 	vbox.size_flags_horizontal = Control.SIZE_FILL
 
+
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
 	pass
-	
 
 
 func _on_main_menu_pressed() -> void:

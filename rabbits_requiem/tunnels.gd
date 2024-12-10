@@ -33,7 +33,7 @@ signal game_over(type: String, count: int)
 var grid: Array
 var starting_point: Vector2i
 var facing := 2
-var cam_mode := 0
+var cam_mode := 1
 var current : Vector2i
 const player_height := .2
 var cam_default := Vector3(0, 150 ,0)
@@ -86,12 +86,17 @@ var rotadir = 1
 
 var alive := true
 
+# only for intro transition
+var brightness = 0
+var brightened = false 
+
 func _ready(): # we probably don't have grid info here!
-	var environment = $WorldEnvironment.environment
 	var screen_size = get_viewport().get_visible_rect().size
 	var minimap_size = screen_size * minimap_scale
 	var minimap_viewport = subviewport
 	#minimap.send_grid.connect(_on_grid_received)
+	
+	Settings.connect("settings_updated", _on_settings_updated)
 	
 	# set up walk animation
 	walk_path = Path3D.new()
@@ -131,8 +136,22 @@ func _ready(): # we probably don't have grid info here!
 	snake.straighten()
 	print("---")
 	
+	#_on_settings_updated()
+	
+	
 
 func _process(delta: float) -> void:
+	
+	# intro darkness fade
+	if brightness < Settings.gamma and !brightened:
+		var environment = $WorldEnvironment.environment
+		environment.adjustment_brightness = brightness
+		brightness += delta * 0.3
+	elif brightness >= Settings.gamma and !brightened:
+		brightened = true
+		_on_settings_updated()
+		surround()
+
 	if walking and alive:
 		var max_walk = walk_path.curve.get_baked_length()
 		walk_progress += walk_speed * delta
@@ -203,18 +222,18 @@ func _input(event: InputEvent) -> void:
 			set_facing(flip_dir(facing))
 			play("turn")
 
-		elif Input.is_action_just_pressed("w") and tile_obj(current).paths[facing]: # move forwards
-			move(facing)
+		#elif Input.is_action_just_pressed("w") and tile_obj(current).paths[facing]: # move forwards
+			#move(facing)
 			
-		elif Input.is_action_just_pressed("z"): # spawn direction blocks
-			#print("WE HAVE YOU SURROUNDED")
-			surround()
+		#elif Input.is_action_just_pressed("z"): # spawn direction blocks
+			##print("WE HAVE YOU SURROUNDED")
+			#surround()
 
 	if Input.is_action_just_pressed("x"): # toggle cam
 		change_cam()
 		
-	if Input.is_action_just_pressed("e"): # snake new target
-		snak_action("player")
+	#if Input.is_action_just_pressed("e"): # snake new target
+		#snak_action("player")
 	
 			
 	if event is InputEventMouseMotion: # looking around with mouse
@@ -645,3 +664,7 @@ func jump_scare():
 	await get_tree().create_timer(1).timeout
 	emit_signal("game_over", "died", babi_count)
 	#get_tree().change_scene_to_file("res://menus/deathmenu.tscn")
+
+func _on_settings_updated():
+	var environment = $WorldEnvironment.environment
+	environment.adjustment_brightness = Settings.gamma

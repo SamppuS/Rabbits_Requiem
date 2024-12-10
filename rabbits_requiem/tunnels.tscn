@@ -35,6 +35,7 @@ fog_height_density = 0.2
 volumetric_fog_enabled = true
 volumetric_fog_density = 2.0
 volumetric_fog_albedo = Color(0.172309, 0.1103, 0.0675609, 1)
+adjustment_enabled = true
 
 [node name="tunnels" type="Node3D" node_paths=PackedStringArray("player")]
 script = ExtResource("1_bfp66")
@@ -56,6 +57,7 @@ current = true
 fov = 45.0
 
 [node name="CamFP" type="Camera3D" parent="Spelare"]
+current = true
 fov = 70.0
 
 [node name="OmniLight3D" type="OmniLight3D" parent="Spelare"]
@@ -71,6 +73,7 @@ environment = SubResource("Environment_yoqi5")
 [node name="Snake" parent="." instance=ExtResource("8_di8tg")]
 
 [node name="Control" type="Control" parent="."]
+visible = false
 layout_mode = 3
 anchors_preset = 8
 anchor_left = 0.5
@@ -98,7 +101,7 @@ layout_mode = 2
 own_world_3d = true
 handle_input_locally = false
 size = Vector2i(576, 324)
-render_target_update_mode = 4
+render_target_update_mode = 0
 
 [node name="Minimap" parent="Control/CenterContainer/SubViewportContainer/SubViewport" instance=ExtResource("2_ah540")]
 

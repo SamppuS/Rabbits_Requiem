@@ -11,9 +11,17 @@ config_version=5
 [application]
 
 config/name="Rabbits_Requiem"
-run/main_scene="res://tunnels.tscn"
+run/main_scene="res://menus/mainmenu.tscn"
 config/features=PackedStringArray("4.3", "Forward Plus")
 config/icon="res://icon.svg"
+
+[autoload]
+
+Settings="*res://settings.gd"
+
+[display]
+
+window/size/resizable=false
 
 [dotnet]
 
