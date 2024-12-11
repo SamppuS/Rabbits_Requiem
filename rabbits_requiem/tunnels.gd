@@ -179,6 +179,7 @@ func _process(delta: float) -> void:
 		if abs(rotation_progress) >= abs(full_rotation):
 			rotating = false
 			#print("yo we rotated")
+	
 	if player.position.distance_to(snake.head.position) < snake_hitbox and alive:
 		jump_scare()
 
@@ -233,8 +234,9 @@ func _input(event: InputEvent) -> void:
 	if Input.is_action_just_pressed("x"): # toggle cam
 		change_cam()
 		
-	#if Input.is_action_just_pressed("e"): # snake new target
+	if Input.is_action_just_pressed("e"): # snake new target
 		#snak_action("player")
+		jump_scare()
 	
 			
 	if event is InputEventMouseMotion: # looking around with mouse
@@ -663,7 +665,7 @@ func jump_scare():
 	print("oh wow that's tragic")
 	alive = false
 	await get_tree().create_timer(1).timeout
-	emit_signal("game_over", "died", babi_count)
+	emit_signal("game_over", "eated", babi_count)
 	#get_tree().change_scene_to_file("res://menus/deathmenu.tscn")
 
 func _on_settings_updated():

@@ -1,7 +1,7 @@
 extends CanvasLayer
 
 var paused = false  # Add at top of script
-
+var pausable = true
 
 @onready var slider = $"CenterContainer/Settings buttons/Brightness slider"
 @onready var slider_label = $"CenterContainer/Settings buttons/Label"
@@ -20,7 +20,7 @@ func _process(delta: float) -> void:
 	pass
 
 func _input(event):
-	if event.is_action_pressed("esc"): # ESC key
+	if event.is_action_pressed("esc") and pausable: # ESC key
 		toggle_pause()
 
 func toggle_pause():
@@ -55,3 +55,7 @@ func _on_brightness_slider_drag_ended(value_changed: bool) -> void:
 func _on_main_menu_pressed() -> void:
 	toggle_pause()
 	get_tree().change_scene_to_file("res://menus/mainmenu.tscn")
+
+
+func _on_tunnels_jumping_scaring() -> void:
+	pausable = false

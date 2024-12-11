@@ -1,7 +1,23 @@
-[gd_scene load_steps=6 format=3 uid="uid://boil8m7sjd0so"]
+[gd_scene load_steps=7 format=3 uid="uid://boil8m7sjd0so"]
 
 [ext_resource type="Script" path="res://menus/mainmenu.gd" id="1_3evwv"]
 [ext_resource type="Texture2D" uid="uid://d1l5y4bd0ddmy" path="res://assets/images/Menu art/Snake_tullen.png" id="2_1awbg"]
+
+[sub_resource type="Animation" id="Animation_6scju"]
+resource_name = "Fade in"
+length = 2.0
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Visual blocker:modulate")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 2),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Color(0, 0, 0, 1), Color(0, 0, 0, 0)]
+}
 
 [sub_resource type="Animation" id="Animation_4jijk"]
 resource_name = "Fade out"
@@ -36,6 +52,7 @@ tracks/0/keys = {
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_4wp0f"]
 _data = {
+"Fade in": SubResource("Animation_6scju"),
 "Fade out": SubResource("Animation_4jijk"),
 "RESET": SubResource("Animation_6uio3")
 }
