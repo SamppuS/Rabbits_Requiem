@@ -22,9 +22,11 @@ signal game_over(type: String, count: int)
 
 @onready var camTop = $Spelare/CamTop
 @onready var camFP = $Spelare/CamFP
-@onready var minimap_container = $Control/SubViewportContainer
-@onready var subviewport = $Control/SubViewportContainer/SubViewport
-@onready var minimap = $Control/SubViewportContainer/SubViewport/Minimap
+@onready var minimap_container = $CanvasLayer/Control/CenterContainer/SubViewportContainer 
+@onready var subviewport = $CanvasLayer/Control/CenterContainer/SubViewportContainer/SubViewport
+@onready var minimap = $CanvasLayer/Control/CenterContainer/SubViewportContainer/SubViewport/Minimap
+@onready var buttons = $CanvasLayer/Control/Buttons
+@onready var babicounter = $CanvasLayer/Control/Babicounter
 
 @onready var walk_player = $Spelare/WalkSoundplayer
 @onready var snake : Node3D = $Snake
@@ -38,6 +40,7 @@ var current : Vector2i
 const player_height := .2
 var cam_default := Vector3(0, 150 ,0)
 var cam_tilt : Vector3
+var buttons_tilt : Vector2
 var last_movement_dir := 5 # this might be the same as facing
 
 var snak_target
@@ -54,6 +57,7 @@ var to_be_roamed : Array # variable to prevent snake camping
 
 var s_dir_holder = []
 var babi_holder = [[], []] # [[scenes], [rooms v2i]]
+var babis_yoinked = 0
 var dead_end_locations : Array[Vector2i]
 
 var meshes: Array[Mesh]
@@ -91,6 +95,7 @@ var brightness = 0
 var brightened = false 
 
 func _ready(): # we probably don't have grid info here!
+	minimap_container.visible = false
 	var screen_size = get_viewport().get_visible_rect().size
 	var minimap_size = screen_size * minimap_scale
 	var minimap_viewport = subviewport
@@ -235,12 +240,16 @@ func _input(event: InputEvent) -> void:
 	#if Input.is_action_just_pressed("e"): # snake new target
 		#snak_action("player")
 	
-			
+	if Input.is_action_just_pressed("map"):
+		minimap_container.visible = !minimap_container.visible
+		print("switch")
+	
 	if event is InputEventMouseMotion: # looking around with mouse
 		var screen_size = get_viewport().get_visible_rect().size
 		var mouse_pos = get_viewport().get_mouse_position()
 		cam_tilt = Vector3(mouse_pos.y / screen_size.y - .5, mouse_pos.x / screen_size.x - .5, 0) * Vector3(-40,-90,0)
-	
+		buttons_tilt = Vector2(-mouse_pos.x / screen_size.x + .5, mouse_pos.y / screen_size.y - .5) * Vector2(100,0)
+	buttons.position = buttons_tilt
 	camFP.rotation_degrees = cam_default + cam_tilt 
 
 func surround(): # spawn direction blocks around player
@@ -462,7 +471,8 @@ func spawn_babis():
 func _on_babi_wants_to_die(location):
 	if current.distance_to(location) == 0:
 		yoink_babi(location)
-			
+		babis_yoinked += 1
+		update_babicounter(babis_yoinked)
 func kill_babi(location):
 	var babindex = babi_holder[1].find(location)
 	var babi = babi_holder[0][babindex]
@@ -665,6 +675,26 @@ func jump_scare():
 	emit_signal("game_over", "died", babi_count)
 	#get_tree().change_scene_to_file("res://menus/deathmenu.tscn")
 
+func update_babicounter(input : int):
+	babicounter.text = "Babis: %d" % input
+
 func _on_settings_updated():
 	var environment = $WorldEnvironment.environment
 	environment.adjustment_brightness = Settings.gamma
+	print("settings updated")
+
+
+func _on_button_right_pressed() -> void:
+	if cam_mode == 1:
+		if !rotating and !walking: # turn right
+			rotadir = 1
+			set_facing(flip_dir(facing))
+			play("turn")
+
+
+func _on_button_left_pressed() -> void:
+	if cam_mode == 1:
+		if !rotating and !walking: # turn left
+			rotadir = -1
+			set_facing(flip_dir(facing))
+			play("turn")
