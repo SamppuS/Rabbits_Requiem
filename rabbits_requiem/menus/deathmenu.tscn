@@ -1,7 +1,9 @@
-[gd_scene load_steps=7 format=3 uid="uid://h3rk4lv31m18"]
+[gd_scene load_steps=9 format=3 uid="uid://h3rk4lv31m18"]
 
 [ext_resource type="Script" path="res://menus/deathmenu.gd" id="1_hkwgd"]
 [ext_resource type="Texture2D" uid="uid://b1fm27xjqoxxa" path="res://assets/images/Endings/lose.png" id="2_ntwug"]
+[ext_resource type="AudioStream" uid="uid://b2eth31lc2xks" path="res://assets/Sounds/Ambiance/cursed realms (of the winterjänöt).wav" id="3_rtv88"]
+[ext_resource type="AudioStream" uid="uid://cb0dou46ry3ks" path="res://assets/Sounds/Ambiance/nondescript horrible ääni.wav" id="4_ca8vc"]
 
 [sub_resource type="Animation" id="Animation_4ngy5"]
 resource_name = "Fade in black"
@@ -17,6 +19,30 @@ tracks/0/keys = {
 "transitions": PackedFloat32Array(1, 1),
 "update": 0,
 "values": [Color(0, 0, 0, 1), Color(0, 0, 0, 0)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("windy:volume_db")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 2),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [-80.0, -10.0]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("sound of doom:playing")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0.25),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [true]
 }
 
 [sub_resource type="Animation" id="Animation_5ridw"]
@@ -34,6 +60,18 @@ tracks/0/keys = {
 "update": 0,
 "values": [Color(0, 0, 0, 0), Color(0, 0, 0, 1)]
 }
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("windy:volume_db")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 2),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [-10.0, -80.0]
+}
 
 [sub_resource type="Animation" id="Animation_fg4m7"]
 length = 0.001
@@ -48,6 +86,30 @@ tracks/0/keys = {
 "transitions": PackedFloat32Array(1),
 "update": 0,
 "values": [Color(0, 0, 0, 1)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("windy:volume_db")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [-80.0]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("sound of doom:playing")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
 }
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_2v7ie"]
@@ -141,6 +203,14 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 color = Color(0, 0, 0, 1)
+
+[node name="windy" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("3_rtv88")
+volume_db = -80.0
+autoplay = true
+
+[node name="sound of doom" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("4_ca8vc")
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 libraries = {

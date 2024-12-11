@@ -1,7 +1,8 @@
-[gd_scene load_steps=7 format=3 uid="uid://boil8m7sjd0so"]
+[gd_scene load_steps=8 format=3 uid="uid://boil8m7sjd0so"]
 
 [ext_resource type="Script" path="res://menus/mainmenu.gd" id="1_3evwv"]
 [ext_resource type="Texture2D" uid="uid://d1l5y4bd0ddmy" path="res://assets/images/Menu art/Snake_tullen.png" id="2_1awbg"]
+[ext_resource type="AudioStream" uid="uid://uw01udmhpqkl" path="res://assets/Sounds/Ambiance/rabbits menu.wav" id="3_qq3lb"]
 
 [sub_resource type="Animation" id="Animation_6scju"]
 resource_name = "Fade in"
@@ -17,6 +18,18 @@ tracks/0/keys = {
 "transitions": PackedFloat32Array(1, 1),
 "update": 0,
 "values": [Color(0, 0, 0, 1), Color(0, 0, 0, 0)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Background music:volume_db")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 2),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [-80.0, -10.0]
 }
 
 [sub_resource type="Animation" id="Animation_4jijk"]
@@ -34,6 +47,18 @@ tracks/0/keys = {
 "update": 0,
 "values": [Color(0, 0, 0, 0), Color(0, 0, 0, 1)]
 }
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Background music:volume_db")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 2),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [-10.0, -80.0]
+}
 
 [sub_resource type="Animation" id="Animation_6uio3"]
 length = 0.001
@@ -48,6 +73,18 @@ tracks/0/keys = {
 "transitions": PackedFloat32Array(1),
 "update": 0,
 "values": [Color(0, 0, 0, 0)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Background music:volume_db")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [-80.0]
 }
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_4wp0f"]
@@ -194,6 +231,11 @@ mouse_filter = 2
 texture = ExtResource("2_1awbg")
 expand_mode = 1
 stretch_mode = 6
+
+[node name="Background music" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("3_qq3lb")
+volume_db = -80.0
+autoplay = true
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 libraries = {

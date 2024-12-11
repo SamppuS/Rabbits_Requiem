@@ -1,0 +1,24 @@
+[remap]
+
+importer="wav"
+type="AudioStreamWAV"
+uid="uid://cb0dou46ry3ks"
+path="res://.godot/imported/nondescript horrible ääni.wav-1e0cb8c888762b3e0656125f29aaf684.sample"
+
+[deps]
+
+source_file="res://assets/Sounds/Ambiance/nondescript horrible ääni.wav"
+dest_files=["res://.godot/imported/nondescript horrible ääni.wav-1e0cb8c888762b3e0656125f29aaf684.sample"]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop_mode=0
+edit/loop_begin=0
+edit/loop_end=-1
+compress/mode=0

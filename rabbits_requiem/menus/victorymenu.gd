@@ -36,3 +36,7 @@ func _on_tunnels_game_over(type: String, count: int) -> void:
 func _on_animation_player_animation_finished(anim_name: StringName) -> void:
 	if anim_name == "Fade out":
 		get_tree().change_scene_to_file("res://menus/mainmenu.tscn")
+
+
+func _on_victory_music_finished() -> void:
+	$AnimationPlayer.play("winding")
