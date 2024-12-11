@@ -31,6 +31,7 @@ signal game_over(type: String, count: int)
 @onready var walk_player = $Spelare/WalkSoundplayer
 @onready var snake : Node3D = $Snake
 
+@onready var environment = $WorldEnvironment.environment
 
 var grid: Array
 var starting_point: Vector2i
@@ -142,8 +143,8 @@ func _ready(): # we probably don't have grid info here!
 	print("---")
 	
 	#_on_settings_updated()
-	
-	
+	camFP.rotation_degrees = cam_default + cam_tilt
+	environment.adjustment_brightness = 0
 
 func _process(delta: float) -> void:
 	
@@ -183,6 +184,7 @@ func _process(delta: float) -> void:
 		if abs(rotation_progress) >= abs(full_rotation):
 			rotating = false
 			#print("yo we rotated")
+	
 	if player.position.distance_to(snake.head.position) < snake_hitbox and alive:
 		jump_scare()
 
@@ -237,8 +239,9 @@ func _input(event: InputEvent) -> void:
 	if Input.is_action_just_pressed("x"): # toggle cam
 		change_cam()
 		
-	#if Input.is_action_just_pressed("e"): # snake new target
+	if Input.is_action_just_pressed("e"): # snake new target
 		#snak_action("player")
+		jump_scare()
 	
 	if Input.is_action_just_pressed("map"):
 		minimap_container.visible = !minimap_container.visible
@@ -672,14 +675,13 @@ func jump_scare():
 	print("oh wow that's tragic")
 	alive = false
 	await get_tree().create_timer(1).timeout
-	emit_signal("game_over", "died", babi_count)
+	emit_signal("game_over", "eated", babi_count)
 	#get_tree().change_scene_to_file("res://menus/deathmenu.tscn")
 
 func update_babicounter(input : int):
 	babicounter.text = "Babis: %d" % input
 
 func _on_settings_updated():
-	var environment = $WorldEnvironment.environment
 	environment.adjustment_brightness = Settings.gamma
 	print("settings updated")
 

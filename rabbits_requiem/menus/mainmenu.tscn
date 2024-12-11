@@ -1,7 +1,98 @@
-[gd_scene load_steps=3 format=3 uid="uid://boil8m7sjd0so"]
+[gd_scene load_steps=8 format=3 uid="uid://boil8m7sjd0so"]
 
 [ext_resource type="Script" path="res://menus/mainmenu.gd" id="1_3evwv"]
 [ext_resource type="Texture2D" uid="uid://d1l5y4bd0ddmy" path="res://assets/images/Menu art/Snake_tullen.png" id="2_1awbg"]
+[ext_resource type="AudioStream" uid="uid://uw01udmhpqkl" path="res://assets/Sounds/Ambiance/rabbits menu.wav" id="3_qq3lb"]
+
+[sub_resource type="Animation" id="Animation_6scju"]
+resource_name = "Fade in"
+length = 2.0
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Visual blocker:modulate")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 2),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Color(0, 0, 0, 1), Color(0, 0, 0, 0)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Background music:volume_db")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 2),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [-80.0, -10.0]
+}
+
+[sub_resource type="Animation" id="Animation_4jijk"]
+resource_name = "Fade out"
+length = 2.0
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Visual blocker:modulate")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 2),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Color(0, 0, 0, 0), Color(0, 0, 0, 1)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Background music:volume_db")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 2),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [-10.0, -80.0]
+}
+
+[sub_resource type="Animation" id="Animation_6uio3"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Visual blocker:modulate")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Color(0, 0, 0, 0)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Background music:volume_db")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [-80.0]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_4wp0f"]
+_data = {
+"Fade in": SubResource("Animation_6scju"),
+"Fade out": SubResource("Animation_4jijk"),
+"RESET": SubResource("Animation_6uio3")
+}
 
 [node name="Mainmenu" type="Control"]
 layout_mode = 3
@@ -12,18 +103,29 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_3evwv")
 
-[node name="SnakeTullen" type="Sprite2D" parent="."]
-position = Vector2(574.03, 324)
-scale = Vector2(0.611109, 0.666667)
+[node name="Background image" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 texture = ExtResource("2_1awbg")
+expand_mode = 1
+stretch_mode = 6
 
 [node name="Menu buttons" type="VBoxContainer" parent="."]
 custom_minimum_size = Vector2(200, 150)
 layout_mode = 1
-offset_left = 29.0
-offset_top = 30.0
-offset_right = 229.0
-offset_bottom = 180.0
+anchors_preset = -1
+anchor_left = 0.025
+anchor_top = 0.046
+anchor_right = 0.269
+anchor_bottom = 0.372
+offset_left = 0.199999
+offset_top = 0.191998
+offset_right = -80.888
+offset_bottom = -61.056
 scale = Vector2(1.405, 1.405)
 alignment = 1
 
@@ -45,15 +147,15 @@ text = "QUIT GAME
 visible = false
 custom_minimum_size = Vector2(300, 200)
 layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -150.0
-offset_top = -100.0
-offset_right = 150.0
-offset_bottom = 100.0
+anchors_preset = -1
+anchor_left = 0.37
+anchor_top = 0.346
+anchor_right = 0.63
+anchor_bottom = 0.654
+offset_left = -0.23999
+offset_top = -0.208008
+offset_right = 0.239929
+offset_bottom = 0.207977
 grow_horizontal = 2
 grow_vertical = 2
 alignment = 1
@@ -118,8 +220,31 @@ value = 1.0
 layout_mode = 2
 text = "Close"
 
+[node name="Visual blocker" type="TextureRect" parent="."]
+modulate = Color(0, 0, 0, 0)
+layout_mode = 2
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("2_1awbg")
+expand_mode = 1
+stretch_mode = 6
+
+[node name="Background music" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("3_qq3lb")
+volume_db = -80.0
+autoplay = true
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+"": SubResource("AnimationLibrary_4wp0f")
+}
+
 [connection signal="pressed" from="Menu buttons/start" to="." method="_on_start_pressed"]
 [connection signal="pressed" from="Menu buttons/settings" to="." method="_on_settings_pressed"]
 [connection signal="pressed" from="Menu buttons/quit" to="." method="_on_quit_pressed"]
 [connection signal="drag_ended" from="Settings buttons/Brightness slider" to="." method="_on_h_slider_drag_ended"]
 [connection signal="pressed" from="Settings buttons/close" to="." method="_on_close_pressed"]
+[connection signal="animation_finished" from="AnimationPlayer" to="." method="_on_animation_player_animation_finished"]

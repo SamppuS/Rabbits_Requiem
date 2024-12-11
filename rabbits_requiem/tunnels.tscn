@@ -1,4 +1,4 @@
-[gd_scene load_steps=19 format=3 uid="uid://d4fl1op437uoe"]
+[gd_scene load_steps=20 format=3 uid="uid://d4fl1op437uoe"]
 
 [ext_resource type="Script" path="res://tunnels.gd" id="1_bfp66"]
 [ext_resource type="PackedScene" uid="uid://c1vv05834q1vo" path="res://levels/minimap.tscn" id="2_ah540"]
@@ -14,6 +14,7 @@
 [ext_resource type="AudioStream" uid="uid://dgjvcyevaavij" path="res://assets/Sounds/Ambiance/kolodrone.wav" id="11_cw0t6"]
 [ext_resource type="PackedScene" uid="uid://m8ymecebrtn1" path="res://menus/pausemenu.tscn" id="12_5a0ey"]
 [ext_resource type="PackedScene" uid="uid://dk7b1a1resbbt" path="res://menus/victorymenu.tscn" id="14_sxlku"]
+[ext_resource type="PackedScene" uid="uid://h3rk4lv31m18" path="res://menus/deathmenu.tscn" id="15_hl8cq"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_redg8"]
 albedo_color = Color(0.860799, 1.01075e-05, 0.572914, 1)
@@ -160,8 +161,90 @@ offset_bottom = 23.0
 text = "Babis: 0
 "
 
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="Control" type="Control" parent="CanvasLayer"]
+clip_contents = true
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_right = -576.0
+offset_bottom = -324.0
+grow_horizontal = 2
+grow_vertical = 2
+scale = Vector2(2, 2)
+mouse_filter = 1
+
+[node name="CenterContainer" type="CenterContainer" parent="CanvasLayer/Control"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -288.0
+offset_top = -162.0
+offset_right = 288.0
+offset_bottom = 162.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="SubViewportContainer" type="SubViewportContainer" parent="CanvasLayer/Control/CenterContainer"]
+layout_mode = 2
+
+[node name="SubViewport" type="SubViewport" parent="CanvasLayer/Control/CenterContainer/SubViewportContainer"]
+own_world_3d = true
+handle_input_locally = false
+size = Vector2i(576, 324)
+render_target_update_mode = 4
+
+[node name="Minimap" parent="CanvasLayer/Control/CenterContainer/SubViewportContainer/SubViewport" instance=ExtResource("2_ah540")]
+
+[node name="Buttons" type="Control" parent="CanvasLayer/Control"]
+anchors_preset = 0
+offset_right = 576.0
+offset_bottom = 324.0
+mouse_filter = 1
+
+[node name="HBoxContainer_left" type="HBoxContainer" parent="CanvasLayer/Control/Buttons"]
+layout_mode = 2
+offset_left = -50.0
+offset_right = 526.0
+offset_bottom = 324.0
+mouse_filter = 2
+
+[node name="Button_left" type="Button" parent="CanvasLayer/Control/Buttons/HBoxContainer_left"]
+layout_mode = 2
+text = "      "
+
+[node name="HBoxContainer_right" type="HBoxContainer" parent="CanvasLayer/Control/Buttons"]
+layout_mode = 2
+offset_left = 50.0
+offset_right = 626.0
+offset_bottom = 324.0
+mouse_filter = 2
+alignment = 2
+
+[node name="Button_right" type="Button" parent="CanvasLayer/Control/Buttons/HBoxContainer_right"]
+layout_mode = 2
+text = "      "
+
+[node name="Babicounter" type="Label" parent="CanvasLayer/Control"]
+layout_mode = 0
+offset_left = 20.0
+offset_right = 80.0
+offset_bottom = 23.0
+text = "Babis: 0
+"
+
+[node name="deathmenu" parent="." instance=ExtResource("15_hl8cq")]
+
+[connection signal="game_over" from="." to="pausemenu" method="_on_tunnels_game_over"]
 [connection signal="game_over" from="." to="victorymenu" method="_on_tunnels_game_over"]
+[connection signal="game_over" from="." to="deathmenu" method="_on_tunnels_game_over"]
 [connection signal="jumping_scaring" from="." to="Snake" method="_on_tunnels_jumping_scaring"]
+[connection signal="jumping_scaring" from="." to="pausemenu" method="_on_tunnels_jumping_scaring"]
 [connection signal="snake_moved" from="Snake" to="." method="_on_snake_snake_moved"]
 [connection signal="snaking_complete" from="Snake" to="." method="_on_snake_snaking_complete"]
 [connection signal="send_grid" from="CanvasLayer/Control/CenterContainer/SubViewportContainer/SubViewport/Minimap" to="." method="_on_minimap_send_grid"]
