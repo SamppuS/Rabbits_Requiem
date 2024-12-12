@@ -1,6 +1,7 @@
 extends Node3D
 signal snaking_complete()
 signal snake_moved()
+signal opened()
 
 @export var debug_draw : bool = false
 
@@ -16,10 +17,10 @@ var marker
 var markers = []
 var player_alive = true
 
-@onready var head := $Head
+@onready var head := $Head2
 
-@onready var hisser := $"Head/Snake noises"
-@onready var alerter := $"Head/Alert player"
+@onready var hisser := $"Head2/Snake noises"
+@onready var alerter := $"Head2/Alert player"
 
 const snake_lenght = 15
 const segment_frequency = 20
@@ -76,7 +77,7 @@ func _ready() -> void:
 		
 	# simple hisser loop
 	hiss()
-		
+	#open()
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -372,3 +373,10 @@ func get_snake_tiles():
 
 func _on_tunnels_jumping_scaring() -> void:
 	player_alive = false
+	open()
+	await get_tree().create_timer(1).timeout
+	emit_signal("opened")
+	
+	
+func open():
+	$Head2/AnimationPlayer.play("amongussus")

@@ -1,29 +1,8 @@
-[gd_scene load_steps=4 format=3 uid="uid://b6akk6d2la0br"]
+[gd_scene load_steps=2 format=3 uid="uid://b6akk6d2la0br"]
 
-[ext_resource type="ArrayMesh" uid="uid://dd5r5mcadonwg" path="res://assets/snake/Snak/snak_seg.obj" id="1_6cu2f"]
-[ext_resource type="ArrayMesh" uid="uid://vkmptf62ibq3" path="res://assets/snake/Snak/snak_seg2.obj" id="2_35c5u"]
-
-[sub_resource type="CapsuleMesh" id="CapsuleMesh_t65y1"]
-radius = 0.025
-height = 0.35
+[ext_resource type="PackedScene" uid="uid://ehf5vq3tu0ke" path="res://assets/snake/Snak/snakbody.blend_toimiva.glb" id="3_ixf8p"]
 
 [node name="SnakeSegment" type="Node3D"]
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
-transform = Transform3D(-4.37114e-08, 1, -8.74228e-08, 1, 4.37114e-08, -3.82137e-15, 0, -8.74228e-08, -1, 0, 0.0620602, -0.145466)
-visible = false
-mesh = SubResource("CapsuleMesh_t65y1")
-
-[node name="MeshInstance3D4" type="MeshInstance3D" parent="."]
-transform = Transform3D(-7.54979e-08, 0.75, -1.50996e-07, 1, 5.66234e-08, -3.82137e-15, 7.5785e-15, -1.13247e-07, -1, 0, 0.0620602, -0.0894733)
-visible = false
-mesh = SubResource("CapsuleMesh_t65y1")
-
-[node name="MeshInstance3D2" type="MeshInstance3D" parent="."]
-transform = Transform3D(0.21, 0, 0, 0, 0.21, 0, 0, 0, 0.21, 0, 0, 0.018951)
-visible = false
-mesh = ExtResource("1_6cu2f")
-
-[node name="MeshInstance3D3" type="MeshInstance3D" parent="."]
-transform = Transform3D(0.21, 0, 0, 0, 0.21, 0, 0, 0, 0.23, 0, 0, 0)
-mesh = ExtResource("2_35c5u")
+[node name="snakbody_blend_toimiva" parent="." instance=ExtResource("3_ixf8p")]
+transform = Transform3D(0.21, 0, 0, 0, 0.21, 0, 0, 0, 0.21, 0, 0, 0)

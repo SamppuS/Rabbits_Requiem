@@ -1,0 +1,10 @@
+[gd_scene load_steps=2 format=3 uid="uid://d1l2p6ylwnnpd"]
+
+[ext_resource type="PackedScene" uid="uid://b3a48h1ho0lpx" path="res://assets/snake/Snak/snakbodyblend_liikkuva.glb" id="1_irf14"]
+
+[node name="snakbodyblend_liikkuva" instance=ExtResource("1_irf14")]
+
+[node name="Skeleton3D" parent="Armature" index="0"]
+bones/1/rotation = Quaternion(0.345978, 5.26952e-17, 7.69773e-17, 0.938243)
+bones/2/rotation = Quaternion(-0.600691, -9.53055e-08, 7.1608e-08, 0.799481)
+bones/3/rotation = Quaternion(-0.462456, -4.38935e-17, 8.39096e-17, 0.886643)

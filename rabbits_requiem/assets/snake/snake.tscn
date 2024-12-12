@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3 uid="uid://e2453vreljj2"]
+[gd_scene load_steps=13 format=3 uid="uid://e2453vreljj2"]
 
 [ext_resource type="Script" path="res://assets/snake/snake.gd" id="1_wnujq"]
 [ext_resource type="PackedScene" uid="uid://b6akk6d2la0br" path="res://assets/snake/snake_segment.tscn" id="2_4iyo3"]
@@ -8,6 +8,16 @@
 [ext_resource type="AudioStream" uid="uid://dsohs5g43ey0s" path="res://assets/Sounds/Snake sounds/hiss 2.wav" id="5_mykn0"]
 [ext_resource type="AudioStream" uid="uid://bos1y1p3xsq20" path="res://assets/Sounds/Snake sounds/snak attak.wav" id="6_p6h7t"]
 [ext_resource type="AudioStream" uid="uid://bdiwnrh62mume" path="res://assets/Sounds/babi sounds/jänisito.wav" id="7_dd7kv"]
+[ext_resource type="PackedScene" uid="uid://qc3sg25rxgfw" path="res://assets/snake/Snak/snak.blend_toimiva.glb" id="9_lpbka"]
+[ext_resource type="PackedScene" uid="uid://b3a48h1ho0lpx" path="res://assets/snake/Snak/snakbodyblend_liikkuva.glb" id="10_8brh3"]
+
+[sub_resource type="Animation" id="Animation_m57tt"]
+resource_name = "hehee"
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_1jjj2"]
+_data = {
+"hehee": SubResource("Animation_m57tt")
+}
 
 [node name="Snake" type="Node3D"]
 script = ExtResource("1_wnujq")
@@ -16,30 +26,14 @@ debug_mesh = ExtResource("2_57xv2")
 hissing_sounds = Array[AudioStreamWAV]([ExtResource("4_ioe15"), ExtResource("5_mykn0")])
 alert_sounds = Array[AudioStreamWAV]([ExtResource("6_p6h7t")])
 
-[node name="Head" type="MeshInstance3D" parent="."]
+[node name="head" type="MeshInstance3D" parent="."]
 transform = Transform3D(0.195, 0, 0, 0, 0.195, 0, 0, 0, 0.195, 0, 0, 0)
+visible = false
 mesh = ExtResource("4_7rbg3")
-
-[node name="Snake noises" type="AudioStreamPlayer3D" parent="Head"]
-transform = Transform3D(5.12821, 0, 0, 0, 5.12821, 0, 0, 0, 5.12821, 0, 0, 0)
-volume_db = -5.0
-unit_size = 13.0
-max_db = 0.0
-max_distance = 20.0
-panning_strength = 3.0
-
-[node name="Alert player" type="AudioStreamPlayer3D" parent="Head"]
-transform = Transform3D(5.12821, 0, 0, 0, 5.12821, 0, 0, 0, 5.12821, 0, 0, 0)
-volume_db = -10.0
-max_db = -10.0
-pitch_scale = 0.8
-max_distance = 20.0
-panning_strength = 3.0
 
 [node name="OmniLight3D" type="OmniLight3D" parent="."]
 
 [node name="Mumbling" type="AudioStreamPlayer3D" parent="."]
-visible = false
 stream = ExtResource("7_dd7kv")
 attenuation_model = 2
 volume_db = -35.0
@@ -48,4 +42,32 @@ autoplay = true
 max_distance = 3.0
 panning_strength = 3.0
 
-[connection signal="finished" from="Head/Snake noises" to="." method="_on_snake_noises_finished"]
+[node name="Head" parent="." instance=ExtResource("9_lpbka")]
+transform = Transform3D(0.2, 0, 0, 0, 0.2, 0, 0, 0, 0.2, 0, 0, 0)
+visible = false
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+"": SubResource("AnimationLibrary_1jjj2")
+}
+
+[node name="Head2" parent="." instance=ExtResource("10_8brh3")]
+transform = Transform3D(0.2, 0, 0, 0, 0.2, 0, 0, 0, 0.2, 0, 0, 0)
+
+[node name="Snake noises" type="AudioStreamPlayer3D" parent="Head2"]
+transform = Transform3D(5, 0, 0, 0, 5, 0, 0, 0, 5, 0, 0, 0)
+volume_db = -5.0
+unit_size = 13.0
+max_db = 0.0
+max_distance = 20.0
+panning_strength = 3.0
+
+[node name="Alert player" type="AudioStreamPlayer3D" parent="Head2"]
+transform = Transform3D(5, 0, 0, 0, 5, 0, 0, 0, 5, 0, 0, 0)
+volume_db = -10.0
+max_db = -10.0
+pitch_scale = 0.8
+max_distance = 20.0
+panning_strength = 3.0
+
+[connection signal="finished" from="Head2/Snake noises" to="." method="_on_snake_noises_finished"]

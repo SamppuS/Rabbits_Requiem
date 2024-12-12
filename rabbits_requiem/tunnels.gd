@@ -11,6 +11,7 @@ signal babi_locations(babeis: Array)
 @export_subgroup("Nodes+")
 @export var player : Node3D
 @export var tile_material : StandardMaterial3D
+@export var meshyes: Array[Mesh]
 
 @export_subgroup("Scenes")
 @export var selectable_dir : PackedScene
@@ -133,6 +134,7 @@ func _ready(): # we probably don't have grid info here!
 		meshes = []  # Clear the meshes array before loading
 		for file_name in mesh_files:
 			meshes.append(load("res://palikoita/Closed Meshes/" + file_name))
+		meshes = meshyes
 	print("Drawing cave...")
 	draw_cave()
 	print("Spawning babis...")
@@ -668,22 +670,23 @@ func moving_average(arr: PackedVector3Array, window: int = 0):
 
 func leave():
 	print("BAZINGA!")
+	$AnimationPlayer.play("kill_music")
 	emit_signal("game_over", "left", babis_yoinked)
 	#get_tree().change_scene_to_file("res://menus/victorymenu.tscn")
 
 
 func jump_scare():
+	$AnimationPlayer.play("kill_music")
 	emit_signal("jumping_scaring")
 	print("oh wow that's tragic")
 	alive = false
-	await get_tree().create_timer(1).timeout
-	emit_signal("game_over", "eated", babi_count)
 	#get_tree().change_scene_to_file("res://menus/deathmenu.tscn")
 
 func update_babicounter(input : int):
 	babicounter.text = "Babis: %d" % input
 
 func _on_settings_updated():
+	
 	environment.adjustment_brightness = Settings.gamma
 	print("settings updated")
 
@@ -702,3 +705,7 @@ func _on_button_left_pressed() -> void:
 			rotadir = -1
 			set_facing(flip_dir(facing))
 			play("turn")
+
+
+func _on_snake_opened() -> void:
+	emit_signal("game_over", "eated", babi_count)

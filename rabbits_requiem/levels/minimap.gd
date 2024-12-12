@@ -32,6 +32,7 @@ var babihodler
 @export var sp_mesh : PackedScene
 @export var dir_mesh : PackedScene
 @export var babikuva : CompressedTexture2D
+@export var jexit : CompressedTexture2D
 
 @export_subgroup("Nodes")
 @export var player : Node3D
@@ -419,4 +420,11 @@ func _on_tunnels_babi_locations(babeis: Array) -> void:
 				kuva.scale = Vector2(1,1) * -0.04
 				kuva.position = pos2
 				add_child(kuva)
+				
+	var kuva = Sprite2D.new()
+	kuva.texture = jexit
+	kuva.scale = Vector2(1,1) * -0.04
+	var possible = pos_from_tile(sp)
+	kuva.position = Vector2(possible.x, possible.z) * 5
+	add_child(kuva)
 	#_draw()

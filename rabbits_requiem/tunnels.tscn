@@ -1,18 +1,29 @@
-[gd_scene load_steps=22 format=3 uid="uid://d4fl1op437uoe"]
+[gd_scene load_steps=36 format=3 uid="uid://d4fl1op437uoe"]
 
 [ext_resource type="Script" path="res://tunnels.gd" id="1_bfp66"]
 [ext_resource type="PackedScene" uid="uid://c1vv05834q1vo" path="res://levels/minimap.tscn" id="2_ah540"]
 [ext_resource type="PackedScene" uid="uid://dtuwhmswrmn74" path="res://assets/selectable_dir/selectable_dir.tscn" id="3_34knt"]
+[ext_resource type="ArrayMesh" uid="uid://b3lieivsa1s7v" path="res://palikoita/Closed Meshes/Block10.obj" id="3_63d46"]
+[ext_resource type="ArrayMesh" uid="uid://dataeblihcpl3" path="res://palikoita/Closed Meshes/Block20.obj" id="4_j30hu"]
 [ext_resource type="Material" uid="uid://dd4us8ayx8u2x" path="res://assets/Materials/Cavelike.tres" id="4_njief"]
 [ext_resource type="AudioStream" uid="uid://b66fjxyi1j2km" path="res://assets/Sounds/walking sounds/walk mud 2.wav" id="4_nl5un"]
+[ext_resource type="ArrayMesh" uid="uid://crnkd35jovlwg" path="res://palikoita/Closed Meshes/Block21.obj" id="5_6a6bw"]
 [ext_resource type="AudioStream" uid="uid://dmvpk0jlmpigs" path="res://assets/Sounds/walking sounds/walk mud 3.wav" id="5_st604"]
+[ext_resource type="ArrayMesh" uid="uid://deatx5cvnpg0x" path="res://palikoita/Closed Meshes/Block22.obj" id="6_880yc"]
 [ext_resource type="AudioStream" uid="uid://dbk4irm1ywct4" path="res://assets/Sounds/walking sounds/walk mud.wav" id="6_jrtrq"]
 [ext_resource type="PackedScene" uid="uid://r48mhqwa1b7d" path="res://assets/babi/babi.tscn" id="7_ilsec"]
+[ext_resource type="ArrayMesh" uid="uid://donaegbq7d508" path="res://palikoita/Closed Meshes/Block30.obj" id="7_yd3no"]
 [ext_resource type="PackedScene" uid="uid://e2453vreljj2" path="res://assets/snake/snake.tscn" id="8_di8tg"]
+[ext_resource type="ArrayMesh" uid="uid://b2nfncnmvic5f" path="res://palikoita/Closed Meshes/Block31.obj" id="8_o7gdy"]
 [ext_resource type="PackedScene" uid="uid://yp1omp0talc8" path="res://assets/cave/Entrance.tscn" id="8_ykwd4"]
+[ext_resource type="ArrayMesh" uid="uid://btoxmu6r2ed1y" path="res://palikoita/Closed Meshes/Block32.obj" id="9_f5htp"]
 [ext_resource type="AudioStream" uid="uid://cu5euftt64e84" path="res://assets/Sounds/walking sounds/turn round.wav" id="9_mi50u"]
+[ext_resource type="ArrayMesh" uid="uid://d30nyyq4rqmlm" path="res://palikoita/Closed Meshes/Block33.obj" id="10_im20r"]
 [ext_resource type="AudioStream" uid="uid://dgjvcyevaavij" path="res://assets/Sounds/Ambiance/kolodrone.wav" id="11_cw0t6"]
+[ext_resource type="ArrayMesh" uid="uid://0ybqfx8lei4b" path="res://palikoita/Closed Meshes/Block40.obj" id="11_j28pf"]
 [ext_resource type="PackedScene" uid="uid://m8ymecebrtn1" path="res://menus/pausemenu.tscn" id="12_5a0ey"]
+[ext_resource type="ArrayMesh" uid="uid://cbyn67atrosyu" path="res://palikoita/Closed Meshes/Block41.obj" id="12_kowkq"]
+[ext_resource type="ArrayMesh" uid="uid://bmio45h8tg7qs" path="res://palikoita/Closed Meshes/Block42.obj" id="13_0dp6n"]
 [ext_resource type="Texture2D" uid="uid://7cokueko0ejj" path="res://assets/images/Endings/win_none.png" id="14_8lq6y"]
 [ext_resource type="PackedScene" uid="uid://dk7b1a1resbbt" path="res://menus/victorymenu.tscn" id="14_sxlku"]
 [ext_resource type="Texture2D" uid="uid://c21uanwhck24h" path="res://assets/images/Endings/win_good.png" id="15_dj03b"]
@@ -38,11 +49,49 @@ fog_height_density = 0.2
 volumetric_fog_enabled = true
 volumetric_fog_density = 2.0
 volumetric_fog_albedo = Color(0.172309, 0.1103, 0.0675609, 1)
+adjustment_enabled = true
+
+[sub_resource type="Animation" id="Animation_bmer8"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Background ambiance:volume_db")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [-7.0]
+}
+
+[sub_resource type="Animation" id="Animation_8wojq"]
+resource_name = "kill_music"
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Background ambiance:volume_db")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [-7.0, -80.0]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_jjipw"]
+_data = {
+"RESET": SubResource("Animation_bmer8"),
+"kill_music": SubResource("Animation_8wojq")
+}
 
 [node name="tunnels" type="Node3D" node_paths=PackedStringArray("player")]
 script = ExtResource("1_bfp66")
 player = NodePath("Spelare")
 tile_material = ExtResource("4_njief")
+meshyes = Array[Mesh]([ExtResource("3_63d46"), ExtResource("4_j30hu"), ExtResource("5_6a6bw"), ExtResource("6_880yc"), ExtResource("7_yd3no"), ExtResource("8_o7gdy"), ExtResource("9_f5htp"), ExtResource("10_im20r"), ExtResource("11_j28pf"), ExtResource("12_kowkq"), ExtResource("13_0dp6n")])
 selectable_dir = ExtResource("3_34knt")
 babi_scene = ExtResource("7_ilsec")
 entrance = ExtResource("8_ykwd4")
@@ -59,6 +108,7 @@ current = true
 fov = 45.0
 
 [node name="CamFP" type="Camera3D" parent="Spelare"]
+current = true
 fov = 70.0
 
 [node name="OmniLight3D" type="OmniLight3D" parent="Spelare"]
@@ -169,12 +219,18 @@ text = "Babis: 0
 [node name="deathmenu" parent="." instance=ExtResource("15_hl8cq")]
 visible = false
 
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+"": SubResource("AnimationLibrary_jjipw")
+}
+
 [connection signal="babi_locations" from="." to="CanvasLayer/Control/SubViewportContainer/SubViewport/Minimap" method="_on_tunnels_babi_locations"]
 [connection signal="game_over" from="." to="pausemenu" method="_on_tunnels_game_over"]
 [connection signal="game_over" from="." to="victorymenu" method="_on_tunnels_game_over"]
 [connection signal="game_over" from="." to="deathmenu" method="_on_tunnels_game_over"]
 [connection signal="jumping_scaring" from="." to="Snake" method="_on_tunnels_jumping_scaring"]
 [connection signal="jumping_scaring" from="." to="pausemenu" method="_on_tunnels_jumping_scaring"]
+[connection signal="opened" from="Snake" to="." method="_on_snake_opened"]
 [connection signal="snake_moved" from="Snake" to="." method="_on_snake_snake_moved"]
 [connection signal="snaking_complete" from="Snake" to="." method="_on_snake_snaking_complete"]
 [connection signal="send_grid" from="CanvasLayer/Control/SubViewportContainer/SubViewport/Minimap" to="." method="_on_minimap_send_grid"]
