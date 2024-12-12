@@ -101,15 +101,9 @@ mouse_filter = 1
 
 [node name="CenterContainer" type="CenterContainer" parent="CanvasLayer/Control"]
 layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -288.0
-offset_top = -162.0
-offset_right = 288.0
-offset_bottom = 162.0
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
@@ -132,33 +126,30 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 mouse_filter = 1
 
-[node name="HBoxContainer_left" type="HBoxContainer" parent="CanvasLayer/Control/Buttons"]
+[node name="Button_left" type="Button" parent="CanvasLayer/Control/Buttons"]
 layout_mode = 2
-anchor_left = -0.087
-anchor_right = 0.913
 anchor_bottom = 1.0
-offset_left = 0.112003
-offset_right = 0.112
-mouse_filter = 2
-
-[node name="Button_left" type="Button" parent="CanvasLayer/Control/Buttons/HBoxContainer_left"]
-layout_mode = 2
+offset_left = -50.0
+offset_right = -17.0
+focus_mode = 0
 text = "      "
 
-[node name="HBoxContainer_right" type="HBoxContainer" parent="CanvasLayer/Control/Buttons"]
+[node name="Button_right" type="Button" parent="CanvasLayer/Control/Buttons"]
 layout_mode = 2
-anchor_left = 0.087
-anchor_right = 1.087
+anchor_left = 0.5
+anchor_right = 0.5
 anchor_bottom = 1.0
-offset_left = -0.112003
-offset_right = -0.112
-mouse_filter = 2
-alignment = 2
-
-[node name="Button_right" type="Button" parent="CanvasLayer/Control/Buttons/HBoxContainer_right"]
-layout_mode = 2
+offset_left = 305.0
+offset_right = 338.0
+focus_mode = 0
 text = "      "
 
 [node name="Babicounter" type="Label" parent="CanvasLayer/Control"]
@@ -181,5 +172,5 @@ visible = false
 [connection signal="snaking_complete" from="Snake" to="." method="_on_snake_snaking_complete"]
 [connection signal="send_grid" from="CanvasLayer/Control/CenterContainer/SubViewportContainer/SubViewport/Minimap" to="." method="_on_minimap_send_grid"]
 [connection signal="send_grid" from="CanvasLayer/Control/CenterContainer/SubViewportContainer/SubViewport/Minimap" to="Snake" method="_on_minimap_send_grid"]
-[connection signal="pressed" from="CanvasLayer/Control/Buttons/HBoxContainer_left/Button_left" to="." method="_on_button_left_pressed"]
-[connection signal="pressed" from="CanvasLayer/Control/Buttons/HBoxContainer_right/Button_right" to="." method="_on_button_right_pressed"]
+[connection signal="pressed" from="CanvasLayer/Control/Buttons/Button_left" to="." method="_on_button_left_pressed"]
+[connection signal="pressed" from="CanvasLayer/Control/Buttons/Button_right" to="." method="_on_button_right_pressed"]
