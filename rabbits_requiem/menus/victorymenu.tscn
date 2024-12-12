@@ -1,9 +1,11 @@
-[gd_scene load_steps=11 format=3 uid="uid://dk7b1a1resbbt"]
+[gd_scene load_steps=13 format=3 uid="uid://dk7b1a1resbbt"]
 
 [ext_resource type="Script" path="res://menus/victorymenu.gd" id="1_k5pjp"]
-[ext_resource type="Texture2D" uid="uid://dsqvjearapl6j" path="res://assets/images/Endings/win_none.png" id="2_uosui"]
-[ext_resource type="Texture2D" uid="uid://upnpmpvpgn4r" path="res://assets/images/Endings/win_good.png" id="3_s7rx2"]
+[ext_resource type="Texture2D" uid="uid://7cokueko0ejj" path="res://assets/images/Endings/win_none.png" id="2_uosui"]
+[ext_resource type="Texture2D" uid="uid://brvppo4j2oxpm" path="res://assets/images/Endings/win_low.png" id="3_odto6"]
+[ext_resource type="Texture2D" uid="uid://c21uanwhck24h" path="res://assets/images/Endings/win_good.png" id="3_s7rx2"]
 [ext_resource type="AudioStream" uid="uid://bjl2cg8o0ld1i" path="res://assets/Sounds/Ambiance/jänis requiem.wav" id="4_jhokl"]
+[ext_resource type="Texture2D" uid="uid://cndyxw3r1t5vi" path="res://assets/images/Endings/win_mid.png" id="4_r0t2p"]
 [ext_resource type="AudioStream" uid="uid://b2eth31lc2xks" path="res://assets/Sounds/Ambiance/cursed realms (of the winterjänöt).wav" id="5_xo8ns"]
 
 [sub_resource type="Animation" id="Animation_n0b6w"]
@@ -210,7 +212,7 @@ _data = {
 
 [node name="victorymenu" type="CanvasLayer"]
 script = ExtResource("1_k5pjp")
-victory_phases = Array[CompressedTexture2D]([ExtResource("2_uosui"), ExtResource("3_s7rx2")])
+victory_phases = Array[CompressedTexture2D]([ExtResource("2_uosui"), ExtResource("3_odto6"), ExtResource("4_r0t2p"), ExtResource("3_s7rx2")])
 
 [node name="Control" type="Control" parent="."]
 layout_mode = 3

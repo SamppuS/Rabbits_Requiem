@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://c6auycbk0kpj4"
-path="res://.godot/imported/lose.png-2c05c7ef6171eca90e6d7e0283821a37.ctex"
+uid="uid://brvppo4j2oxpm"
+path="res://.godot/imported/win_low.png-8ac033be396862fa855713f747d25415.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/images/Endings/lose.png"
-dest_files=["res://.godot/imported/lose.png-2c05c7ef6171eca90e6d7e0283821a37.ctex"]
+source_file="res://assets/images/Endings/win_low.png"
+dest_files=["res://.godot/imported/win_low.png-8ac033be396862fa855713f747d25415.ctex"]
 
 [params]
 

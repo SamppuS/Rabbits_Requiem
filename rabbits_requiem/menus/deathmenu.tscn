@@ -1,7 +1,7 @@
 [gd_scene load_steps=9 format=3 uid="uid://h3rk4lv31m18"]
 
 [ext_resource type="Script" path="res://menus/deathmenu.gd" id="1_hkwgd"]
-[ext_resource type="Texture2D" uid="uid://b1fm27xjqoxxa" path="res://assets/images/Endings/lose.png" id="2_ntwug"]
+[ext_resource type="Texture2D" uid="uid://c6auycbk0kpj4" path="res://assets/images/Endings/lose.png" id="2_ntwug"]
 [ext_resource type="AudioStream" uid="uid://b2eth31lc2xks" path="res://assets/Sounds/Ambiance/cursed realms (of the winterjänöt).wav" id="3_rtv88"]
 [ext_resource type="AudioStream" uid="uid://cb0dou46ry3ks" path="res://assets/Sounds/Ambiance/nondescript horrible ääni.wav" id="4_ca8vc"]
 

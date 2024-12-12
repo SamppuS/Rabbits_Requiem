@@ -1,9 +1,9 @@
 [gd_scene load_steps=15 format=3 uid="uid://ddwqw2pm6iovp"]
 
 [ext_resource type="Script" path="res://menus/intro.gd" id="1_lrnnn"]
-[ext_resource type="Texture2D" uid="uid://csr258vpobh8t" path="res://assets/images/Intro/rabbit_intro1.png" id="2_2kklu"]
-[ext_resource type="Texture2D" uid="uid://cbxmiwb50iw57" path="res://assets/images/Intro/rabbit_intro2.png" id="3_rgtqu"]
-[ext_resource type="Texture2D" uid="uid://dbbf42yhmnwdo" path="res://assets/images/Intro/rabbit_intro3.png" id="4_reewd"]
+[ext_resource type="Texture2D" uid="uid://cer27j64hvl5n" path="res://assets/images/Intro/intro_f1.png" id="2_7govb"]
+[ext_resource type="Texture2D" uid="uid://43pti6yikh4p" path="res://assets/images/Intro/intro_f2.png" id="3_ainxy"]
+[ext_resource type="Texture2D" uid="uid://dhotsc7skcl46" path="res://assets/images/Intro/intro_f3.png" id="4_pqkq1"]
 [ext_resource type="AudioStream" uid="uid://bohp6pp3yf5ui" path="res://assets/Sounds/Intro sounds/walk gravelhard 2.wav" id="5_5i00g"]
 [ext_resource type="AudioStream" uid="uid://u3wnw4tkiwm8" path="res://assets/Sounds/Ambiance/introwind.wav" id="5_kvsqe"]
 [ext_resource type="AudioStream" uid="uid://bsw1vqo6ouu3w" path="res://assets/Sounds/Intro sounds/walk gravelhard 1.wav" id="6_m1b2d"]
@@ -328,7 +328,7 @@ layout_mode = 1
 anchors_preset = -1
 anchor_right = 1.0
 anchor_bottom = 1.0
-texture = ExtResource("2_2kklu")
+texture = ExtResource("2_7govb")
 expand_mode = 5
 stretch_mode = 5
 
@@ -339,7 +339,7 @@ layout_mode = 1
 anchors_preset = -1
 anchor_right = 1.0
 anchor_bottom = 1.0
-texture = ExtResource("3_rgtqu")
+texture = ExtResource("3_ainxy")
 expand_mode = 5
 stretch_mode = 5
 
@@ -350,7 +350,7 @@ layout_mode = 1
 anchors_preset = -1
 anchor_right = 1.0
 anchor_bottom = 1.0
-texture = ExtResource("4_reewd")
+texture = ExtResource("4_pqkq1")
 expand_mode = 5
 stretch_mode = 5
 

@@ -9,7 +9,7 @@
 [ext_resource type="AudioStream" uid="uid://dbk4irm1ywct4" path="res://assets/Sounds/walking sounds/walk mud.wav" id="6_jrtrq"]
 [ext_resource type="PackedScene" uid="uid://r48mhqwa1b7d" path="res://assets/babi/babi.tscn" id="7_ilsec"]
 [ext_resource type="PackedScene" uid="uid://e2453vreljj2" path="res://assets/snake/snake.tscn" id="8_di8tg"]
-[ext_resource type="PackedScene" path="res://assets/cave/Entrance.tscn" id="8_ykwd4"]
+[ext_resource type="PackedScene" uid="uid://yp1omp0talc8" path="res://assets/cave/Entrance.tscn" id="8_ykwd4"]
 [ext_resource type="AudioStream" uid="uid://cu5euftt64e84" path="res://assets/Sounds/walking sounds/turn round.wav" id="9_mi50u"]
 [ext_resource type="AudioStream" uid="uid://dgjvcyevaavij" path="res://assets/Sounds/Ambiance/kolodrone.wav" id="11_cw0t6"]
 [ext_resource type="PackedScene" uid="uid://m8ymecebrtn1" path="res://menus/pausemenu.tscn" id="12_5a0ey"]
