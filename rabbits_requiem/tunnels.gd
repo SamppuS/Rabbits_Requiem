@@ -666,7 +666,7 @@ func moving_average(arr: PackedVector3Array, window: int = 0):
 
 func leave():
 	print("BAZINGA!")
-	emit_signal("game_over", "left", babi_count)
+	emit_signal("game_over", "left", babis_yoinked)
 	#get_tree().change_scene_to_file("res://menus/victorymenu.tscn")
 
 
