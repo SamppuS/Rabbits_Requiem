@@ -1,4 +1,4 @@
-[gd_scene load_steps=20 format=3 uid="uid://d4fl1op437uoe"]
+[gd_scene load_steps=22 format=3 uid="uid://d4fl1op437uoe"]
 
 [ext_resource type="Script" path="res://tunnels.gd" id="1_bfp66"]
 [ext_resource type="PackedScene" uid="uid://c1vv05834q1vo" path="res://levels/minimap.tscn" id="2_ah540"]
@@ -9,11 +9,13 @@
 [ext_resource type="AudioStream" uid="uid://dbk4irm1ywct4" path="res://assets/Sounds/walking sounds/walk mud.wav" id="6_jrtrq"]
 [ext_resource type="PackedScene" uid="uid://r48mhqwa1b7d" path="res://assets/babi/babi.tscn" id="7_ilsec"]
 [ext_resource type="PackedScene" uid="uid://e2453vreljj2" path="res://assets/snake/snake.tscn" id="8_di8tg"]
-[ext_resource type="PackedScene" uid="uid://yp1omp0talc8" path="res://assets/cave/Entrance.tscn" id="8_ykwd4"]
+[ext_resource type="PackedScene" path="res://assets/cave/Entrance.tscn" id="8_ykwd4"]
 [ext_resource type="AudioStream" uid="uid://cu5euftt64e84" path="res://assets/Sounds/walking sounds/turn round.wav" id="9_mi50u"]
 [ext_resource type="AudioStream" uid="uid://dgjvcyevaavij" path="res://assets/Sounds/Ambiance/kolodrone.wav" id="11_cw0t6"]
 [ext_resource type="PackedScene" uid="uid://m8ymecebrtn1" path="res://menus/pausemenu.tscn" id="12_5a0ey"]
+[ext_resource type="Texture2D" uid="uid://7cokueko0ejj" path="res://assets/images/Endings/win_none.png" id="14_8lq6y"]
 [ext_resource type="PackedScene" uid="uid://dk7b1a1resbbt" path="res://menus/victorymenu.tscn" id="14_sxlku"]
+[ext_resource type="Texture2D" uid="uid://c21uanwhck24h" path="res://assets/images/Endings/win_good.png" id="15_dj03b"]
 [ext_resource type="PackedScene" uid="uid://h3rk4lv31m18" path="res://menus/deathmenu.tscn" id="15_hl8cq"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_redg8"]
@@ -83,6 +85,7 @@ autoplay = true
 [node name="pausemenu" parent="." instance=ExtResource("12_5a0ey")]
 
 [node name="victorymenu" parent="." instance=ExtResource("14_sxlku")]
+victory_phases = Array[CompressedTexture2D]([ExtResource("14_8lq6y"), ExtResource("15_dj03b")])
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 
@@ -110,6 +113,7 @@ mouse_filter = 2
 
 [node name="SubViewportContainer" type="SubViewportContainer" parent="CanvasLayer/Control/CenterContainer"]
 layout_mode = 2
+focus_mode = 0
 mouse_filter = 2
 
 [node name="SubViewport" type="SubViewport" parent="CanvasLayer/Control/CenterContainer/SubViewportContainer"]
@@ -136,6 +140,7 @@ anchor_bottom = 1.0
 offset_left = -50.0
 offset_right = -17.0
 focus_mode = 0
+mouse_filter = 2
 text = "      "
 
 [node name="Button_right" type="Button" parent="CanvasLayer/Control/Buttons"]
@@ -146,6 +151,7 @@ anchor_bottom = 1.0
 offset_left = 305.0
 offset_right = 338.0
 focus_mode = 0
+mouse_filter = 2
 text = "      "
 
 [node name="Babicounter" type="Label" parent="CanvasLayer/Control"]
