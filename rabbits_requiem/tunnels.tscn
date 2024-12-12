@@ -9,7 +9,7 @@
 [ext_resource type="AudioStream" uid="uid://dbk4irm1ywct4" path="res://assets/Sounds/walking sounds/walk mud.wav" id="6_jrtrq"]
 [ext_resource type="PackedScene" uid="uid://r48mhqwa1b7d" path="res://assets/babi/babi.tscn" id="7_ilsec"]
 [ext_resource type="PackedScene" uid="uid://e2453vreljj2" path="res://assets/snake/snake.tscn" id="8_di8tg"]
-[ext_resource type="PackedScene" path="res://assets/cave/Entrance.tscn" id="8_ykwd4"]
+[ext_resource type="PackedScene" uid="uid://yp1omp0talc8" path="res://assets/cave/Entrance.tscn" id="8_ykwd4"]
 [ext_resource type="AudioStream" uid="uid://cu5euftt64e84" path="res://assets/Sounds/walking sounds/turn round.wav" id="9_mi50u"]
 [ext_resource type="AudioStream" uid="uid://dgjvcyevaavij" path="res://assets/Sounds/Ambiance/kolodrone.wav" id="11_cw0t6"]
 [ext_resource type="PackedScene" uid="uid://m8ymecebrtn1" path="res://menus/pausemenu.tscn" id="12_5a0ey"]
@@ -83,8 +83,10 @@ volume_db = -7.0
 autoplay = true
 
 [node name="pausemenu" parent="." instance=ExtResource("12_5a0ey")]
+visible = false
 
 [node name="victorymenu" parent="." instance=ExtResource("14_sxlku")]
+visible = false
 victory_phases = Array[CompressedTexture2D]([ExtResource("14_8lq6y"), ExtResource("15_dj03b")])
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
@@ -102,6 +104,22 @@ grow_vertical = 2
 scale = Vector2(2, 2)
 mouse_filter = 2
 
+[node name="SubViewportContainer" type="SubViewportContainer" parent="CanvasLayer/Control"]
+layout_mode = 2
+anchor_right = 1.0
+anchor_bottom = 1.0
+focus_mode = 0
+mouse_filter = 2
+
+[node name="SubViewport" type="SubViewport" parent="CanvasLayer/Control/SubViewportContainer"]
+own_world_3d = true
+transparent_bg = true
+handle_input_locally = false
+size = Vector2i(576, 324)
+render_target_update_mode = 4
+
+[node name="Minimap" parent="CanvasLayer/Control/SubViewportContainer/SubViewport" instance=ExtResource("2_ah540")]
+
 [node name="CenterContainer" type="CenterContainer" parent="CanvasLayer/Control"]
 layout_mode = 1
 anchors_preset = 15
@@ -110,20 +128,6 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
-
-[node name="SubViewportContainer" type="SubViewportContainer" parent="CanvasLayer/Control/CenterContainer"]
-layout_mode = 2
-focus_mode = 0
-mouse_filter = 2
-
-[node name="SubViewport" type="SubViewport" parent="CanvasLayer/Control/CenterContainer/SubViewportContainer"]
-own_world_3d = true
-transparent_bg = true
-handle_input_locally = false
-size = Vector2i(576, 324)
-render_target_update_mode = 4
-
-[node name="Minimap" parent="CanvasLayer/Control/CenterContainer/SubViewportContainer/SubViewport" instance=ExtResource("2_ah540")]
 
 [node name="Buttons" type="Control" parent="CanvasLayer/Control"]
 layout_mode = 1
@@ -140,7 +144,7 @@ anchor_bottom = 1.0
 offset_left = -50.0
 offset_right = -17.0
 focus_mode = 0
-mouse_filter = 2
+mouse_filter = 1
 text = "      "
 
 [node name="Button_right" type="Button" parent="CanvasLayer/Control/Buttons"]
@@ -151,7 +155,7 @@ anchor_bottom = 1.0
 offset_left = 305.0
 offset_right = 338.0
 focus_mode = 0
-mouse_filter = 2
+mouse_filter = 1
 text = "      "
 
 [node name="Babicounter" type="Label" parent="CanvasLayer/Control"]
@@ -165,7 +169,7 @@ text = "Babis: 0
 [node name="deathmenu" parent="." instance=ExtResource("15_hl8cq")]
 visible = false
 
-[connection signal="babi_locations" from="." to="CanvasLayer/Control/CenterContainer/SubViewportContainer/SubViewport/Minimap" method="_on_tunnels_babi_locations"]
+[connection signal="babi_locations" from="." to="CanvasLayer/Control/SubViewportContainer/SubViewport/Minimap" method="_on_tunnels_babi_locations"]
 [connection signal="game_over" from="." to="pausemenu" method="_on_tunnels_game_over"]
 [connection signal="game_over" from="." to="victorymenu" method="_on_tunnels_game_over"]
 [connection signal="game_over" from="." to="deathmenu" method="_on_tunnels_game_over"]
@@ -173,7 +177,7 @@ visible = false
 [connection signal="jumping_scaring" from="." to="pausemenu" method="_on_tunnels_jumping_scaring"]
 [connection signal="snake_moved" from="Snake" to="." method="_on_snake_snake_moved"]
 [connection signal="snaking_complete" from="Snake" to="." method="_on_snake_snaking_complete"]
-[connection signal="send_grid" from="CanvasLayer/Control/CenterContainer/SubViewportContainer/SubViewport/Minimap" to="." method="_on_minimap_send_grid"]
-[connection signal="send_grid" from="CanvasLayer/Control/CenterContainer/SubViewportContainer/SubViewport/Minimap" to="Snake" method="_on_minimap_send_grid"]
+[connection signal="send_grid" from="CanvasLayer/Control/SubViewportContainer/SubViewport/Minimap" to="." method="_on_minimap_send_grid"]
+[connection signal="send_grid" from="CanvasLayer/Control/SubViewportContainer/SubViewport/Minimap" to="Snake" method="_on_minimap_send_grid"]
 [connection signal="pressed" from="CanvasLayer/Control/Buttons/Button_left" to="." method="_on_button_left_pressed"]
 [connection signal="pressed" from="CanvasLayer/Control/Buttons/Button_right" to="." method="_on_button_right_pressed"]

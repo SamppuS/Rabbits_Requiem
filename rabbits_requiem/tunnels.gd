@@ -23,7 +23,7 @@ signal babi_locations(babeis: Array)
 
 @onready var camTop = $Spelare/CamTop
 @onready var camFP = $Spelare/CamFP
-@onready var minimap_container = $CanvasLayer/Control/CenterContainer/SubViewportContainer 
+@onready var minimap_container = $CanvasLayer/Control/SubViewportContainer#$CanvasLayer/Control/CenterContainer/SubViewportContainer 
 @onready var subviewport = $CanvasLayer/Control/CenterContainer/SubViewportContainer/SubViewport
 @onready var minimap = $CanvasLayer/Control/CenterContainer/SubViewportContainer/SubViewport/Minimap
 @onready var buttons = $CanvasLayer/Control/Buttons
