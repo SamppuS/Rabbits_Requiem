@@ -8,7 +8,7 @@
 
 [sub_resource type="Environment" id="Environment_yoqi5"]
 
-[node name="Minimap" type="Node3D" node_paths=PackedStringArray("player")]
+[node name="Minimap" type="Node2D" node_paths=PackedStringArray("player")]
 script = ExtResource("1_dqeaj")
 tile_mesh = ExtResource("2_fvpvn")
 cave_mesh = ExtResource("3_o836x")
@@ -18,6 +18,7 @@ player = NodePath("Spelare")
 
 [node name="Camera3D" type="Camera3D" parent="."]
 transform = Transform3D(-1, 8.74228e-08, 3.82137e-15, 0, -4.37114e-08, 1, 8.74228e-08, 1, 4.37114e-08, 0.0928936, 16.9954, -2.0475)
+current = true
 fov = 50.0
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
@@ -27,3 +28,7 @@ environment = SubResource("Environment_yoqi5")
 transform = Transform3D(1, 0, 0, 0, 0.587008, 0.809581, 0, -0.809581, 0.587008, 0, 0, 0)
 
 [node name="Spelare" type="Node3D" parent="."]
+
+[node name="Camera2D" type="Camera2D" parent="."]
+position = Vector2(3, 1)
+zoom = Vector2(10, 10)

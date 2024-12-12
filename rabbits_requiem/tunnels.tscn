@@ -118,6 +118,7 @@ layout_mode = 2
 
 [node name="SubViewport" type="SubViewport" parent="CanvasLayer/Control/CenterContainer/SubViewportContainer"]
 own_world_3d = true
+transparent_bg = true
 handle_input_locally = false
 size = Vector2i(576, 324)
 render_target_update_mode = 4
@@ -125,16 +126,21 @@ render_target_update_mode = 4
 [node name="Minimap" parent="CanvasLayer/Control/CenterContainer/SubViewportContainer/SubViewport" instance=ExtResource("2_ah540")]
 
 [node name="Buttons" type="Control" parent="CanvasLayer/Control"]
-anchors_preset = 0
-offset_right = 576.0
-offset_bottom = 324.0
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 mouse_filter = 1
 
 [node name="HBoxContainer_left" type="HBoxContainer" parent="CanvasLayer/Control/Buttons"]
 layout_mode = 2
-offset_left = -50.0
-offset_right = 526.0
-offset_bottom = 324.0
+anchor_left = -0.087
+anchor_right = 0.913
+anchor_bottom = 1.0
+offset_left = 0.112003
+offset_right = 0.112
 mouse_filter = 2
 
 [node name="Button_left" type="Button" parent="CanvasLayer/Control/Buttons/HBoxContainer_left"]
@@ -143,9 +149,11 @@ text = "      "
 
 [node name="HBoxContainer_right" type="HBoxContainer" parent="CanvasLayer/Control/Buttons"]
 layout_mode = 2
-offset_left = 50.0
-offset_right = 626.0
-offset_bottom = 324.0
+anchor_left = 0.087
+anchor_right = 1.087
+anchor_bottom = 1.0
+offset_left = -0.112003
+offset_right = -0.112
 mouse_filter = 2
 alignment = 2
 
@@ -162,6 +170,7 @@ text = "Babis: 0
 "
 
 [node name="deathmenu" parent="." instance=ExtResource("15_hl8cq")]
+visible = false
 
 [connection signal="game_over" from="." to="pausemenu" method="_on_tunnels_game_over"]
 [connection signal="game_over" from="." to="victorymenu" method="_on_tunnels_game_over"]

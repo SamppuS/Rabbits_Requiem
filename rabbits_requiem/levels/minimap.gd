@@ -1,4 +1,4 @@
-extends Node3D
+extends Node2D
 signal send_grid(grid, sp, dead_ends)
 
 
@@ -41,6 +41,7 @@ var grid = []
 var current : Vector2i
 var sp : Vector2i
 @onready var camera = $Camera3D
+@onready var cam2d = $Camera2D
 
 var dead_ends : Array[Vector2i] # this will be sent to tunnels.gd
 
@@ -89,7 +90,8 @@ func _ready():
 			print("---")
 			break
 	send_grid.emit(grid, sp, dead_ends)
-	draw_cave()
+	#draw_cave()
+	_draw()
 	player.position = pos_from_tile(current)
 	
 
@@ -189,6 +191,14 @@ func draw_cave():
 			#tt.position = pos_from_tile(Vector2i(x,y))
 			#add_child(tt)
 			
+			
+			
+			# draw paths
+			#var col = "Black"
+			#for dir in range(6):
+				#if tile.paths[dir]:
+					#
+			
 			#draw directional blobs
 			for dir in range(6):
 				if tile.paths[dir]:
@@ -201,6 +211,60 @@ func draw_cave():
 	camera.position = pos_from_tile(sp)
 	camera.position.y += 20
 	add_child(sp_tt)
+
+func _draw():
+	#draw_circle(Vector2.ZERO, 9999, Color.)
+	var posses = []
+	var miny = 9999
+	var maxy = 0
+	var col : Color = Color.BLACK
+	for y in range(grid_size):
+		for x in range(grid_size):
+			
+			var tile = grid[y][x]
+			if not true in tile.paths: continue
+			
+			var pos3 = pos_from_tile(tile.pos)
+			var pos2 = Vector2(pos3.x, pos3.z) * 5
+			
+			posses.append(pos2)
+			
+			if pos2.y > maxy:
+				maxy = pos2.y
+			if pos2.y > miny:
+				miny = pos2.y
+			
+			draw_circle(pos2, 1, col)
+			
+			for dir in range(6):
+				if tile.paths[dir]:
+					var norm = dir_to_norm(dir)
+					norm = Vector2(norm.x, norm.z) * 3
+					var rect = Rect2(pos2 + norm, Vector2(3,2))
+					
+					var B = pos2 + norm
+					
+					var normal = (B - pos2).normalized()
+					var perp = Vector2(-normal.y, normal.x) * (2 / 2)
+
+					# Calculate rectangle corners
+					var top_left = pos2 - perp
+					var top_right = pos2 + perp
+					var bottom_right = B + perp
+					var bottom_left = B - perp
+
+					# Draw the rectangle
+					draw_polygon([top_left, top_right, bottom_right, bottom_left], [col])
+	
+	var total = Vector2.ZERO
+	for i in posses:
+		total += i
+
+	var zooom = (maxy-miny) / 2350
+	cam2d.zoom = Vector2(zooom, zooom)
+	total /= posses.size()
+	cam2d.position = total
+
 
 func pos_from_tile(pos : Vector2i) -> Vector3:
 	return Vector3(-pos.x + pos.y%2*0.5, 0, float(pos.y) - pos.y * (1-sqrt(3)/2))
