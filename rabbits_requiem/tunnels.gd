@@ -1,6 +1,7 @@
 extends Node3D
 signal jumping_scaring()
 signal game_over(type: String, count: int)
+signal babi_locations(babeis: Array)
 
 @export_subgroup("Parameters")
 @export var minimap_scale := 0.3
@@ -136,6 +137,7 @@ func _ready(): # we probably don't have grid info here!
 	draw_cave()
 	print("Spawning babis...")
 	spawn_babis()
+	emit_signal("babi_locations", babi_holder[1])
 	print("Taking fist snak action...")
 	snak_action("babi")
 	print("Straightening snake...")

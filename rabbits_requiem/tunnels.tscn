@@ -97,7 +97,7 @@ offset_bottom = -324.0
 grow_horizontal = 2
 grow_vertical = 2
 scale = Vector2(2, 2)
-mouse_filter = 1
+mouse_filter = 2
 
 [node name="CenterContainer" type="CenterContainer" parent="CanvasLayer/Control"]
 layout_mode = 1
@@ -106,9 +106,11 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+mouse_filter = 2
 
 [node name="SubViewportContainer" type="SubViewportContainer" parent="CanvasLayer/Control/CenterContainer"]
 layout_mode = 2
+mouse_filter = 2
 
 [node name="SubViewport" type="SubViewport" parent="CanvasLayer/Control/CenterContainer/SubViewportContainer"]
 own_world_3d = true
@@ -126,13 +128,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-mouse_filter = 1
+mouse_filter = 2
 
 [node name="Button_left" type="Button" parent="CanvasLayer/Control/Buttons"]
 layout_mode = 2
@@ -163,6 +159,7 @@ text = "Babis: 0
 [node name="deathmenu" parent="." instance=ExtResource("15_hl8cq")]
 visible = false
 
+[connection signal="babi_locations" from="." to="CanvasLayer/Control/CenterContainer/SubViewportContainer/SubViewport/Minimap" method="_on_tunnels_babi_locations"]
 [connection signal="game_over" from="." to="pausemenu" method="_on_tunnels_game_over"]
 [connection signal="game_over" from="." to="victorymenu" method="_on_tunnels_game_over"]
 [connection signal="game_over" from="." to="deathmenu" method="_on_tunnels_game_over"]

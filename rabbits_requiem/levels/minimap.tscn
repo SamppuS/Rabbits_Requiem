@@ -1,10 +1,11 @@
-[gd_scene load_steps=7 format=3 uid="uid://c1vv05834q1vo"]
+[gd_scene load_steps=8 format=3 uid="uid://c1vv05834q1vo"]
 
 [ext_resource type="Script" path="res://levels/minimap.gd" id="1_dqeaj"]
 [ext_resource type="PackedScene" uid="uid://b8xq8f1f3736a" path="res://assets/cave/griddy.tscn" id="2_fvpvn"]
 [ext_resource type="PackedScene" uid="uid://b3km7s58tssdy" path="res://assets/cave/griddy2.tscn" id="3_o836x"]
 [ext_resource type="PackedScene" uid="uid://bknaa1yohiwhj" path="res://assets/cave/griddy_sp.tscn" id="4_e07eh"]
 [ext_resource type="PackedScene" uid="uid://chpmf6rvomro0" path="res://assets/cave/diddy.tscn" id="5_5e0hb"]
+[ext_resource type="Texture2D" uid="uid://bhesngic0t3v5" path="res://assets/images/babi_left.png" id="6_s5c5x"]
 
 [sub_resource type="Environment" id="Environment_yoqi5"]
 
@@ -14,6 +15,7 @@ tile_mesh = ExtResource("2_fvpvn")
 cave_mesh = ExtResource("3_o836x")
 sp_mesh = ExtResource("4_e07eh")
 dir_mesh = ExtResource("5_5e0hb")
+babikuva = ExtResource("6_s5c5x")
 player = NodePath("Spelare")
 
 [node name="Camera3D" type="Camera3D" parent="."]

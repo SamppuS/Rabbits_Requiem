@@ -24,14 +24,14 @@ signal send_grid(grid, sp, dead_ends)
 # n>50 : ? : n>10000 = leads to huge caves FAST!!
 
 var grid_size = (cave_depth+1) * 2 # grid size is based on longest possible cave system. DO NOT CHANGE!!
-
+var babihodler
 
 @export_subgroup("Meshes")
 @export var tile_mesh : PackedScene
 @export var cave_mesh : PackedScene
 @export var sp_mesh : PackedScene
 @export var dir_mesh : PackedScene
-
+@export var babikuva : CompressedTexture2D
 
 @export_subgroup("Nodes")
 @export var player : Node3D
@@ -91,7 +91,7 @@ func _ready():
 			break
 	send_grid.emit(grid, sp, dead_ends)
 	#draw_cave()
-	_draw()
+	#_draw()
 	player.position = pos_from_tile(current)
 	
 
@@ -217,7 +217,7 @@ func _draw():
 	var posses = []
 	var miny = 9999
 	var maxy = 0
-	var col : Color = Color.BLACK
+	var col : Color = Color.DARK_SLATE_GRAY
 	for y in range(grid_size):
 		for x in range(grid_size):
 			
@@ -255,12 +255,13 @@ func _draw():
 
 					# Draw the rectangle
 					draw_polygon([top_left, top_right, bottom_right, bottom_left], [col])
+
 	
 	var total = Vector2.ZERO
 	for i in posses:
 		total += i
 
-	var zooom = (maxy-miny) / 2350
+	var zooom = (maxy-miny) / 2750
 	cam2d.zoom = Vector2(zooom, zooom)
 	total /= posses.size()
 	cam2d.position = total
@@ -400,3 +401,22 @@ func count_loops():
 		# mark tile as checked
 		been_here.append(checking)
 	return count
+
+
+func _on_tunnels_babi_locations(babeis: Array) -> void:
+	babihodler = babeis
+	for y in range(grid_size):
+		for x in range(grid_size):
+			var tile = grid[y][x]
+			if not true in tile.paths: continue
+	
+			var pos3 = pos_from_tile(tile.pos)
+			var pos2 = Vector2(pos3.x, pos3.z) * 5
+	
+			if tile.pos in babihodler:
+				var kuva = Sprite2D.new()
+				kuva.texture = babikuva
+				kuva.scale = Vector2(1,1) * -0.04
+				kuva.position = pos2
+				add_child(kuva)
+	#_draw()
