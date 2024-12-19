@@ -11,6 +11,11 @@ func _ready() -> void:
 	volume = round(100 * (volume + 45) / 55)
 	$"Settings buttons/Label2".text = "Volume: " + str(volume)
 
+	$"Settings buttons/HBoxContainer2/CheckButton".button_pressed = Settings.debugger
+
+	$"Settings buttons/Brightness slider".value = Settings.gamma
+	$"Settings buttons/Label".text = "Bringtness: " + str(Settings.gamma)
+	
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
@@ -55,8 +60,10 @@ func _on_volume_slider_value_changed(value: float) -> void:
 
 
 func _on_brightness_slider_value_changed(value: float) -> void:
-	var slider = $"Settings buttons/Brightness slider"
-	var label = $"Settings buttons/Label"
-	var new = slider.value
+	var new = $"Settings buttons/Brightness slider".value
 	Settings.change(new)
-	label.text = "Bringtness: " + str(new)
+	$"Settings buttons/Label".text = "Bringtness: " + str(new)
+
+
+func _on_check_button_toggled(toggled_on: bool) -> void:
+	Settings.debugger = toggled_on

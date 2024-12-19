@@ -15,6 +15,21 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(0, 0, 0, 0.415686)
 
+[node name="Label" type="Label" parent="."]
+visible = false
+anchors_preset = -1
+anchor_left = 0.681
+anchor_top = 0.452
+anchor_right = 0.832
+anchor_bottom = 0.568
+offset_left = -0.512085
+offset_top = 0.103973
+offset_right = -35.464
+offset_bottom = -26.064
+text = "Debug mode is on
+Press X to see the map
+Press E to die"
+
 [node name="CenterContainer" type="CenterContainer" parent="."]
 anchors_preset = 15
 anchor_right = 1.0

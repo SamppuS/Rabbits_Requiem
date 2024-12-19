@@ -1,7 +1,8 @@
-[gd_scene load_steps=8 format=3 uid="uid://boil8m7sjd0so"]
+[gd_scene load_steps=9 format=3 uid="uid://boil8m7sjd0so"]
 
 [ext_resource type="Script" path="res://menus/mainmenu.gd" id="1_3evwv"]
 [ext_resource type="Texture2D" uid="uid://d1l5y4bd0ddmy" path="res://assets/images/Menu art/Snake_tullen.png" id="2_1awbg"]
+[ext_resource type="FontFile" uid="uid://cxlmjcsi4fcoj" path="res://assets/font/Lugosi.otf" id="3_b87pw"]
 [ext_resource type="AudioStream" uid="uid://uw01udmhpqkl" path="res://assets/Sounds/Ambiance/rabbits menu.wav" id="3_qq3lb"]
 
 [sub_resource type="Animation" id="Animation_6scju"]
@@ -119,13 +120,13 @@ custom_minimum_size = Vector2(200, 150)
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.025
-anchor_top = 0.046
+anchor_top = 0.131
 anchor_right = 0.269
-anchor_bottom = 0.372
+anchor_bottom = 0.456
 offset_left = 0.199999
-offset_top = 0.191998
+offset_top = 0.111992
 offset_right = -80.888
-offset_bottom = -61.056
+offset_bottom = -60.488
 scale = Vector2(1.405, 1.405)
 alignment = 1
 
@@ -232,6 +233,16 @@ min_value = 0.5
 max_value = 2.5
 step = 0.1
 value = 1.0
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="Settings buttons"]
+layout_mode = 2
+
+[node name="Label3" type="Label" parent="Settings buttons/HBoxContainer2"]
+layout_mode = 2
+text = "Debug buttons"
+
+[node name="CheckButton" type="CheckButton" parent="Settings buttons/HBoxContainer2"]
+layout_mode = 2
 
 [node name="close" type="Button" parent="Settings buttons"]
 layout_mode = 2
@@ -359,6 +370,22 @@ offset_bottom = -0.00799561
 theme_override_font_sizes/font_size = 50
 text = "BACK"
 
+[node name="Label" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.375
+anchor_top = 0.066
+anchor_right = 0.907
+anchor_bottom = 0.239
+offset_left = -3.05176e-05
+offset_top = 0.231998
+offset_right = 0.135986
+offset_bottom = 0.127991
+theme_override_colors/font_color = Color(1, 1, 1, 0.498039)
+theme_override_fonts/font = ExtResource("3_b87pw")
+theme_override_font_sizes/font_size = 100
+text = "Rabbits Requiem"
+
 [node name="Visual blocker" type="TextureRect" parent="."]
 modulate = Color(0, 0, 0, 0)
 layout_mode = 2
@@ -388,6 +415,7 @@ libraries = {
 [connection signal="value_changed" from="Settings buttons/Volume slider" to="." method="_on_volume_slider_value_changed"]
 [connection signal="drag_ended" from="Settings buttons/Brightness slider" to="." method="_on_h_slider_drag_ended"]
 [connection signal="value_changed" from="Settings buttons/Brightness slider" to="." method="_on_brightness_slider_value_changed"]
+[connection signal="toggled" from="Settings buttons/HBoxContainer2/CheckButton" to="." method="_on_check_button_toggled"]
 [connection signal="pressed" from="Settings buttons/close" to="." method="_on_close_pressed"]
 [connection signal="pressed" from="Credits/Back" to="." method="_on_back_pressed"]
 [connection signal="animation_finished" from="AnimationPlayer" to="." method="_on_animation_player_animation_finished"]

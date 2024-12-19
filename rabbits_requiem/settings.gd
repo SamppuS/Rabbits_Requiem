@@ -2,6 +2,7 @@ extends Node
 signal settings_updated()
 
 var gamma = 1
+var debugger = false
 
 func change(new: float):
 	gamma = new

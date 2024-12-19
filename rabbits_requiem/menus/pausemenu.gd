@@ -15,11 +15,16 @@ func _ready() -> void:
 	slider.value = Settings.gamma
 	slider_label.text = "Bringtness: " + str(slider.value)
 	
+	$"CenterContainer/Settings buttons/Brightness slider".value = Settings.gamma
+	$"CenterContainer/Settings buttons/Label".text = "Bringtness: " + str(Settings.gamma)
+	
 	
 	var volume = AudioServer.get_bus_volume_db(0)
 	$"CenterContainer/Settings buttons/Volume slider".value = volume
 	volume = round(100 * (volume + 45) / 55)
 	$"CenterContainer/Settings buttons/Label2".text = "Volume: " + str(volume)
+	
+	if Settings.debugger: $Label.visible = true
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:

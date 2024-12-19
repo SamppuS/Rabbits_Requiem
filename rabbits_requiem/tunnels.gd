@@ -149,6 +149,8 @@ func _ready(): # we probably don't have grid info here!
 	#_on_settings_updated()
 	camFP.rotation_degrees = cam_default + cam_tilt
 	environment.adjustment_brightness = 0
+	
+	if Settings.debugger: $"CanvasLayer/Control/Debug mode".visible = true
 
 func _process(delta: float) -> void:
 	
@@ -240,10 +242,10 @@ func _input(event: InputEvent) -> void:
 			##print("WE HAVE YOU SURROUNDED")
 			#surround()
 
-	if Input.is_action_just_pressed("x"): # toggle cam
+	if Input.is_action_just_pressed("x") and Settings.debugger: # toggle cam
 		change_cam()
 		
-	if Input.is_action_just_pressed("e"): # snake new target
+	if Input.is_action_just_pressed("e") and Settings.debugger: # snake new target
 		#snak_action("player")
 		jump_scare()
 	
