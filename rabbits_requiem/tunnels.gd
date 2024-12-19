@@ -154,6 +154,10 @@ func _ready(): # we probably don't have grid info here!
 
 func _process(delta: float) -> void:
 	
+	if !alive: 
+		$CanvasLayer/Control/SubViewportContainer.visible = false
+		return
+	
 	# intro darkness fade
 	if brightness < Settings.gamma and !brightened:
 		var environment = $WorldEnvironment.environment
@@ -249,7 +253,7 @@ func _input(event: InputEvent) -> void:
 		#snak_action("player")
 		jump_scare()
 	
-	if Input.is_action_just_pressed("map"):
+	if Input.is_action_just_pressed("map") and alive:
 		minimap_container.visible = !minimap_container.visible
 		print("switch")
 	
@@ -674,6 +678,7 @@ func leave():
 	#print("BAZINGA!")
 	$AnimationPlayer.play("kill_music")
 	emit_signal("game_over", "left", babis_yoinked)
+	alive = false
 	#get_tree().change_scene_to_file("res://menus/victorymenu.tscn")
 
 
@@ -711,3 +716,4 @@ func _on_button_left_pressed() -> void:
 
 func _on_snake_opened() -> void:
 	emit_signal("game_over", "eated", babi_count)
+	alive = false
