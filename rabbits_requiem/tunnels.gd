@@ -669,7 +669,7 @@ func moving_average(arr: PackedVector3Array, window: int = 0):
 	return new_array
 
 func leave():
-	print("BAZINGA!")
+	#print("BAZINGA!")
 	$AnimationPlayer.play("kill_music")
 	emit_signal("game_over", "left", babis_yoinked)
 	#get_tree().change_scene_to_file("res://menus/victorymenu.tscn")

@@ -138,6 +138,12 @@ layout_mode = 2
 text = "SETTINGS
 "
 
+[node name="Credits" type="Button" parent="Menu buttons"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 25
+text = "CREDITS
+"
+
 [node name="quit" type="Button" parent="Menu buttons"]
 layout_mode = 2
 text = "QUIT GAME
@@ -161,6 +167,7 @@ grow_vertical = 2
 alignment = 1
 
 [node name="HBoxContainer" type="HBoxContainer" parent="Settings buttons"]
+visible = false
 layout_mode = 2
 alignment = 1
 
@@ -205,6 +212,16 @@ text = "4th
 [node name="LineEdit2" type="LineEdit" parent="Settings buttons/HBoxContainer/VBoxContainer4"]
 layout_mode = 2
 
+[node name="Label2" type="Label" parent="Settings buttons"]
+layout_mode = 2
+text = "Volume: 90
+"
+
+[node name="Volume slider" type="HSlider" parent="Settings buttons"]
+layout_mode = 2
+min_value = -45.0
+max_value = 10.0
+
 [node name="Label" type="Label" parent="Settings buttons"]
 layout_mode = 2
 text = "Bringtness: 1"
@@ -219,6 +236,128 @@ value = 1.0
 [node name="close" type="Button" parent="Settings buttons"]
 layout_mode = 2
 text = "Close"
+
+[node name="Credits" type="Control" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="CenterContainer" type="CenterContainer" parent="Credits"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Credits container" type="VBoxContainer" parent="Credits/CenterContainer"]
+layout_mode = 2
+
+[node name="Context" type="Label" parent="Credits/CenterContainer/Credits container"]
+custom_minimum_size = Vector2(500, 50)
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_font_sizes/font_size = 20
+text = "This demo was made for Helsinki GameDev Club during 24.10 - 12.12.2024"
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="Code by" type="Label" parent="Credits/CenterContainer/Credits container"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 35
+text = "Code by:"
+horizontal_alignment = 1
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Credits/CenterContainer/Credits container"]
+custom_minimum_size = Vector2(700, 50)
+layout_mode = 2
+theme_override_constants/separation = 200
+alignment = 1
+
+[node name="Samppa" type="Label" parent="Credits/CenterContainer/Credits container/HBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 25
+text = "Samuli Sipponen"
+
+[node name="Eddy" type="Label" parent="Credits/CenterContainer/Credits container/HBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 25
+text = "Edward Rimey"
+
+[node name="3D models by" type="Label" parent="Credits/CenterContainer/Credits container"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 35
+text = "3D models by:"
+horizontal_alignment = 1
+
+[node name="Samppa2" type="Label" parent="Credits/CenterContainer/Credits container"]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+theme_override_font_sizes/font_size = 25
+text = "Samuli Sipponen"
+horizontal_alignment = 1
+
+[node name="Music by" type="Label" parent="Credits/CenterContainer/Credits container"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 35
+text = "Music and sound design by:"
+horizontal_alignment = 1
+
+[node name="Winna" type="Label" parent="Credits/CenterContainer/Credits container"]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+theme_override_font_sizes/font_size = 25
+text = "Winna"
+horizontal_alignment = 1
+
+[node name="Art by" type="Label" parent="Credits/CenterContainer/Credits container"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 35
+text = "Art by:"
+horizontal_alignment = 1
+
+[node name="Pie" type="Label" parent="Credits/CenterContainer/Credits container"]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+theme_override_font_sizes/font_size = 25
+text = "Pie"
+horizontal_alignment = 1
+
+[node name="Special thanks" type="Label" parent="Credits/CenterContainer/Credits container"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 35
+text = "Special thanks:"
+horizontal_alignment = 1
+
+[node name="Aku" type="Label" parent="Credits/CenterContainer/Credits container"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 25
+text = "Aku Kettunen"
+horizontal_alignment = 1
+
+[node name="Aku2" type="Label" parent="Credits/CenterContainer/Credits container"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 25
+text = "GameDev Club staff :)"
+horizontal_alignment = 1
+
+[node name="Back" type="Button" parent="Credits"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.044
+anchor_top = 0.827
+anchor_right = 0.164
+anchor_bottom = 0.946
+offset_left = 0.311996
+offset_top = 0.104004
+offset_right = 0.071991
+offset_bottom = -0.00799561
+theme_override_font_sizes/font_size = 50
+text = "BACK"
 
 [node name="Visual blocker" type="TextureRect" parent="."]
 modulate = Color(0, 0, 0, 0)
@@ -244,7 +383,11 @@ libraries = {
 
 [connection signal="pressed" from="Menu buttons/start" to="." method="_on_start_pressed"]
 [connection signal="pressed" from="Menu buttons/settings" to="." method="_on_settings_pressed"]
+[connection signal="pressed" from="Menu buttons/Credits" to="." method="_on_credits_pressed"]
 [connection signal="pressed" from="Menu buttons/quit" to="." method="_on_quit_pressed"]
+[connection signal="value_changed" from="Settings buttons/Volume slider" to="." method="_on_volume_slider_value_changed"]
 [connection signal="drag_ended" from="Settings buttons/Brightness slider" to="." method="_on_h_slider_drag_ended"]
+[connection signal="value_changed" from="Settings buttons/Brightness slider" to="." method="_on_brightness_slider_value_changed"]
 [connection signal="pressed" from="Settings buttons/close" to="." method="_on_close_pressed"]
+[connection signal="pressed" from="Credits/Back" to="." method="_on_back_pressed"]
 [connection signal="animation_finished" from="AnimationPlayer" to="." method="_on_animation_player_animation_finished"]

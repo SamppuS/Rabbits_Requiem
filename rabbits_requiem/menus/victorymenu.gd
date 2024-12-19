@@ -13,10 +13,6 @@ func _ready() -> void:
 	#vbox.size_flags_horizontal = Control.SIZE_FILL
 
 
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta: float) -> void:
-	pass
-
 
 func _on_main_menu_pressed() -> void:
 	$AnimationPlayer.play("Fade out")
@@ -34,12 +30,13 @@ func _on_tunnels_game_over(type: String, count: int) -> void:
 			vicscreen = 1
 		if count >= 4 and count < 6:
 			vicscreen = 2
-		if count >= 6:
+		if count >= 7:
 			vicscreen = 3
 		won = true
 		visible = true
 		$AnimationPlayer.play("Fade in")
 		$Control/TextureRect.texture = victory_phases[vicscreen]
+		#print(victory_phases.size())
 
 
 func _on_animation_player_animation_finished(anim_name: StringName) -> void:

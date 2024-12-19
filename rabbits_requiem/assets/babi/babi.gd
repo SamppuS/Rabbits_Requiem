@@ -13,7 +13,7 @@ var location : Vector2i
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	pass
+	get_parent().connect("game_over", _on_game_over)
 	
 
 func die():
@@ -39,3 +39,6 @@ func _on_static_body_3d_input_event(camera: Node, event: InputEvent, event_posit
 func _on_crunch_finished() -> void:
 	speaker.volume_db = -20
 	queue_free()
+	
+func _on_game_over(type: String, count: int):
+	$Mumbling.playing = false

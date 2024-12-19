@@ -13,7 +13,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-color = Color(1, 1, 1, 0.415686)
+color = Color(0, 0, 0, 0.415686)
 
 [node name="CenterContainer" type="CenterContainer" parent="."]
 anchors_preset = 15
@@ -32,18 +32,22 @@ alignment = 1
 
 [node name="Resume" type="Button" parent="CenterContainer/Main buttons"]
 layout_mode = 2
+theme_override_font_sizes/font_size = 35
 text = "Resume"
 
 [node name="Settings" type="Button" parent="CenterContainer/Main buttons"]
 layout_mode = 2
+theme_override_font_sizes/font_size = 35
 text = "Settings"
 
 [node name="Main menu" type="Button" parent="CenterContainer/Main buttons"]
 layout_mode = 2
+theme_override_font_sizes/font_size = 35
 text = "Main menu"
 
 [node name="Quit" type="Button" parent="CenterContainer/Main buttons"]
 layout_mode = 2
+theme_override_font_sizes/font_size = 35
 text = "Quit"
 
 [node name="Settings buttons" type="VBoxContainer" parent="CenterContainer"]
@@ -51,6 +55,16 @@ visible = false
 custom_minimum_size = Vector2(300, 200)
 layout_mode = 2
 alignment = 1
+
+[node name="Label2" type="Label" parent="CenterContainer/Settings buttons"]
+layout_mode = 2
+text = "Volume: 90
+"
+
+[node name="Volume slider" type="HSlider" parent="CenterContainer/Settings buttons"]
+layout_mode = 2
+min_value = -45.0
+max_value = 10.0
 
 [node name="Label" type="Label" parent="CenterContainer/Settings buttons"]
 layout_mode = 2
@@ -71,5 +85,6 @@ text = "Close"
 [connection signal="pressed" from="CenterContainer/Main buttons/Settings" to="." method="_on_settings_pressed"]
 [connection signal="pressed" from="CenterContainer/Main buttons/Main menu" to="." method="_on_main_menu_pressed"]
 [connection signal="pressed" from="CenterContainer/Main buttons/Quit" to="." method="_on_quit_pressed"]
-[connection signal="drag_ended" from="CenterContainer/Settings buttons/Brightness slider" to="." method="_on_brightness_slider_drag_ended"]
+[connection signal="value_changed" from="CenterContainer/Settings buttons/Volume slider" to="." method="_on_volume_slider_value_changed"]
+[connection signal="value_changed" from="CenterContainer/Settings buttons/Brightness slider" to="." method="_on_brightness_slider_value_changed"]
 [connection signal="pressed" from="CenterContainer/Settings buttons/close" to="." method="_on_close_pressed"]

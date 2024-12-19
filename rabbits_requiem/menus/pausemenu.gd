@@ -14,6 +14,12 @@ func _ready() -> void:
 	#vbox.size_flags_horizontal = Control.SIZE_FILL
 	slider.value = Settings.gamma
 	slider_label.text = "Bringtness: " + str(slider.value)
+	
+	
+	var volume = AudioServer.get_bus_volume_db(0)
+	$"CenterContainer/Settings buttons/Volume slider".value = volume
+	volume = round(100 * (volume + 45) / 55)
+	$"CenterContainer/Settings buttons/Label2".text = "Volume: " + str(volume)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
@@ -46,12 +52,6 @@ func _on_close_pressed() -> void:
 	$"CenterContainer/Settings buttons".visible = false
 
 
-func _on_brightness_slider_drag_ended(value_changed: bool) -> void:
-	var new = slider.value
-	Settings.change(new)
-	slider_label.text = "Bringtness: " + str(new)
-
-
 func _on_main_menu_pressed() -> void:
 	toggle_pause()
 	get_tree().change_scene_to_file("res://menus/mainmenu.tscn")
@@ -59,3 +59,15 @@ func _on_main_menu_pressed() -> void:
 
 func _on_tunnels_jumping_scaring() -> void:
 	pausable = false
+
+
+func _on_volume_slider_value_changed(value: float) -> void:
+	var fake_value = round($"CenterContainer/Settings buttons/Volume slider".ratio * 100)
+	$"CenterContainer/Settings buttons/Label2".text = "Volume: " + str(fake_value)
+	AudioServer.set_bus_volume_db(0, value)
+
+
+func _on_brightness_slider_value_changed(value: float) -> void:
+	var new = slider.value
+	Settings.change(new)
+	slider_label.text = "Bringtness: " + str(new)

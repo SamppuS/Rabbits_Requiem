@@ -380,3 +380,7 @@ func _on_tunnels_jumping_scaring() -> void:
 	
 func open():
 	$Head2/AnimationPlayer.play("amongussus")
+
+
+func _on_tunnels_game_over(type: String, count: int) -> void:
+	player_alive = false

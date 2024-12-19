@@ -12,11 +12,11 @@
 [ext_resource type="PackedScene" uid="uid://b3a48h1ho0lpx" path="res://assets/snake/Snak/snakbodyblend_liikkuva.glb" id="10_8brh3"]
 
 [sub_resource type="Animation" id="Animation_m57tt"]
-resource_name = "hehee"
+resource_name = "stop"
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_1jjj2"]
 _data = {
-"hehee": SubResource("Animation_m57tt")
+"stop": SubResource("Animation_m57tt")
 }
 
 [node name="Snake" type="Node3D"]

@@ -1,4 +1,4 @@
-[gd_scene load_steps=36 format=3 uid="uid://d4fl1op437uoe"]
+[gd_scene load_steps=34 format=3 uid="uid://d4fl1op437uoe"]
 
 [ext_resource type="Script" path="res://tunnels.gd" id="1_bfp66"]
 [ext_resource type="PackedScene" uid="uid://c1vv05834q1vo" path="res://levels/minimap.tscn" id="2_ah540"]
@@ -24,9 +24,7 @@
 [ext_resource type="PackedScene" uid="uid://m8ymecebrtn1" path="res://menus/pausemenu.tscn" id="12_5a0ey"]
 [ext_resource type="ArrayMesh" uid="uid://cbyn67atrosyu" path="res://palikoita/Closed Meshes/Block41.obj" id="12_kowkq"]
 [ext_resource type="ArrayMesh" uid="uid://bmio45h8tg7qs" path="res://palikoita/Closed Meshes/Block42.obj" id="13_0dp6n"]
-[ext_resource type="Texture2D" uid="uid://7cokueko0ejj" path="res://assets/images/Endings/win_none.png" id="14_8lq6y"]
 [ext_resource type="PackedScene" uid="uid://dk7b1a1resbbt" path="res://menus/victorymenu.tscn" id="14_sxlku"]
-[ext_resource type="Texture2D" uid="uid://c21uanwhck24h" path="res://assets/images/Endings/win_good.png" id="15_dj03b"]
 [ext_resource type="PackedScene" uid="uid://h3rk4lv31m18" path="res://menus/deathmenu.tscn" id="15_hl8cq"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_redg8"]
@@ -137,7 +135,6 @@ visible = false
 
 [node name="victorymenu" parent="." instance=ExtResource("14_sxlku")]
 visible = false
-victory_phases = Array[CompressedTexture2D]([ExtResource("14_8lq6y"), ExtResource("15_dj03b")])
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 
@@ -194,7 +191,6 @@ anchor_bottom = 1.0
 offset_left = -50.0
 offset_right = -17.0
 focus_mode = 0
-mouse_filter = 1
 text = "      "
 
 [node name="Button_right" type="Button" parent="CanvasLayer/Control/Buttons"]
@@ -205,7 +201,6 @@ anchor_bottom = 1.0
 offset_left = 305.0
 offset_right = 338.0
 focus_mode = 0
-mouse_filter = 1
 text = "      "
 
 [node name="Babicounter" type="Label" parent="CanvasLayer/Control"]
@@ -225,6 +220,7 @@ libraries = {
 }
 
 [connection signal="babi_locations" from="." to="CanvasLayer/Control/SubViewportContainer/SubViewport/Minimap" method="_on_tunnels_babi_locations"]
+[connection signal="game_over" from="." to="Snake" method="_on_tunnels_game_over"]
 [connection signal="game_over" from="." to="pausemenu" method="_on_tunnels_game_over"]
 [connection signal="game_over" from="." to="victorymenu" method="_on_tunnels_game_over"]
 [connection signal="game_over" from="." to="deathmenu" method="_on_tunnels_game_over"]
