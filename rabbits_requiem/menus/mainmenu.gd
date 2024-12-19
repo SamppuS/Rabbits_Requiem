@@ -47,10 +47,12 @@ func _on_animation_player_animation_finished(anim_name: StringName) -> void:
 func _on_credits_pressed() -> void:
 	$Credits.visible = true
 	$"Menu buttons".visible = false
+	$Label.visible = false
 
 func _on_back_pressed() -> void:
 	$Credits.visible = false
 	$"Menu buttons".visible = true
+	$Label.visible = true
 	
 
 func _on_volume_slider_value_changed(value: float) -> void:
